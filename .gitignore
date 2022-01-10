@@ -1,0 +1,10 @@
+Login/build
+Core/build
+Game/build
+
+/.idea/
+/.gradle/
+
+.DS_Store
+
+*.iml
