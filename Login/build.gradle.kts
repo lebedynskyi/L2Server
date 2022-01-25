@@ -1,12 +1,12 @@
 plugins {
     id("application")
     id("kotlin")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 group = "org.example"
 version = "1.0"
-
-val appMainClassName = "lineage.vetal.server.login.MainKt"
+val appMainClassName = "lineage.vetal.server.login.LoginMainKt"
 
 tasks.withType<Jar> {
     manifest {
@@ -15,6 +15,5 @@ tasks.withType<Jar> {
 }
 
 dependencies {
-    implementation(kotlin("script-runtime"))
     implementation(project(":Core"))
 }

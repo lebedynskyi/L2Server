@@ -1,6 +1,7 @@
 plugins {
     id("application")
     id("kotlin")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 group = "org.example"
@@ -14,6 +15,5 @@ tasks.withType<Jar> {
 }
 
 dependencies {
-    implementation(kotlin("script-runtime"))
     implementation(project(":Core"))
 }

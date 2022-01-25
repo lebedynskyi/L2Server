@@ -1,12 +1,14 @@
 plugins {
     id("java-library")
     id("kotlin")
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    // Kotlin coroutines
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
 
     // Yaml
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1")
+    api("com.charleskorn.kaml:kaml:0.40.0")
+    api ("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
 }

@@ -1,11 +1,11 @@
 package lineage.vetal.server.core.server
 
-import lineage.vetal.server.core.model.ConfigIpAddress
+import lineage.vetal.server.core.settings.NetworkConfig
 
 abstract class BaseServer(
-    val ipAddress: ConfigIpAddress
+    val networkSettings: NetworkConfig
 ) {
-    val TAG = javaClass.simpleName
+    protected val TAG = javaClass.simpleName
 
     abstract suspend fun startServer()
 }

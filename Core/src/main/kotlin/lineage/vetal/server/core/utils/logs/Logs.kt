@@ -1,6 +1,10 @@
-package lineage.vetal.server.core.logs
+package lineage.vetal.server.core.utils.logs
 
 fun writeDebug(tag: String, msg: Any) {
+    println("$tag: $msg")
+}
+
+fun writeInfo(tag: String, msg: Any) {
     println("$tag: $msg")
 }
 
