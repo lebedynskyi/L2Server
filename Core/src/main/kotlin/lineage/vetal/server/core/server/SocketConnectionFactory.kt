@@ -1,4 +1,7 @@
 package lineage.vetal.server.core.server
 
-class SocketConnectionFactory {
+class SocketConnectionFactory(
+    private val connectionFilter: ConnectionFilter
+) {
+
 }

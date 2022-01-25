@@ -3,14 +3,10 @@ plugins {
     id("kotlin")
 }
 
-
-val ktorVersion = "1.6.7"
 dependencies {
     implementation(kotlin("stdlib"))
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
 
-    // Ktor
-    implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-network:$ktorVersion")
-    implementation("ch.qos.logback:logback-classic:1.2.10")
+    // Yaml
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.1")
 }

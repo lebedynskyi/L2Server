@@ -1,6 +1,6 @@
 package lineage.vetal.server.core.logs
 
-fun writeDebug(tag: String, msg: String) {
+fun writeDebug(tag: String, msg: Any) {
     println("$tag: $msg")
 }
 

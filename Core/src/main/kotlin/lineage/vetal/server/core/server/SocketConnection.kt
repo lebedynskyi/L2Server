@@ -1,4 +1,8 @@
 package lineage.vetal.server.core.server
 
-class SocketConnection {
-}
+import java.net.InetSocketAddress
+
+data class SocketConnection(
+    val i : Int
+//    val ipAddress: InetSocketAddress
+)

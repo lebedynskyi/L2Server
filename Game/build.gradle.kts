@@ -15,4 +15,5 @@ tasks.withType<Jar> {
 
 dependencies {
     implementation(kotlin("script-runtime"))
+    implementation(project(":Core"))
 }
