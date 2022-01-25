@@ -7,16 +7,18 @@ import lineage.vetal.server.core.settings.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
+import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
+import java.nio.channels.SocketChannel
 
 
 private const val TAG = "SelectorServer"
 
 class SocketSelectorThread(
     private val configIpAddress: NetworkConfig,
-    private val connectionFactory: SocketConnectionFactory
+    private val connectionFactory: ClientConnectionFactory
 ) {
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
@@ -51,18 +53,23 @@ class SocketSelectorThread(
                 val key = keyIterator.next()
                 when {
                     key.isAcceptable -> {
-                        writeDebug(TAG, "New accept request")
-                        val socketConnection = connectionFactory.createConnection(selector, serverSocket)
-                        _selectionFlow.tryEmit(ClientConnection(socketConnection, selector))
+                        val clientConnection = connectionFactory.createConnection(selector, serverSocket)
+                        _selectionFlow.tryEmit(clientConnection)
                     }
                     key.isConnectable -> {
-                        writeDebug(TAG, "isConnectable")
                     }
                     key.isReadable -> {
-                        writeDebug(TAG, "isReadable")
+                        val socket = key.attachment() as SocketChannel
+                        val buffer = ByteBuffer.allocate(256)
+                        // TODO handle closed connection by client
+                        socket.read(buffer)
+                        writeDebug(TAG, "Receive message -> ${String(buffer.array())}")
+                        key.interestOps(SelectionKey.OP_WRITE)
                     }
                     key.isWritable -> {
-                        writeDebug(TAG, "isWritable")
+                        val socket = key.attachment() as SocketChannel
+                        socket.write(ByteBuffer.wrap("Hi. I am listening for you\n".toByteArray()))
+                        key.interestOps(SelectionKey.OP_READ)
                     }
                 }
 
