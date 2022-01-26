@@ -9,18 +9,21 @@ import lineage.vetal.server.core.settings.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
-import java.nio.channels.SocketChannel
 
 
-private const val TAG = "SelectorServer"
-
-class SocketSelectorThread<T: Client>(
+class SocketSelectorThread<T : Client>(
     private val networkConfig: NetworkConfig,
     private val connectionFactory: ClientFactory<T>
 ) {
+    private val READ_BUFFER_SIZE = 64 * 1024
+    private val WRITE_BUFFER_SIZE = 64 * 1024
+    private val TAG = "SelectorServer"
+
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
 
@@ -33,8 +36,8 @@ class SocketSelectorThread<T: Client>(
     private val _selectionReadFlow = MutableSharedFlow<ClientConnection>(1)
     val connectionReadFlow = _selectionReadFlow.asSharedFlow()
 
-    private val socketReader = SocketReader()
-    private val socketWriter = SocketWriter()
+    private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+    private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
     @Volatile
     var isRunning = true
@@ -47,7 +50,7 @@ class SocketSelectorThread<T: Client>(
     }
 
     private fun openServer() {
-        val address =  if (networkConfig.hostname.isBlank() || networkConfig.hostname == "*") {
+        val address = if (networkConfig.hostname.isBlank() || networkConfig.hostname == "*") {
             InetSocketAddress(networkConfig.port)
         } else {
             InetSocketAddress(networkConfig.hostname, networkConfig.port)
@@ -61,23 +64,24 @@ class SocketSelectorThread<T: Client>(
         writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}")
 
         while (isRunning) {
-            writeDebug(TAG, "waiting for selected key")
             val readyChannels = selector.select()
             if (readyChannels == 0) continue
 
             val keyIterator = selector.selectedKeys().iterator()
             while (keyIterator.hasNext()) {
                 val key = keyIterator.next()
-                when {
-                    key.isAcceptable -> {
-                        val client = connectionFactory.createClient(selector, serverSocket)
-                        _selectionAcceptFlow.tryEmit(client)
+                when (key.readyOps()) {
+                    SelectionKey.OP_CONNECT -> finishConnection(key)
+                    SelectionKey.OP_ACCEPT -> createConnection(key)
+                    SelectionKey.OP_READ -> {
+                        readPackets(key)
                     }
-                    key.isReadable -> {
-                        val client = key.attachment() as T
+                    SelectionKey.OP_WRITE -> {
+                        writePackets(key)
                     }
-                    key.isWritable -> {
-                        val client = key.attachment() as T
+                    SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
+                        writePackets(key)
+                        readPackets(key)
                     }
                 }
 
@@ -90,5 +94,24 @@ class SocketSelectorThread<T: Client>(
 
     private fun closeServer() {
 
+    }
+
+    private fun finishConnection(selectionKey: SelectionKey) {
+
+    }
+
+    private fun createConnection(selectionKey: SelectionKey) {
+        val client = connectionFactory.createClient(selector, serverSocket)
+        _selectionAcceptFlow.tryEmit(client)
+    }
+
+    private fun readPackets(key: SelectionKey) {
+
+    }
+
+    private fun writePackets(key: SelectionKey) {
+        val client = key.attachment() as Client
+        client.sendPackets(writeBuffer, tempWriteBuffer)
+        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
     }
 }

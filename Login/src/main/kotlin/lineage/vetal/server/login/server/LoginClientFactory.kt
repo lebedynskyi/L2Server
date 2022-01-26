@@ -3,6 +3,7 @@ package lineage.vetal.server.login.server
 import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.server.SocketConnectionFilter
+import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
@@ -17,9 +18,10 @@ class LoginClientFactory(
 
     override fun createClient(selector: Selector, serverSocket: ServerSocketChannel): LoginClient {
         val socket = serverSocket.accept().apply { configureBlocking(false) }
+        val address = socket.remoteAddress as InetSocketAddress
         val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
         val key = socket.register(selector, SelectionKey.OP_READ)
-        val clientConnection = ClientConnection(socket, key, crypt)
+        val clientConnection = ClientConnection(socket, key, address)
         val client = LoginClient(Random.nextInt(), clientConnection, crypt)
         key.attach(client)
         return client

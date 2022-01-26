@@ -1,6 +1,8 @@
 package lineage.vetal.server.core.client
 
 import lineage.vetal.server.core.server.SendablePacket
+import java.net.InetSocketAddress
+import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -8,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class ClientConnection(
     private val socket: SocketChannel,
     private val selectionKey: SelectionKey,
-    private val crypt: ClientCrypt
+    val clientAddress: InetSocketAddress
 ) {
     val packetsQueue = ConcurrentLinkedQueue<SendablePacket>()
 
@@ -19,5 +21,9 @@ class ClientConnection(
 
     override fun toString(): String {
         return socket.toString()
+    }
+
+    fun write(writeBuffer: ByteBuffer): Int {
+        return socket.write(writeBuffer)
     }
 }
