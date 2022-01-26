@@ -17,7 +17,7 @@ fun main() {
 
     val configStream = openResource(PATH_SERVER_CONFIG)
     val config = LoginServerConfig.read(configStream)
-    val server = LoginClientServer(config.clientServer)
+    val server = LoginClientServer(config.clientServer,)
 
     runBlocking {
         server.startServer()

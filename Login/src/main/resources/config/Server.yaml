@@ -1,8 +1,7 @@
-# Networking
 clientServer:
-  hostname: "127.0.0.1"
-  port: 2200
+  hostname: "*"
+  port: 2107
 
 gameServer:
   hostname: "127.0.0.1"
-  port: 2201
+  port: 2100

@@ -2,6 +2,9 @@ package lineage.vetal.server.core.server
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import lineage.vetal.server.core.client.Client
+import lineage.vetal.server.core.client.ClientConnection
+import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.settings.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
@@ -15,7 +18,7 @@ import java.nio.channels.SocketChannel
 private const val TAG = "SelectorServer"
 
 class SocketSelectorThread<T: Client>(
-    private val configIpAddress: NetworkConfig,
+    private val networkConfig: NetworkConfig,
     private val connectionFactory: ClientFactory<T>
 ) {
     private lateinit var selector: Selector
@@ -44,13 +47,18 @@ class SocketSelectorThread<T: Client>(
     }
 
     private fun openServer() {
+        val address =  if (networkConfig.hostname.isBlank() || networkConfig.hostname == "*") {
+            InetSocketAddress(networkConfig.port)
+        } else {
+            InetSocketAddress(networkConfig.hostname, networkConfig.port)
+        }
         selector = Selector.open()
         serverSocket = ServerSocketChannel.open().apply {
-            socket().bind(InetSocketAddress(configIpAddress.hostname, configIpAddress.port))
+            socket().bind(address)
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${configIpAddress.hostname}:${configIpAddress.port}")
+        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}")
 
         while (isRunning) {
             writeDebug(TAG, "waiting for selected key")
@@ -66,10 +74,10 @@ class SocketSelectorThread<T: Client>(
                         _selectionAcceptFlow.tryEmit(client)
                     }
                     key.isReadable -> {
-                        val socket = key.attachment() as SocketChannel
+                        val client = key.attachment() as T
                     }
                     key.isWritable -> {
-                        val socket = key.attachment() as SocketChannel
+                        val client = key.attachment() as T
                     }
                 }
 
