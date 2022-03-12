@@ -33,7 +33,7 @@ class ServerList(
             // is test?
             if (false) bits = bits or 0x04
 
-            //is showing clock
+            // is showing clock
             if (false) bits = bits or 0x02
 
             writeD(bits)

@@ -26,7 +26,6 @@ class LoginClient(
     }
 
     override fun readPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
-
     }
 
     override fun sendPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
@@ -55,7 +54,7 @@ class LoginClient(
         // reserve space for the size
         buffer.position(buffer.position() + DATA_HEADER_SIZE)
 
-        //Write packet to buffer
+        // Write packet to buffer
         val dataStartPosition = buffer.position()
         packet.writeInto(buffer)
         val dataSize = buffer.position() - dataStartPosition
