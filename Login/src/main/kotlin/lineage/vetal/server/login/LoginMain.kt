@@ -15,9 +15,9 @@ fun main() {
     writeSection(TAG)
     writeInfo(TAG, "Reading configs from $PATH_SERVER_CONFIG")
 
-    val configStream = openResource(PATH_SERVER_CONFIG)
-    val config = LoginServerConfig.read(configStream)
-    val server = LoginClientServer(config.clientServer,)
+    val configInputStream = openResource(PATH_SERVER_CONFIG)
+    val config = LoginServerConfig.read(configInputStream)
+    val server = LoginClientServer(config.clientServer)
 
     runBlocking {
         server.startServer()

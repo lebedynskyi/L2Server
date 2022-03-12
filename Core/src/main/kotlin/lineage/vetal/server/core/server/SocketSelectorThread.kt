@@ -39,6 +39,9 @@ class SocketSelectorThread<T : Client>(
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
+    private val tempReadBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+    private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+
     @Volatile
     var isRunning = true
 
@@ -73,12 +76,8 @@ class SocketSelectorThread<T : Client>(
                 when (key.readyOps()) {
                     SelectionKey.OP_CONNECT -> finishConnection(key)
                     SelectionKey.OP_ACCEPT -> createConnection(key)
-                    SelectionKey.OP_READ -> {
-                        readPackets(key)
-                    }
-                    SelectionKey.OP_WRITE -> {
-                        writePackets(key)
-                    }
+                    SelectionKey.OP_READ -> readPackets(key)
+                    SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                         writePackets(key)
                         readPackets(key)
@@ -93,11 +92,12 @@ class SocketSelectorThread<T : Client>(
     }
 
     private fun closeServer() {
-
+        writeDebug(TAG, "Closing server")
     }
 
-    private fun finishConnection(selectionKey: SelectionKey) {
-
+    private fun finishConnection(key: SelectionKey) {
+        val client = key.attachment() as Client
+        client.saveAndClose()
     }
 
     private fun createConnection(selectionKey: SelectionKey) {
@@ -106,7 +106,9 @@ class SocketSelectorThread<T : Client>(
     }
 
     private fun readPackets(key: SelectionKey) {
-
+        val client = key.attachment() as Client
+        client.readPackets(readBuffer, writeBuffer)
+        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
     }
 
     private fun writePackets(key: SelectionKey) {

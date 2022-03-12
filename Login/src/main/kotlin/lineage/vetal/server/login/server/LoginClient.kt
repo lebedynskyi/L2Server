@@ -21,12 +21,12 @@ class LoginClient(
         sendPacket(Init(sessionId, loginCrypt.scrambleModules, loginCrypt.blowFishKey))
     }
 
-    override fun readPacket(packet: ReceivablePacket) {
-
-    }
-
     override fun sendPacket(packet: SendablePacket) {
         clientConnection.sendPacket(packet)
+    }
+
+    override fun readPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
+
     }
 
     override fun sendPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
