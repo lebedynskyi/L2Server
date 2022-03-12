@@ -27,7 +27,7 @@ class SocketSelectorThread<T : Client>(
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
 
-    private val _selectionAcceptFlow = MutableSharedFlow<Client>(1)
+    private val _selectionAcceptFlow = MutableSharedFlow<T>(1)
     val connectionAcceptFlow = _selectionAcceptFlow.asSharedFlow()
 
     private val _selectionCloseFlow = MutableSharedFlow<ClientConnection>(1)

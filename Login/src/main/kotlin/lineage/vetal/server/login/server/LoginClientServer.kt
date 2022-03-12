@@ -2,17 +2,18 @@ package lineage.vetal.server.login.server
 
 import com.vetalll.core.encryption.CryptUtil
 import lineage.vetal.server.core.server.*
-import lineage.vetal.server.core.settings.NetworkConfig
-import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
+import lineage.vetal.server.login.LoginLobby
+import lineage.vetal.server.login.settings.LoginConfig
 import java.security.KeyPair
 
 private val TAG = "LoginClientServer"
 
 class LoginClientServer(
-    private val networkSettings: NetworkConfig
+    private val loginServerConfig: LoginConfig
 ) {
+    private val loginLobby = LoginLobby(loginServerConfig.lobbyConfig)
     private val blowFishKeys: Array<ByteArray>
     private val rsaPairs: Array<KeyPair>
     private val filter: SocketConnectionFilter
@@ -33,10 +34,10 @@ class LoginClientServer(
     }
 
     suspend fun startServer() {
-        selectorServer = SocketSelectorThread(networkSettings, connectionFactory)
+        selectorServer = SocketSelectorThread(loginServerConfig.clientServer, connectionFactory)
         selectorServer?.start()
         selectorServer?.connectionAcceptFlow?.collect {
-            writeDebug(TAG, "New client")
+            loginLobby.onClientConnected(it)
         }
     }
 }

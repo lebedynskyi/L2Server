@@ -22,7 +22,7 @@ class LoginClientFactory(
         val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
         val key = socket.register(selector, SelectionKey.OP_READ)
         val clientConnection = ClientConnection(socket, key, address)
-        val client = LoginClient(Random.nextInt(), clientConnection, crypt)
+        val client = LoginClient(crypt, Random.nextInt(), clientConnection)
         key.attach(client)
         return client
     }

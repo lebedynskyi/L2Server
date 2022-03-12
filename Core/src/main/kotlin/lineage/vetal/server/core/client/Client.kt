@@ -4,8 +4,8 @@ import lineage.vetal.server.core.server.SendablePacket
 import java.nio.ByteBuffer
 
 abstract class Client(
-    val clientConnection: ClientConnection,
-    val crypt: ClientCrypt
+    val sessionId: Int,
+    val clientConnection: ClientConnection
 ) {
     abstract fun readPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer)
     abstract fun sendPacket(packet: SendablePacket)

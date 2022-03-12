@@ -5,3 +5,6 @@ clientServer:
 gameServer:
   hostname: "127.0.0.1"
   port: 2100
+
+lobbyConfig:
+  maxCount: 5

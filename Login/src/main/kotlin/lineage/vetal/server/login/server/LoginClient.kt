@@ -9,16 +9,20 @@ import lineage.vetal.server.login.packets.server.Init
 import java.nio.ByteBuffer
 
 class LoginClient(
+    private val crypt: LoginCrypt,
     sessionId: Int,
-    clientConnection: ClientConnection,
-    loginCrypt: LoginCrypt
-) : Client(clientConnection, loginCrypt) {
+    clientConnection: ClientConnection
+) : Client(sessionId, clientConnection) {
     private val TAG = "LoginClient"
     var loginState: LoginState = LoginState.CONNECTED
     var account: Account? = null
 
-    init {
-        sendPacket(Init(sessionId, loginCrypt.scrambleModules, loginCrypt.blowFishKey))
+    fun sendInitPacket() {
+        sendPacket(Init(sessionId, crypt.scrambleModules, crypt.blowFishKey))
+    }
+
+    override fun saveAndClose() {
+        TODO("Not yet implemented")
     }
 
     override fun sendPacket(packet: SendablePacket) {
