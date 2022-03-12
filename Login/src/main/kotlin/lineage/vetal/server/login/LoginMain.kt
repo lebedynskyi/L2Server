@@ -1,6 +1,5 @@
 package lineage.vetal.server.login
 
-import kotlinx.coroutines.runBlocking
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
@@ -19,8 +18,6 @@ fun main() {
     val config = LoginConfig.read(configInputStream)
     val server = LoginClientServer(config)
 
-    runBlocking {
-        server.startServer()
-    }
+    server.startServer()
     writeDebug(TAG, "Finished")
 }
