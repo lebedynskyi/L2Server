@@ -1,4 +1,4 @@
-package com.vetalll.core.encryption
+package lineage.vetal.server.core.encryption
 
 import java.io.IOException
 
@@ -10,11 +10,11 @@ import java.io.IOException
  */
 
 class BlowfishEngine {
-    private val S0: IntArray
-    private val S1: IntArray
-    private val S2: IntArray
-    private val S3: IntArray
-    private val P: IntArray
+    private val S0: IntArray = IntArray(SBOX_SK)
+    private val S1: IntArray = IntArray(SBOX_SK)
+    private val S2: IntArray = IntArray(SBOX_SK)
+    private val S3: IntArray = IntArray(SBOX_SK)
+    private val P: IntArray = IntArray(P_SZ)
     private var encrypting = false
     private var workingKey: ByteArray? = null
 
@@ -1233,13 +1233,5 @@ class BlowfishEngine {
             b[offset + 2] = (`in` shr 16).toByte()
             b[offset + 3] = (`in` shr 24).toByte()
         }
-    }
-
-    init {
-        S0 = IntArray(SBOX_SK)
-        S1 = IntArray(SBOX_SK)
-        S2 = IntArray(SBOX_SK)
-        S3 = IntArray(SBOX_SK)
-        P = IntArray(P_SZ)
     }
 }

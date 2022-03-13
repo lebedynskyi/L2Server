@@ -1,13 +1,13 @@
-package lineage.vetal.server.login.server
+package lineage.vetal.server.login.clientserver
 
-import com.vetalll.core.encryption.CryptUtil
+import lineage.vetal.server.core.encryption.CryptUtil
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lineage.vetal.server.core.server.*
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginLobby
-import lineage.vetal.server.login.settings.LoginConfig
+import lineage.vetal.server.login.config.LoginConfig
 import java.security.KeyPair
 
 class LoginClientServer(

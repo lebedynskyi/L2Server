@@ -3,8 +3,8 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.server.LoginClient
-import lineage.vetal.server.login.settings.LobbyConfig
+import lineage.vetal.server.login.clientserver.LoginClient
+import lineage.vetal.server.login.config.LobbyConfig
 
 class LoginLobby(
     private val lobbyConfig: LobbyConfig,
@@ -21,7 +21,7 @@ class LoginLobby(
 
         writeDebug(TAG, "New $client added to lobby")
         connectedClients[client.sessionId] = client
-        client.sendInitPacket()
+        client.onAddedToLobby()
     }
 
     fun onPacketReceived(client: LoginClient, packet: ReceivablePacket) {

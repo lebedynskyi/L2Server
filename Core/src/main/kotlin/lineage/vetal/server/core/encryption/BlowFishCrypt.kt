@@ -1,10 +1,10 @@
-package com.vetalll.core.encryption
+package lineage.vetal.server.core.encryption
 
 class BlowFishCrypt(
-    val key: ByteArray
+    private val key: ByteArray
 ) {
-    val encryption = BlowfishEngine().apply { init(true, key) }
-    val decryption = BlowfishEngine().apply { init(false, key) }
+    private val encryption = BlowfishEngine().apply { init(true, key) }
+    private val decryption = BlowfishEngine().apply { init(false, key) }
 
     fun encrypt(raw: ByteArray, offset: Int, size: Int): Int {
         val blockCount = size / 8

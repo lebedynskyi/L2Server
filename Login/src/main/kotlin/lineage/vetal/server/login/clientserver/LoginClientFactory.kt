@@ -1,9 +1,8 @@
-package lineage.vetal.server.login.server
+package lineage.vetal.server.login.clientserver
 
-import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.server.SocketConnectionFilter
-import lineage.vetal.server.login.packets.LoginPacketParser
+import lineage.vetal.server.login.clientserver.packets.LoginPacketParser
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
@@ -12,7 +11,7 @@ import java.security.KeyPair
 import kotlin.random.Random
 
 class LoginClientFactory(
-    private val filter: SocketConnectionFilter,
+    private val connectionFilter: SocketConnectionFilter,
     private val blowFishKeys: Array<ByteArray>,
     private val rsaPairs: Array<KeyPair>
 ) : ClientFactory<LoginClient> {
@@ -20,10 +19,10 @@ class LoginClientFactory(
     override fun createClient(selector: Selector, serverSocket: ServerSocketChannel): LoginClient {
         val socket = serverSocket.accept().apply { configureBlocking(false) }
         val address = socket.remoteAddress as InetSocketAddress
-        val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
+        val crypt = LoginClientCrypt(blowFishKeys.random(), rsaPairs.random())
         val key = socket.register(selector, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
-        val clientConnection = ClientConnection(socket, key, address)
-        val client = LoginClient(crypt, LoginPacketParser(), Random.nextInt(), clientConnection)
+        val clientConnection = LoginClientConnection(crypt, LoginPacketParser(), socket, key, address)
+        val client = LoginClient(Random.nextInt(), clientConnection)
         key.attach(client)
         return client
     }

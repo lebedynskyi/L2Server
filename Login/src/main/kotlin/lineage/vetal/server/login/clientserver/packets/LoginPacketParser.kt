@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.packets
+package lineage.vetal.server.login.clientserver.packets
 
 import lineage.vetal.server.core.server.ReceivablePacket
 import java.nio.ByteBuffer

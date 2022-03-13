@@ -1,7 +1,7 @@
-package lineage.vetal.server.login.server
+package lineage.vetal.server.login.clientserver
 
-import com.vetalll.core.encryption.BlowFishCrypt
-import com.vetalll.core.encryption.CryptUtil
+import lineage.vetal.server.core.encryption.BlowFishCrypt
+import lineage.vetal.server.core.encryption.CryptUtil
 import lineage.vetal.server.core.client.ClientCrypt
 import java.math.BigInteger
 import java.security.KeyPair
@@ -9,7 +9,7 @@ import java.security.interfaces.RSAPublicKey
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
-class LoginCrypt(
+class LoginClientCrypt(
     val blowFishKey: ByteArray,
     val rsaPair: KeyPair
 ) : ClientCrypt() {

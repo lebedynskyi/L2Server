@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.client.Client
 import lineage.vetal.server.core.client.ClientFactory
-import lineage.vetal.server.core.settings.NetworkConfig
+import lineage.vetal.server.core.config.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
@@ -21,7 +21,7 @@ class SocketSelectorThread<T : Client>(
 ) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024
     private val WRITE_BUFFER_SIZE = 64 * 1024
-    private val TAG = "SelectorServer"
+    private val TAG = "SocketSelectorThread"
 
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
@@ -110,13 +110,15 @@ class SocketSelectorThread<T : Client>(
 
     private fun readPackets(key: SelectionKey) {
         val client = key.attachment() as T
-        writeDebug(TAG, "Read packets")
-        val packet = client.readPackets(readBuffer, stringBuffer)
+        val connection = client.connection
+
+        writeDebug(TAG, "Read packets from $client")
+        val packet = connection.readData(readBuffer, stringBuffer)
         key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
 
         if (packet != null) {
             _selectionReadFlow.tryEmit(client to packet)
-        }else {
+        } else {
             writeDebug(TAG, "0 packets read. Close connection")
             _selectionCloseFlow.tryEmit(client)
         }
@@ -124,8 +126,10 @@ class SocketSelectorThread<T : Client>(
 
     private fun writePackets(key: SelectionKey) {
         val client = key.attachment() as T
-        writeDebug(TAG, "Write packets")
-        client.sendPackets(writeBuffer, tempWriteBuffer)
+        val connection = client.connection
+
+        writeDebug(TAG, "Write packets to $client")
+        connection.writeData(writeBuffer, tempWriteBuffer)
         key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
     }
 }

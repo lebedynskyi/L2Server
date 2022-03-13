@@ -7,4 +7,4 @@ gameServer:
   port: 2100
 
 lobbyConfig:
-  maxCount: 3
+  maxCount: 2

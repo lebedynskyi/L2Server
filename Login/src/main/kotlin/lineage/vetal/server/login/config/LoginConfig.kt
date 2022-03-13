@@ -1,8 +1,8 @@
-package lineage.vetal.server.login.settings
+package lineage.vetal.server.login.config
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
-import lineage.vetal.server.core.settings.NetworkConfig
+import lineage.vetal.server.core.config.NetworkConfig
 import java.io.File
 import java.io.InputStream
 

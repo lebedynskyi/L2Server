@@ -4,8 +4,8 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.core.utils.streams.openResource
-import lineage.vetal.server.login.server.LoginClientServer
-import lineage.vetal.server.login.settings.LoginConfig
+import lineage.vetal.server.login.clientserver.LoginClientServer
+import lineage.vetal.server.login.config.LoginConfig
 
 private const val TAG = "Login"
 private const val PATH_SERVER_CONFIG = "config/Server.yaml"

@@ -1,5 +1,5 @@
 package lineage.vetal.server.login.model
 
-data class Account(
+data class AccountInfo(
     val accountName: String
 )

@@ -1,4 +1,4 @@
-package com.vetalll.core.encryption
+package lineage.vetal.server.core.encryption
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator

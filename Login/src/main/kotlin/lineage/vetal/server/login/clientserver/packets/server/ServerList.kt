@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.packets.server
+package lineage.vetal.server.login.clientserver.packets.server
 
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.model.GameServerInfo
