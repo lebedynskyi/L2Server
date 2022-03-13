@@ -3,6 +3,7 @@ package lineage.vetal.server.login.server
 import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.server.SocketConnectionFilter
+import lineage.vetal.server.login.packets.LoginPacketParser
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
@@ -22,7 +23,7 @@ class LoginClientFactory(
         val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
         val key = socket.register(selector, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
         val clientConnection = ClientConnection(socket, key, address)
-        val client = LoginClient(crypt, Random.nextInt(), clientConnection)
+        val client = LoginClient(crypt, LoginPacketParser(), Random.nextInt(), clientConnection)
         key.attach(client)
         return client
     }

@@ -1,11 +1,11 @@
 package lineage.vetal.server.core.utils.logs
 
 fun writeDebug(tag: String, msg: Any) {
-    println("$tag: $msg")
+    println("D: $tag: $msg")
 }
 
 fun writeInfo(tag: String, msg: Any) {
-    println("$tag: $msg")
+    println("I: $tag: $msg")
 }
 
 fun writeSection(section: String, char: Char = '-') {

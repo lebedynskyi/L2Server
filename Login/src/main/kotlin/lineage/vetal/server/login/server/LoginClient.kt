@@ -5,6 +5,7 @@ import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.server.*
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.model.Account
+import lineage.vetal.server.login.packets.LoginPacketParser
 import lineage.vetal.server.login.packets.server.Init
 import java.nio.ByteBuffer
 
@@ -12,10 +13,12 @@ import java.nio.ByteBuffer
 
 class LoginClient(
     private val crypt: LoginCrypt,
+    private val packetParser: LoginPacketParser,
     sessionId: Int,
     clientConnection: ClientConnection
 ) : Client(sessionId, clientConnection) {
     private val TAG = "LoginClient"
+
     var loginState: LoginState = LoginState.CONNECTED
     var account: Account? = null
 
@@ -27,25 +30,17 @@ class LoginClient(
         connection.sendPacket(packet)
     }
 
-    override fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer) {
-//        byteBuffer.clear()
-//        stringBuffer.setLength(0)
-//
-//        val readResult = connection.read(byteBuffer)
-//        if (readResult <= 0) {
-//            writeDebug(TAG, "Read 0 bytes. Close connection")
-//            saveAndClose()
-//            return
-//        }
-//
-//        byteBuffer.flip()
-//        val packet = parsePacket(byteBuffer, stringBuffer)
-//        if (packet != null) {
-//
-//        } else {
-//            writeDebug(TAG, "Parsed 0 packets. Close connection")
-//            saveAndClose()
-//        }
+    override fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): ReceivablePacket? {
+        byteBuffer.clear()
+        stringBuffer.setLength(0)
+
+        val readResult = connection.read(byteBuffer)
+        if (readResult <= 0) {
+            return null
+        }
+
+        byteBuffer.flip()
+        return packetParser.parsePacket(byteBuffer, stringBuffer)
     }
 
     override fun sendPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
@@ -92,6 +87,10 @@ class LoginClient(
 
         // Set position to end of packet
         buffer.position(dataStartPosition + encryptedSize)
+    }
+
+    override fun toString(): String {
+        return "Client id $sessionId ip ${connection.clientAddress.address.hostAddress}"
     }
 }
 

@@ -54,7 +54,7 @@ class LoginClientServer(
 
             launch {
                 selectorThread?.connectionReadFlow?.collect {
-//                    loginLobby.onClientConnected(it)
+                    loginLobby.onPacketReceived(it.first, it.second)
                 }
             }
         }

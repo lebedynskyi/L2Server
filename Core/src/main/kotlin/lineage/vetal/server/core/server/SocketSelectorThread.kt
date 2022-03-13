@@ -32,7 +32,7 @@ class SocketSelectorThread<T : Client>(
     private val _selectionCloseFlow = MutableSharedFlow<T>(1)
     val connectionCloseFlow = _selectionCloseFlow.asSharedFlow()
 
-    private val _selectionReadFlow = MutableSharedFlow<T>(1)
+    private val _selectionReadFlow = MutableSharedFlow<Pair<T, ReceivablePacket>>(1)
     val connectionReadFlow = _selectionReadFlow.asSharedFlow()
 
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
@@ -76,7 +76,7 @@ class SocketSelectorThread<T : Client>(
                 val key = keyIterator.next()
                 when (key.readyOps()) {
                     SelectionKey.OP_ACCEPT -> createConnection()
-//                    SelectionKey.OP_CONNECT -> finishConnection(key)
+                    SelectionKey.OP_CONNECT -> finishConnection(key)
                     SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -96,11 +96,11 @@ class SocketSelectorThread<T : Client>(
         writeDebug(TAG, "Server closed")
     }
 
-//    private fun finishConnection(key: SelectionKey) {
-//        writeDebug(TAG, "Finish connection")
-//        val client = key.attachment() as Client
-//        client.saveAndClose()
-//    }
+    private fun finishConnection(key: SelectionKey) {
+        writeDebug(TAG, "Finish connection")
+        val client = key.attachment() as T
+        _selectionCloseFlow.tryEmit(client)
+    }
 
     private fun createConnection() {
         writeDebug(TAG, "Create connection")
@@ -110,28 +110,22 @@ class SocketSelectorThread<T : Client>(
 
     private fun readPackets(key: SelectionKey) {
         val client = key.attachment() as T
-        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
-//        if (key.isValid) {
-//            writeDebug(TAG, "key is not valid for reading.")
-//            _selectionCloseFlow.tryEmit(client)
-//            return
-//        }
-
         writeDebug(TAG, "Read packets")
-        client.readPackets(readBuffer, stringBuffer)
-        _selectionReadFlow.tryEmit(client)
+        val packet = client.readPackets(readBuffer, stringBuffer)
+        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+
+        if (packet != null) {
+            _selectionReadFlow.tryEmit(client to packet)
+        }else {
+            writeDebug(TAG, "0 packets read. Close connection")
+            _selectionCloseFlow.tryEmit(client)
+        }
     }
 
     private fun writePackets(key: SelectionKey) {
         val client = key.attachment() as T
-        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
-//        if (key.isValid) {
-//            writeDebug(TAG, "key is not valid for writing")
-//            _selectionCloseFlow.tryEmit(client)
-//            return
-//        }
-
         writeDebug(TAG, "Write packets")
         client.sendPackets(writeBuffer, tempWriteBuffer)
+        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
     }
 }

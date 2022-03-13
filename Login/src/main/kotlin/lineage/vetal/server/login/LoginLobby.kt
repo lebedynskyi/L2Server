@@ -1,5 +1,6 @@
 package lineage.vetal.server.login
 
+import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.server.LoginClient
@@ -10,7 +11,6 @@ class LoginLobby(
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
-    private val lobbyPacketHandler = LobbyPacketHandler(this)
 
     fun onClientConnected(client: LoginClient) {
         if (connectedClients.size >= lobbyConfig.maxCount) {
@@ -19,17 +19,17 @@ class LoginLobby(
             return
         }
 
-        writeDebug(TAG, "New client added to lobby")
+        writeDebug(TAG, "New $client added to lobby")
         connectedClients[client.sessionId] = client
         client.sendInitPacket()
     }
 
-    fun onPacketReceived() {
-        lobbyPacketHandler.handlePacket()
+    fun onPacketReceived(client: LoginClient, packet: ReceivablePacket) {
+
     }
 
     fun onClientDisconnected(client: LoginClient) {
-        writeDebug(TAG, "Client removed from lobby")
+        writeDebug(TAG, "$client removed from lobby")
         connectedClients.remove(client.sessionId)
         client.saveAndClose()
     }
