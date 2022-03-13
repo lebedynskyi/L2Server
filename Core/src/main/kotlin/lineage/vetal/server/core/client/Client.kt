@@ -9,7 +9,10 @@ abstract class Client {
         connection.sendPacket(packet)
     }
 
-    open fun saveAndClose() {
+    open fun saveAndClose(reason: SendablePacket? = null) {
         connection.close()
+        reason?.let {
+            connection.sendPacket(reason)
+        }
     }
 }

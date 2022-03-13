@@ -15,6 +15,9 @@ abstract class ClientConnection(
 ) {
     protected val packetsQueue = ConcurrentLinkedQueue<SendablePacket>()
 
+    @Volatile
+    var pendingClose = false
+
     abstract fun readData(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): ReceivablePacket?
     abstract fun writeData(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer)
 
@@ -32,6 +35,6 @@ abstract class ClientConnection(
     }
 
     fun close() {
-        socket.close()
+        pendingClose = true
     }
 }

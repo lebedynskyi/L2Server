@@ -5,7 +5,6 @@ import lineage.vetal.server.core.server.DATA_HEADER_SIZE
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
-import lineage.vetal.server.login.clientserver.packets.LoginPacketParser
 import lineage.vetal.server.login.clientserver.packets.server.Init
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -13,8 +12,8 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
 
 class LoginClientConnection(
-    private val loginCrypt: LoginClientCrypt,
-    private val loginPacketParser: LoginPacketParser,
+    val loginCrypt: LoginClientCrypt,
+    private val loginPacketParser: LoginClientPacketParser,
     socket: SocketChannel,
     selectionKey: SelectionKey,
     clientAddress: InetSocketAddress
@@ -35,7 +34,7 @@ class LoginClientConnection(
         }
 
         byteBuffer.flip()
-        return loginPacketParser.parsePacket(byteBuffer, stringBuffer)
+        return loginPacketParser.parsePacket(byteBuffer)
     }
 
     override fun writeData(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
@@ -57,7 +56,7 @@ class LoginClientConnection(
         }
         byteBuffer.flip()
         val wroteCount = write(byteBuffer)
-        writeDebug(TAG, "Sent $packetCounter packets to $clientAddress")
+        writeDebug(TAG, "Sent $packetCounter packets to $clientAddress data size $wroteCount")
     }
 
     private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {

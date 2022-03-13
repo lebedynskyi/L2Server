@@ -3,6 +3,7 @@ package lineage.vetal.server.core.server
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.client.Client
+import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.config.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
@@ -65,7 +66,7 @@ class SocketSelectorThread<T : Client>(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}")
+        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}\n\n")
 
         while (isRunning) {
             val readyChannels = selector.select()
@@ -93,13 +94,11 @@ class SocketSelectorThread<T : Client>(
     }
 
     private fun closeServer() {
-        writeDebug(TAG, "Server closed")
+        writeInfo(TAG, "Server closed")
     }
 
     private fun finishConnection(key: SelectionKey) {
-        writeDebug(TAG, "Finish connection")
-        val client = key.attachment() as T
-        _selectionCloseFlow.tryEmit(client)
+        key.channel().close()
     }
 
     private fun createConnection() {
@@ -114,12 +113,12 @@ class SocketSelectorThread<T : Client>(
 
         writeDebug(TAG, "Read packets from $client")
         val packet = connection.readData(readBuffer, stringBuffer)
-        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
 
         if (packet != null) {
             _selectionReadFlow.tryEmit(client to packet)
         } else {
             writeDebug(TAG, "0 packets read. Close connection")
+            finishConnection(key)
             _selectionCloseFlow.tryEmit(client)
         }
     }
@@ -130,6 +129,11 @@ class SocketSelectorThread<T : Client>(
 
         writeDebug(TAG, "Write packets to $client")
         connection.writeData(writeBuffer, tempWriteBuffer)
-        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+
+        if (connection.pendingClose) {
+            finishConnection(key)
+        } else {
+            key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+        }
     }
 }

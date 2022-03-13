@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.config
 
 import com.charleskorn.kaml.Yaml
+import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlinx.serialization.Serializable
 import lineage.vetal.server.core.config.NetworkConfig
 import java.io.File
@@ -29,5 +30,6 @@ data class LoginConfig(
 
 @Serializable
 data class LobbyConfig(
-    val maxCount: Int
+    val maxCount: Int,
+    val showLicense: Boolean
 )

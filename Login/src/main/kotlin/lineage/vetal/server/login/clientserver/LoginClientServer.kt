@@ -24,10 +24,10 @@ class LoginClientServer(
 
     init {
         writeSection(TAG)
-        blowFishKeys = Array(16) { CryptUtil.generateByteArray(16) }
+        blowFishKeys = Array(32) { CryptUtil.generateByteArray(16) }
         writeInfo(TAG, "Generated ${blowFishKeys.size} blowfish keys")
 
-        rsaPairs = Array(16) { CryptUtil.generateRsa128PublicKeyPair() }
+        rsaPairs = Array(32) { CryptUtil.generateRsa128PublicKeyPair() }
         writeInfo(TAG, "Generated ${rsaPairs.size} rsa keys")
 
         filter = SocketConnectionFilter(emptyList())

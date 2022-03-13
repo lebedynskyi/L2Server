@@ -1,16 +1,33 @@
 package lineage.vetal.server.login
 
+import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.clientserver.LoginClient
+import lineage.vetal.server.login.clientserver.LoginState
+import lineage.vetal.server.login.clientserver.packets.client.RequestAuthLogin
+import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
+import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
+import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
+import lineage.vetal.server.login.clientserver.packets.server.*
 import lineage.vetal.server.login.config.LobbyConfig
+import lineage.vetal.server.login.model.AccountInfo
+import lineage.vetal.server.login.model.SessionKey
+import javax.crypto.Cipher
+import kotlin.random.Random
 
 class LoginLobby(
     private val lobbyConfig: LobbyConfig,
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
+    private val connectedServer = mutableSetOf<ServerInfo>()
+
+    fun onServerConnected(serverInfo: ServerInfo) {
+        connectedServer.add(serverInfo)
+    }
 
     fun onClientConnected(client: LoginClient) {
         if (connectedClients.size >= lobbyConfig.maxCount) {
@@ -25,12 +42,80 @@ class LoginLobby(
     }
 
     fun onPacketReceived(client: LoginClient, packet: ReceivablePacket) {
-
+        try {
+            handlePacket(client, packet)
+        } catch (e: Throwable) {
+            writeError(TAG, "Cannot handle packet", e)
+            onClientDisconnected(client)
+        }
     }
 
     fun onClientDisconnected(client: LoginClient) {
-        writeDebug(TAG, "$client removed from lobby")
-        connectedClients.remove(client.sessionId)
+        connectedClients.remove(client.sessionId)?.let {
+            writeDebug(TAG, "$client removed from lobby")
+        }
         client.saveAndClose()
+    }
+
+    private fun handlePacket(client: LoginClient, packet: ReceivablePacket) {
+        when (packet) {
+            is RequestGGAuth -> {
+                if (client.loginState == LoginState.CONNECTED && packet.sessionId == client.sessionId) {
+                    client.loginState = LoginState.AUTH_GG
+                    client.sendPacket(GGAuth(client.sessionId))
+                } else {
+                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    onClientDisconnected(client)
+                }
+            }
+            is RequestAuthLogin -> {
+                if (client.loginState != LoginState.AUTH_GG) {
+                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    return
+                }
+
+                val rsaCipher = Cipher.getInstance("RSA/ECB/nopadding")
+                rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.loginCrypt.rsaPair.private)
+                val decrypted = rsaCipher.doFinal(packet.raw, 0x00, 0x80)
+
+                val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.toLowerCase()
+                val password = String(decrypted, 0x6C, 16).trim { it <= ' ' }
+
+                if (user != "qwe" || password != "qwe") {
+                    client.saveAndClose(LoginFail.REASON_USER_OR_PASS_WRONG)
+                    return
+                }
+
+                val sessionKey = SessionKey(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+                val accountInfo = AccountInfo(user, password)
+
+                writeDebug(TAG, "New account info received $")
+
+                client.loginState = LoginState.AUTH_LOGIN
+                client.sessionKey = sessionKey
+                client.account = accountInfo
+                if (lobbyConfig.showLicense) {
+                    client.sendPacket(LoginOk(sessionKey.loginOkID1, sessionKey.loginOkID2))
+                } else {
+                    client.sendPacket(ServerList(connectedServer.toList()))
+                }
+            }
+            is RequestServerList -> {
+                if (client.sessionKey?.loginOkID1 != packet.sessionKey1 || client.sessionKey?.loginOkID2 != packet.sessionKey2) {
+                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    return
+                }
+
+                client.sendPacket(ServerList(connectedServer.toList()))
+            }
+            is RequestServerLogin -> {
+                val key = client.sessionKey
+                if (key != null) {
+                    client.sendPacket(PlayOk(key.playOkID1, key.playOkID2))
+                } else {
+                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                }
+            }
+        }
     }
 }

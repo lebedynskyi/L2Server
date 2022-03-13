@@ -8,6 +8,11 @@ fun writeInfo(tag: String, msg: Any) {
     println("I: $tag: $msg")
 }
 
+fun writeError(tag: String, msg: Any, e: Throwable) {
+    System.err.println("I: $tag: $msg")
+    e.printStackTrace()
+}
+
 fun writeSection(section: String, char: Char = '-') {
     print("[$section]")
 

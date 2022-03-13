@@ -8,3 +8,4 @@ gameServer:
 
 lobbyConfig:
   maxCount: 2
+  showLicense: true

@@ -1,6 +1,6 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.core.model
 
-data class GameServerInfo(
+data class ServerInfo(
     val clientId: Int,
     val ip: String,
     val port: Int,
