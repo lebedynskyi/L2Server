@@ -3,7 +3,6 @@ package lineage.vetal.server.core.server
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.client.Client
-import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.settings.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
@@ -19,7 +18,7 @@ import java.nio.channels.ServerSocketChannel
 class SocketSelectorThread<T : Client>(
     private val networkConfig: NetworkConfig,
     private val connectionFactory: ClientFactory<T>
-): Thread() {
+) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024
     private val WRITE_BUFFER_SIZE = 64 * 1024
     private val TAG = "SelectorServer"
@@ -41,6 +40,7 @@ class SocketSelectorThread<T : Client>(
 
     private val tempReadBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+    private val stringBuffer = StringBuffer()
 
     @Volatile
     var isRunning = true
@@ -76,7 +76,7 @@ class SocketSelectorThread<T : Client>(
                 val key = keyIterator.next()
                 when (key.readyOps()) {
                     SelectionKey.OP_ACCEPT -> createConnection()
-                    SelectionKey.OP_CONNECT -> finishConnection(key)
+//                    SelectionKey.OP_CONNECT -> finishConnection(key)
                     SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -96,11 +96,11 @@ class SocketSelectorThread<T : Client>(
         writeDebug(TAG, "Server closed")
     }
 
-    private fun finishConnection(key: SelectionKey) {
-        writeDebug(TAG, "Finish connection")
-        val client = key.attachment() as Client
-        client.saveAndClose()
-    }
+//    private fun finishConnection(key: SelectionKey) {
+//        writeDebug(TAG, "Finish connection")
+//        val client = key.attachment() as Client
+//        client.saveAndClose()
+//    }
 
     private fun createConnection() {
         writeDebug(TAG, "Create connection")
@@ -109,17 +109,29 @@ class SocketSelectorThread<T : Client>(
     }
 
     private fun readPackets(key: SelectionKey) {
-        writeDebug(TAG, "Read packets")
-        val client = key.attachment() as Client
-        // TODO move it to lobby ?
-        client.readPackets(readBuffer, writeBuffer)
+        val client = key.attachment() as T
         key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+//        if (key.isValid) {
+//            writeDebug(TAG, "key is not valid for reading.")
+//            _selectionCloseFlow.tryEmit(client)
+//            return
+//        }
+
+        writeDebug(TAG, "Read packets")
+        client.readPackets(readBuffer, stringBuffer)
+        _selectionReadFlow.tryEmit(client)
     }
 
     private fun writePackets(key: SelectionKey) {
-        writeDebug(TAG, "Write packets")
-        val client = key.attachment() as Client
-        client.sendPackets(writeBuffer, tempWriteBuffer)
+        val client = key.attachment() as T
         key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+//        if (key.isValid) {
+//            writeDebug(TAG, "key is not valid for writing")
+//            _selectionCloseFlow.tryEmit(client)
+//            return
+//        }
+
+        writeDebug(TAG, "Write packets")
+        client.sendPackets(writeBuffer, tempWriteBuffer)
     }
 }

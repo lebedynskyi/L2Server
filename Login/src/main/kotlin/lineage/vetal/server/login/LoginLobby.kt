@@ -1,18 +1,18 @@
 package lineage.vetal.server.login
 
-import kotlinx.coroutines.delay
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.server.LoginClient
 import lineage.vetal.server.login.settings.LobbyConfig
 
 class LoginLobby(
-    private val lobbyConfig: LobbyConfig
+    private val lobbyConfig: LobbyConfig,
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
+    private val lobbyPacketHandler = LobbyPacketHandler(this)
 
-    suspend fun onClientConnected(client: LoginClient) {
+    fun onClientConnected(client: LoginClient) {
         if (connectedClients.size >= lobbyConfig.maxCount) {
             writeInfo(TAG, "Lobby is full. reject client")
             client.saveAndClose()
@@ -20,13 +20,17 @@ class LoginLobby(
         }
 
         writeDebug(TAG, "New client added to lobby")
-        delay(3000)
         connectedClients[client.sessionId] = client
         client.sendInitPacket()
     }
 
+    fun onPacketReceived() {
+        lobbyPacketHandler.handlePacket()
+    }
+
     fun onClientDisconnected(client: LoginClient) {
-        writeDebug(TAG, "New client removed to lobby")
+        writeDebug(TAG, "Client removed from lobby")
         connectedClients.remove(client.sessionId)
+        client.saveAndClose()
     }
 }

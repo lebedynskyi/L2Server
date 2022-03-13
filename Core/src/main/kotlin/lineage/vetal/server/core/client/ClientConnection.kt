@@ -23,7 +23,15 @@ class ClientConnection(
         return socket.toString()
     }
 
+    fun read(writeBuffer: ByteBuffer): Int {
+        return socket.read(writeBuffer)
+    }
+
     fun write(writeBuffer: ByteBuffer): Int {
         return socket.write(writeBuffer)
+    }
+
+    fun close() {
+        socket.close()
     }
 }

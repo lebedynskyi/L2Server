@@ -8,6 +8,8 @@ import lineage.vetal.server.login.model.Account
 import lineage.vetal.server.login.packets.server.Init
 import java.nio.ByteBuffer
 
+// TODO move read write byte interaction inside connection
+
 class LoginClient(
     private val crypt: LoginCrypt,
     sessionId: Int,
@@ -21,15 +23,29 @@ class LoginClient(
         sendPacket(Init(sessionId, crypt.scrambleModules, crypt.blowFishKey))
     }
 
-    override fun saveAndClose() {
-        TODO("Not yet implemented")
-    }
-
     override fun sendPacket(packet: SendablePacket) {
-        clientConnection.sendPacket(packet)
+        connection.sendPacket(packet)
     }
 
-    override fun readPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
+    override fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer) {
+//        byteBuffer.clear()
+//        stringBuffer.setLength(0)
+//
+//        val readResult = connection.read(byteBuffer)
+//        if (readResult <= 0) {
+//            writeDebug(TAG, "Read 0 bytes. Close connection")
+//            saveAndClose()
+//            return
+//        }
+//
+//        byteBuffer.flip()
+//        val packet = parsePacket(byteBuffer, stringBuffer)
+//        if (packet != null) {
+//
+//        } else {
+//            writeDebug(TAG, "Parsed 0 packets. Close connection")
+//            saveAndClose()
+//        }
     }
 
     override fun sendPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
@@ -37,7 +53,7 @@ class LoginClient(
         tempBuffer.clear()
 
         var packetCounter = 0
-        val packetIterator = clientConnection.packetsQueue.iterator()
+        val packetIterator = connection.packetsQueue.iterator()
         while (packetIterator.hasNext()) {
             packetCounter += 1
             val packet = packetIterator.next()
@@ -50,8 +66,12 @@ class LoginClient(
             packetIterator.remove()
         }
         byteBuffer.flip()
-        val wroteCount = clientConnection.write(byteBuffer)
-        writeDebug(TAG, "Sent $packetCounter packets to ${clientConnection.clientAddress}")
+        val wroteCount = connection.write(byteBuffer)
+        writeDebug(TAG, "Sent $packetCounter packets to ${connection.clientAddress}")
+    }
+
+    override fun saveAndClose() {
+        connection.close()
     }
 
     private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {

@@ -5,10 +5,10 @@ import java.nio.ByteBuffer
 
 abstract class Client(
     val sessionId: Int,
-    val clientConnection: ClientConnection
+    val connection: ClientConnection
 ) {
-    abstract fun readPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer)
-    abstract fun sendPacket(packet: SendablePacket)
+    abstract fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer)
     abstract fun sendPackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer)
+    abstract fun sendPacket(packet: SendablePacket)
     abstract fun saveAndClose()
 }

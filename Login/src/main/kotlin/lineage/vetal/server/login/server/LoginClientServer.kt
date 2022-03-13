@@ -20,7 +20,7 @@ class LoginClientServer(
     private val filter: SocketConnectionFilter
     private val connectionFactory: LoginClientFactory
 
-    private var selectorServer: SocketSelectorThread<LoginClient>? = null
+    private var selectorThread: SocketSelectorThread<LoginClient>? = null
 
     init {
         writeSection(TAG)
@@ -35,23 +35,28 @@ class LoginClientServer(
     }
 
     fun startServer() {
-        selectorServer = SocketSelectorThread(loginServerConfig.clientServer, connectionFactory).apply {
+        selectorThread = SocketSelectorThread(loginServerConfig.clientServer, connectionFactory).apply {
             start()
         }
 
         runBlocking {
             launch {
-                selectorServer?.connectionCloseFlow?.collect {
+                selectorThread?.connectionCloseFlow?.collect {
                     loginLobby.onClientDisconnected(it)
                 }
             }
 
             launch {
-                selectorServer?.connectionAcceptFlow?.collect {
+                selectorThread?.connectionAcceptFlow?.collect {
                     loginLobby.onClientConnected(it)
                 }
             }
-        }
 
+            launch {
+                selectorThread?.connectionReadFlow?.collect {
+//                    loginLobby.onClientConnected(it)
+                }
+            }
+        }
     }
 }

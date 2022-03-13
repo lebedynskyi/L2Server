@@ -20,7 +20,7 @@ class LoginClientFactory(
         val socket = serverSocket.accept().apply { configureBlocking(false) }
         val address = socket.remoteAddress as InetSocketAddress
         val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
-        val key = socket.register(selector, SelectionKey.OP_CONNECT)
+        val key = socket.register(selector, SelectionKey.OP_CONNECT or SelectionKey.OP_READ)
         val clientConnection = ClientConnection(socket, key, address)
         val client = LoginClient(crypt, Random.nextInt(), clientConnection)
         key.attach(client)

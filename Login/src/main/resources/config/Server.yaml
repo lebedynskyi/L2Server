@@ -1,10 +1,10 @@
 clientServer:
   hostname: "*"
-  port: 2107
+  port: 2106
 
 gameServer:
   hostname: "127.0.0.1"
   port: 2100
 
 lobbyConfig:
-  maxCount: 5
+  maxCount: 3
