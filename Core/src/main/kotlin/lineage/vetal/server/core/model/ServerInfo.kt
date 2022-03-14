@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.model
 
 data class ServerInfo(
-    val clientId: Int,
+    val id: Int,
     val ip: String,
     val port: Int,
     val ageLimit: Int,

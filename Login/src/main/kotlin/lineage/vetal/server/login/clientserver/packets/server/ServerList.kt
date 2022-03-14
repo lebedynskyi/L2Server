@@ -14,7 +14,7 @@ class ServerList(
         writeC(0x00)
 
         connectedServers.forEach {
-            writeC(it.clientId)
+            writeC(it.id)
             // IP
             val raw = InetAddress.getByName(it.ip).address
             writeC(0xff and raw[0].toInt())

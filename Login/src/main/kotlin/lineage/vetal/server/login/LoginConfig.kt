@@ -1,17 +1,17 @@
-package lineage.vetal.server.login.config
+package lineage.vetal.server.login
 
 import com.charleskorn.kaml.Yaml
-import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlinx.serialization.Serializable
 import lineage.vetal.server.core.config.NetworkConfig
 import java.io.File
 import java.io.InputStream
 
 @Serializable
-data class LoginConfig(
+class LoginConfig(
+    val lobbyConfig: LobbyConfig,
     val clientServer: NetworkConfig,
-    val gameServer: NetworkConfig,
-    val lobbyConfig: LobbyConfig
+    val bridgeServer: NetworkConfig,
+    val registeredServers: Array<RegisteredServer>
 ) {
     companion object Builder {
         fun read(path: String): LoginConfig {
@@ -32,4 +32,10 @@ data class LoginConfig(
 data class LobbyConfig(
     val maxCount: Int,
     val showLicense: Boolean
+)
+
+@Serializable
+data class RegisteredServer(
+    val id: Int,
+    val blowFishKey: String
 )

@@ -8,7 +8,7 @@ apply(from = "../tools/lint/lint.gradle")
 
 group = "org.example"
 version = "1.0"
-val appMainClassName = "lineage.vetal.server.login.LoginMainKt"
+val appMainClassName = "lineage.vetal.server.login.MainKt"
 
 tasks.withType<Jar> {
     manifest {

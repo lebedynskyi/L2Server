@@ -2,25 +2,29 @@ package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.core.encryption.CryptUtil
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import lineage.vetal.server.core.config.NetworkConfig
 import lineage.vetal.server.core.server.*
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginLobby
-import lineage.vetal.server.login.config.LoginConfig
+import lineage.vetal.server.login.LoginConfig
 import java.security.KeyPair
 
 class LoginClientServer(
-    private val loginServerConfig: LoginConfig
+    private val loginLobby: LoginLobby,
+    private val clientServer: NetworkConfig
 ) {
     private val TAG = "LoginClientServer"
-    private val loginLobby = LoginLobby(loginServerConfig.lobbyConfig)
     private val blowFishKeys: Array<ByteArray>
     private val rsaPairs: Array<KeyPair>
     private val filter: SocketConnectionFilter
     private val connectionFactory: LoginClientFactory
 
     private var selectorThread: SocketSelectorThread<LoginClient>? = null
+    private val serverContext = newSingleThreadContext("Login")
 
     init {
         writeSection(TAG)
@@ -34,12 +38,12 @@ class LoginClientServer(
         connectionFactory = LoginClientFactory(filter, blowFishKeys, rsaPairs)
     }
 
-    fun startServer() {
-        selectorThread = SocketSelectorThread(loginServerConfig.clientServer, connectionFactory).apply {
+    suspend fun startServer() {
+        selectorThread = SocketSelectorThread(clientServer, connectionFactory).apply {
             start()
         }
 
-        runBlocking {
+        withContext(serverContext) {
             launch {
                 selectorThread?.connectionCloseFlow?.collect {
                     loginLobby.onClientDisconnected(it)
@@ -54,7 +58,7 @@ class LoginClientServer(
 
             launch {
                 selectorThread?.connectionReadFlow?.collect {
-                    loginLobby.onPacketReceived(it.first, it.second)
+                    loginLobby.onClientPacketReceived(it.first, it.second)
                 }
             }
         }

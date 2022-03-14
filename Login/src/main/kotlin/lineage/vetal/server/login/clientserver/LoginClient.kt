@@ -14,13 +14,12 @@ class LoginClient(
     var account: AccountInfo? = null
     var sessionKey: SessionKey? = null
 
-    fun onAddedToLobby() {
-        loginState = LoginState.CONNECTED
-        connection.sendInitPacket(sessionId)
-    }
-
     override fun toString(): String {
         return "Client id $sessionId ip ${connection.clientAddress.address.hostAddress}"
+    }
+
+    fun sendInitPacket() {
+        connection.sendInitPacket(sessionId)
     }
 }
 

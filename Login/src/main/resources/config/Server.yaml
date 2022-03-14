@@ -1,11 +1,17 @@
+lobbyConfig:
+  maxCount: 2
+  showLicense: true
+
 clientServer:
   hostname: "*"
   port: 2106
 
-gameServer:
+bridgeServer:
   hostname: "127.0.0.1"
   port: 2100
 
-lobbyConfig:
-  maxCount: 2
-  showLicense: true
+registeredServers:
+  - id: 0
+    blowFishKey: "fhgj#G$FSWD&T&#3"
+  - id: 1
+    blowFishKey: "ghJW&^#TEyuGOE*G"

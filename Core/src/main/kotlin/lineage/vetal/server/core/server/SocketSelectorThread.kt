@@ -66,7 +66,7 @@ class SocketSelectorThread<T : Client>(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}\n\n")
+        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}")
 
         while (isRunning) {
             val readyChannels = selector.select()

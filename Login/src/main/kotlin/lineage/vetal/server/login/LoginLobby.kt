@@ -5,6 +5,10 @@ import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
+import lineage.vetal.server.login.bridgeserver.BridgeClient
+import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
+import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
+import lineage.vetal.server.login.bridgeserver.packets.client.RequestUpdate
 import lineage.vetal.server.login.clientserver.LoginClient
 import lineage.vetal.server.login.clientserver.LoginState
 import lineage.vetal.server.login.clientserver.packets.client.RequestAuthLogin
@@ -12,7 +16,6 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
 import lineage.vetal.server.login.clientserver.packets.server.*
-import lineage.vetal.server.login.config.LobbyConfig
 import lineage.vetal.server.login.model.AccountInfo
 import lineage.vetal.server.login.model.SessionKey
 import javax.crypto.Cipher
@@ -20,57 +23,80 @@ import kotlin.random.Random
 
 class LoginLobby(
     private val lobbyConfig: LobbyConfig,
+    private val registeredServers: Array<RegisteredServer>,
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
     private val connectedServer = mutableSetOf<ServerInfo>()
 
-    fun onServerConnected(serverInfo: ServerInfo) {
-        connectedServer.add(serverInfo)
-    }
-
     fun onClientConnected(client: LoginClient) {
         if (connectedClients.size >= lobbyConfig.maxCount) {
             writeInfo(TAG, "Lobby is full. reject client")
-            client.saveAndClose()
+            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
             return
         }
 
         writeDebug(TAG, "New $client added to lobby")
         connectedClients[client.sessionId] = client
-        client.onAddedToLobby()
+
+        client.loginState = LoginState.CONNECTED
+        client.sendInitPacket()
     }
 
-    fun onPacketReceived(client: LoginClient, packet: ReceivablePacket) {
+    fun onClientPacketReceived(client: LoginClient, packet: ReceivablePacket) {
         try {
-            handlePacket(client, packet)
+            handleClientPacket(client, packet)
         } catch (e: Throwable) {
             writeError(TAG, "Cannot handle packet", e)
-            onClientDisconnected(client)
+            onClientDisconnected(client, LoginFail.REASON_USER_OR_PASS_WRONG)
         }
     }
 
-    fun onClientDisconnected(client: LoginClient) {
+    fun onBridgePacketReceived(client: BridgeClient, packet: ReceivablePacket) {
+        handleBridgePacket(client, packet)
+    }
+
+    fun onBridgeClientDisconnected(client: BridgeClient) {
+
+    }
+
+    fun onClientDisconnected(client: LoginClient, reason: LoginFail? = null) {
+        client.loginState = null
         connectedClients.remove(client.sessionId)?.let {
             writeDebug(TAG, "$client removed from lobby")
         }
-        client.saveAndClose()
+        client.saveAndClose(reason)
     }
 
-    private fun handlePacket(client: LoginClient, packet: ReceivablePacket) {
+    private fun handleBridgePacket(client: BridgeClient, packet: ReceivablePacket) {
+        when (packet) {
+            is RequestInit -> {
+
+            }
+
+            is RequestAuth -> {
+
+            }
+
+            is RequestUpdate -> {
+
+            }
+        }
+    }
+
+    private fun handleClientPacket(client: LoginClient, packet: ReceivablePacket) {
         when (packet) {
             is RequestGGAuth -> {
                 if (client.loginState == LoginState.CONNECTED && packet.sessionId == client.sessionId) {
                     client.loginState = LoginState.AUTH_GG
                     client.sendPacket(GGAuth(client.sessionId))
                 } else {
-                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
-                    onClientDisconnected(client)
+                    onClientDisconnected(client, LoginFail.REASON_ACCESS_FAILED)
                 }
             }
             is RequestAuthLogin -> {
                 if (client.loginState != LoginState.AUTH_GG) {
-                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    onClientDisconnected(client, LoginFail.REASON_ACCESS_FAILED)
                     return
                 }
 
@@ -78,11 +104,11 @@ class LoginLobby(
                 rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.loginCrypt.rsaPair.private)
                 val decrypted = rsaCipher.doFinal(packet.raw, 0x00, 0x80)
 
-                val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.toLowerCase()
+                val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.lowercase()
                 val password = String(decrypted, 0x6C, 16).trim { it <= ' ' }
 
                 if (user != "qwe" || password != "qwe") {
-                    client.saveAndClose(LoginFail.REASON_USER_OR_PASS_WRONG)
+                    onClientDisconnected(client, LoginFail.REASON_USER_OR_PASS_WRONG)
                     return
                 }
 
@@ -102,7 +128,7 @@ class LoginLobby(
             }
             is RequestServerList -> {
                 if (client.sessionKey?.loginOkID1 != packet.sessionKey1 || client.sessionKey?.loginOkID2 != packet.sessionKey2) {
-                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    onClientDisconnected(client, LoginFail.REASON_ACCESS_FAILED)
                     return
                 }
 
@@ -113,7 +139,7 @@ class LoginLobby(
                 if (key != null) {
                     client.sendPacket(PlayOk(key.playOkID1, key.playOkID2))
                 } else {
-                    client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+                    onClientDisconnected(client, LoginFail.REASON_ACCESS_FAILED)
                 }
             }
         }
