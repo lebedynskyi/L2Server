@@ -3,14 +3,12 @@ package lineage.vetal.server.login.clientserver
 import lineage.vetal.server.core.encryption.CryptUtil
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import lineage.vetal.server.core.config.NetworkConfig
+import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.server.*
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginLobby
-import lineage.vetal.server.login.LoginConfig
 import java.security.KeyPair
 
 class LoginClientServer(
@@ -23,7 +21,7 @@ class LoginClientServer(
     private val filter: SocketConnectionFilter
     private val connectionFactory: LoginClientFactory
 
-    private var selectorThread: SocketSelectorThread<LoginClient>? = null
+    private lateinit var selectorThread: SelectorServerThread<LoginClient>
     private val serverContext = newSingleThreadContext("Login")
 
     init {
@@ -39,25 +37,25 @@ class LoginClientServer(
     }
 
     suspend fun startServer() {
-        selectorThread = SocketSelectorThread(clientServer, connectionFactory).apply {
+        selectorThread = SelectorServerThread(clientServer, connectionFactory).apply {
             start()
         }
 
         withContext(serverContext) {
             launch {
-                selectorThread?.connectionCloseFlow?.collect {
+                selectorThread.connectionCloseFlow.collect {
                     loginLobby.onClientDisconnected(it)
                 }
             }
 
             launch {
-                selectorThread?.connectionAcceptFlow?.collect {
+                selectorThread.connectionAcceptFlow.collect {
                     loginLobby.onClientConnected(it)
                 }
             }
 
             launch {
-                selectorThread?.connectionReadFlow?.collect {
+                selectorThread.connectionReadFlow.collect {
                     loginLobby.onClientPacketReceived(it.first, it.second)
                 }
             }

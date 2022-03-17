@@ -1,14 +1,15 @@
 package lineage.vetal.server.login
 
-import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.bridgeserver.BridgeClient
+import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestUpdate
+import lineage.vetal.server.login.bridgeserver.packets.server.AuthOk
+import lineage.vetal.server.login.bridgeserver.packets.server.InitOK
 import lineage.vetal.server.login.clientserver.LoginClient
 import lineage.vetal.server.login.clientserver.LoginState
 import lineage.vetal.server.login.clientserver.packets.client.RequestAuthLogin
@@ -17,17 +18,18 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
 import lineage.vetal.server.login.clientserver.packets.server.*
 import lineage.vetal.server.login.model.AccountInfo
+import lineage.vetal.server.login.model.LobbyConfig
+import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.login.model.SessionKey
 import javax.crypto.Cipher
 import kotlin.random.Random
 
 class LoginLobby(
     private val lobbyConfig: LobbyConfig,
-    private val registeredServers: Array<RegisteredServer>,
+    private val registeredServers: Array<ServerInfo>
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
-    private val connectedServer = mutableSetOf<ServerInfo>()
 
     fun onClientConnected(client: LoginClient) {
         if (connectedClients.size >= lobbyConfig.maxCount) {
@@ -71,15 +73,31 @@ class LoginLobby(
     private fun handleBridgePacket(client: BridgeClient, packet: ReceivablePacket) {
         when (packet) {
             is RequestInit -> {
-
+                val server = registeredServers.firstOrNull { it.id == packet.serverId }
+                if (server == null) {
+                    client.saveAndClose()
+                } else {
+                    writeInfo(TAG, "Server with id ${server.id} connected")
+                    val clientConnection = client.connection
+                    clientConnection.crypt.init(server.blowFishKey.toByteArray())
+                    client.sendPacket(InitOK())
+                }
             }
 
             is RequestAuth -> {
-
+                registeredServers.firstOrNull { it.id == packet.serverInfo.id }?.let {
+                    it.isOnline = true
+                    writeDebug(TAG, "Server info received $packet")
+                    client.sendPacket(AuthOk())
+                }
             }
 
             is RequestUpdate -> {
-
+                registeredServers.firstOrNull { it.id == packet.serverInfo.id }?.let {
+                    it.isOnline = true
+                    writeDebug(TAG, "Server info updated $packet")
+                    client.sendPacket(AuthOk())
+                }
             }
         }
     }
@@ -101,7 +119,7 @@ class LoginLobby(
                 }
 
                 val rsaCipher = Cipher.getInstance("RSA/ECB/nopadding")
-                rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.loginCrypt.rsaPair.private)
+                rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.getRsaPublicKey())
                 val decrypted = rsaCipher.doFinal(packet.raw, 0x00, 0x80)
 
                 val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.lowercase()
@@ -115,7 +133,7 @@ class LoginLobby(
                 val sessionKey = SessionKey(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
                 val accountInfo = AccountInfo(user, password)
 
-                writeDebug(TAG, "New account info received $")
+                writeDebug(TAG, "New account info received $accountInfo")
 
                 client.loginState = LoginState.AUTH_LOGIN
                 client.sessionKey = sessionKey
@@ -123,7 +141,7 @@ class LoginLobby(
                 if (lobbyConfig.showLicense) {
                     client.sendPacket(LoginOk(sessionKey.loginOkID1, sessionKey.loginOkID2))
                 } else {
-                    client.sendPacket(ServerList(connectedServer.toList()))
+                    client.sendPacket(ServerList(registeredServers.toList()))
                 }
             }
             is RequestServerList -> {
@@ -132,7 +150,7 @@ class LoginLobby(
                     return
                 }
 
-                client.sendPacket(ServerList(connectedServer.toList()))
+                client.sendPacket(ServerList(registeredServers.toList()))
             }
             is RequestServerLogin -> {
                 val key = client.sessionKey

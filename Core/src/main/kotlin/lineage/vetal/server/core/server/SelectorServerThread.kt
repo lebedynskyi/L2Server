@@ -2,10 +2,9 @@ package lineage.vetal.server.core.server
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.client.Client
-import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
-import lineage.vetal.server.core.config.NetworkConfig
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
@@ -15,14 +14,17 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 
+/**
+ * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent
+ */
 
-class SocketSelectorThread<T : Client>(
+class SelectorServerThread<T : Client>(
     private val networkConfig: NetworkConfig,
-    private val connectionFactory: ClientFactory<T>
+    private val clientFactory: ClientFactory<T>
 ) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024
     private val WRITE_BUFFER_SIZE = 64 * 1024
-    private val TAG = "SocketSelectorThread"
+    private val TAG = "SocketServerSelector"
 
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
@@ -77,7 +79,6 @@ class SocketSelectorThread<T : Client>(
                 val key = keyIterator.next()
                 when (key.readyOps()) {
                     SelectionKey.OP_ACCEPT -> createConnection()
-                    SelectionKey.OP_CONNECT -> finishConnection(key)
                     SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -94,16 +95,18 @@ class SocketSelectorThread<T : Client>(
     }
 
     private fun closeServer() {
+        selector.close()
         writeInfo(TAG, "Server closed")
     }
 
-    private fun finishConnection(key: SelectionKey) {
+    private fun closeConnection(key: SelectionKey) {
         key.channel().close()
     }
 
     private fun createConnection() {
         writeDebug(TAG, "Create connection")
-        val client = connectionFactory.createClient(selector, serverSocket)
+        val socket = serverSocket.accept().apply { configureBlocking(false) }
+        val client = clientFactory.createClient(selector, socket)
         _selectionAcceptFlow.tryEmit(client)
     }
 
@@ -118,7 +121,7 @@ class SocketSelectorThread<T : Client>(
             _selectionReadFlow.tryEmit(client to packet)
         } else {
             writeDebug(TAG, "0 packets read. Close connection")
-            finishConnection(key)
+            closeConnection(key)
             _selectionCloseFlow.tryEmit(client)
         }
     }
@@ -131,7 +134,7 @@ class SocketSelectorThread<T : Client>(
         connection.writeData(writeBuffer, tempWriteBuffer)
 
         if (connection.pendingClose) {
-            finishConnection(key)
+            closeConnection(key)
         } else {
             key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
         }

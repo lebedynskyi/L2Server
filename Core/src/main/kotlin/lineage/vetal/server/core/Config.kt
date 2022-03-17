@@ -1,4 +1,4 @@
-package lineage.vetal.server.core.config
+package lineage.vetal.server.core
 
 import kotlinx.serialization.Serializable
 

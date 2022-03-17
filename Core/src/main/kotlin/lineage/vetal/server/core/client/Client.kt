@@ -15,4 +15,8 @@ abstract class Client {
             connection.sendPacket(reason)
         }
     }
+
+    override fun toString(): String {
+        return "Client ip ${connection.clientAddress.address.hostAddress}"
+    }
 }

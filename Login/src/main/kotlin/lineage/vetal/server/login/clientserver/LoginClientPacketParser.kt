@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.clientserver
 
+import lineage.vetal.server.core.client.PacketParser
 import lineage.vetal.server.core.encryption.CryptUtil
 import lineage.vetal.server.core.server.DATA_HEADER_SIZE
 import lineage.vetal.server.core.server.ReceivablePacket
@@ -12,11 +13,11 @@ import java.nio.ByteBuffer
 
 class LoginClientPacketParser(
     private val loginCrypt: LoginClientCrypt
-) {
+) : PacketParser {
 
     private val TAG = "LoginClientPacketParser"
 
-    fun parsePacket(buffer: ByteBuffer): ReceivablePacket? {
+    override fun parsePacket(buffer: ByteBuffer): ReceivablePacket? {
         if (buffer.position() >= buffer.limit()) {
             return null
         }
@@ -29,7 +30,6 @@ class LoginClientPacketParser(
             parsePacketByOpCode(buffer)
         } else null
     }
-
 
     private fun parsePacketByOpCode(buffer: ByteBuffer): ReceivablePacket? {
         val packet = when (val opCode = buffer.get().toInt()) {

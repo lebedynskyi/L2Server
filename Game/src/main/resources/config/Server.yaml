@@ -1,0 +1,13 @@
+serverInfo:
+  id: 1
+  ip: "172.20.10.8"
+  port: 7777
+  ageLimit: 18
+  isPvp: false
+  onlineCount: 0
+  maxOnline: 5
+  blowFishKey: "ghJW&^#TEyuGOE*G"
+
+bridgeServer:
+  hostname: "127.0.0.1"
+  port: 2100

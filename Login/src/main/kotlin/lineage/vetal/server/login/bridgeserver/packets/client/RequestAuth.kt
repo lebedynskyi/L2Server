@@ -2,12 +2,21 @@ package lineage.vetal.server.login.bridgeserver.packets.client
 
 import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.server.ReceivablePacket
+import lineage.vetal.server.core.server.toBoolean
+import lineage.vetal.server.core.server.toByte
 
 class RequestAuth(
 ) : ReceivablePacket() {
-    private lateinit var serverInfo: ServerInfo
+    lateinit var serverInfo: ServerInfo
 
     override fun read() {
-        TODO("Not yet implemented")
+        serverInfo = ServerInfo(
+            readD(),
+            readS(),
+            readD(),
+            readD(),
+            readC().toBoolean(),
+            readD()
+        )
     }
 }

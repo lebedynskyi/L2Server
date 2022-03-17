@@ -8,15 +8,9 @@ class LoginClient(
     val sessionId: Int,
     override val connection: LoginClientConnection
 ) : Client() {
-    private val TAG = "LoginClient"
-
     var loginState: LoginState? = null
     var account: AccountInfo? = null
     var sessionKey: SessionKey? = null
-
-    override fun toString(): String {
-        return "Client id $sessionId ip ${connection.clientAddress.address.hostAddress}"
-    }
 
     fun sendInitPacket() {
         connection.sendInitPacket(sessionId)

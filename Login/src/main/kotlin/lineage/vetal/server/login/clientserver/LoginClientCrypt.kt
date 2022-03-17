@@ -34,7 +34,7 @@ class LoginClientCrypt(
             CryptUtil.encodeXor(raw, offset, newSize, Random.nextInt())
             staticCrypt.encrypt(raw, offset, newSize)
         } else {
-            // Padding.. The size of packet should be divided by 8
+            // Padding. The size of packet should be divided by 8
             newSize += 8 - newSize % 8
             CryptUtil.appendChecksum(raw, offset, newSize)
             generalCrypt.encrypt(raw, offset, newSize)
