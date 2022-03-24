@@ -6,7 +6,6 @@ class RequestInit(
     private var serverId: Int
 ) : SendablePacket() {
 
-
     override fun write() {
         writeC(0x01)
         writeD(serverId)

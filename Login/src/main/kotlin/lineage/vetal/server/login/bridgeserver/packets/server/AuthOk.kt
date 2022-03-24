@@ -4,6 +4,8 @@ import lineage.vetal.server.core.server.SendablePacket
 
 class AuthOk: SendablePacket() {
     override fun write() {
-        writeD(0x02)
+        writeC(0x02)
+
+        writeD(1)
     }
 }

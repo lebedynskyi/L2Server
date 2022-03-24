@@ -5,6 +5,7 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.client.BridgeClient
+import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestUpdate
@@ -19,7 +20,7 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
 import lineage.vetal.server.login.clientserver.packets.server.*
 import lineage.vetal.server.login.model.AccountInfo
 import lineage.vetal.server.login.model.LobbyConfig
-import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.login.bridgeserver.packets.server.UpdateOk
 import lineage.vetal.server.login.model.SessionKey
 import javax.crypto.Cipher
 import kotlin.random.Random
@@ -75,28 +76,29 @@ class LoginLobby(
             is RequestInit -> {
                 val server = registeredServers.firstOrNull { it.id == packet.serverId }
                 if (server == null) {
+                    writeInfo(TAG, "Unknown server. Close connection")
                     client.saveAndClose()
                 } else {
-                    writeInfo(TAG, "Server with id ${server.id} connected")
-                    val clientConnection = client.connection
-                    clientConnection.crypt.init(server.blowFishKey.toByteArray())
+                    client.connection.crypt.init(server.bridgeKey.toByteArray())
+                    client.connectedServerInfo = server
                     client.sendPacket(InitOK())
+                    writeInfo(TAG, "Server with id ${server.id} connected")
                 }
             }
 
             is RequestAuth -> {
-                registeredServers.firstOrNull { it.id == packet.serverInfo.id }?.let {
-                    it.isOnline = true
-                    writeDebug(TAG, "Server info received $packet")
+                registeredServers.firstOrNull { it.id == packet.serverStatus.id }?.let {
+                    it.serverStatus = packet.serverStatus
+                    writeInfo(TAG, "Server info received $packet")
                     client.sendPacket(AuthOk())
                 }
             }
 
             is RequestUpdate -> {
-                registeredServers.firstOrNull { it.id == packet.serverInfo.id }?.let {
-                    it.isOnline = true
-                    writeDebug(TAG, "Server info updated $packet")
-                    client.sendPacket(AuthOk())
+                registeredServers.firstOrNull { it.id == client.connectedServerInfo.id }?.let {
+                    it.serverStatus = packet.serverStatus
+                    writeInfo(TAG, "Server info updated $packet")
+                    client.sendPacket(UpdateOk())
                 }
             }
         }
@@ -119,7 +121,7 @@ class LoginLobby(
                 }
 
                 val rsaCipher = Cipher.getInstance("RSA/ECB/nopadding")
-                rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.getRsaPublicKey())
+                rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.getCredentialsDecryptionKey())
                 val decrypted = rsaCipher.doFinal(packet.raw, 0x00, 0x80)
 
                 val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.lowercase()

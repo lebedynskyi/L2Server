@@ -1,15 +1,25 @@
 package lineage.vetal.server.core.model
 
-@kotlinx.serialization.Serializable
-class ServerInfo(
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+
+@Serializable
+data class ServerInfo(
     val id: Int,
     val ip: String,
     val port: Int,
     val ageLimit: Int,
     val isPvp: Boolean,
-    val maxOnline: Int,
+    val maxOnline: Int
 ) {
-    lateinit var blowFishKey: String
-    var onlineCount: Int = 0
-    var isOnline = false
+    lateinit var bridgeKey: String
+
+    @Transient
+    var serverStatus: ServerStatus? = null
 }
+
+data class ServerStatus(
+    val id: Int,
+    var onlineCount: Int,
+    var isOnline: Boolean
+)

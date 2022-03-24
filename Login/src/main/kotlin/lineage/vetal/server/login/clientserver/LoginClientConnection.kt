@@ -4,23 +4,28 @@ import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.login.clientserver.packets.server.Init
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
+import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 import java.security.PrivateKey
 
+// TODO wrap some how credentials keys
 class LoginClientConnection(
-    val loginCrypt: LoginClientCrypt,
+    private val loginCrypt: LoginClientCrypt,
     loginPacketParser: LoginClientPacketParser,
     socket: SocketChannel,
+    selector: Selector,
     selectionKey: SelectionKey,
     clientAddress: InetSocketAddress
-) : ClientConnection(socket, selectionKey, clientAddress, loginCrypt, loginPacketParser) {
+) : ClientConnection(socket, selector, selectionKey, clientAddress, loginCrypt, loginPacketParser) {
     private val TAG = "LoginClientConnection"
 
     fun sendInitPacket(sessionId: Int) {
+        // modules - credentials encryption key
         sendPacket(Init(sessionId, loginCrypt.scrambleModules, loginCrypt.blowFishKey))
     }
 
-    fun getRsaPublicKey(): PrivateKey {
+    fun getCredentialsDecryptionKey(): PrivateKey {
+        // Private = credentials decryption key
         return loginCrypt.rsaPair.private
     }
 }

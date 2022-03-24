@@ -4,6 +4,8 @@ import lineage.vetal.server.core.server.SendablePacket
 
 class UpdateOk: SendablePacket() {
     override fun write() {
-        writeD(0x03)
+        writeC(0x03)
+
+        writeD(1)
     }
 }

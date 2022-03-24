@@ -2,6 +2,7 @@ package lineage.vetal.server.login.clientserver.packets.server
 
 import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.core.server.toByte
 import java.net.InetAddress
 
 class ServerList(
@@ -24,10 +25,10 @@ class ServerList(
 
             writeD(it.port)
             writeC(it.ageLimit)
-            writeC(if (it.isPvp) 0x01 else 0x00)
-            writeH(it.onlineCount)
+            writeC(it.isPvp.toByte())
+            writeH(it.serverStatus?.onlineCount ?: 0)
             writeH(it.maxOnline)
-            writeC(if (it.isOnline) 0x01 else 0x00)
+            writeC(it.serverStatus?.isOnline.toByte())
 
             var bits = 0
             // is test?

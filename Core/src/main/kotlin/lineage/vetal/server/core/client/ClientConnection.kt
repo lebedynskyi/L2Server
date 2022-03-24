@@ -7,11 +7,13 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
+import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
 open class ClientConnection(
     val socket: SocketChannel,
+    val selector: Selector,
     val selectionKey: SelectionKey,
     val clientAddress: InetSocketAddress,
     private val crypt: ClientCrypt,
@@ -33,7 +35,7 @@ open class ClientConnection(
         }
 
         byteBuffer.flip()
-        return readPacketsFromBuffer(byteBuffer)
+        return readPacketFromBuffer(byteBuffer)
     }
 
     fun writeData(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
@@ -58,8 +60,17 @@ open class ClientConnection(
         writeDebug(TAG, "Sent $packetCounter packets to $clientAddress data size $wroteCount")
     }
 
-    fun readPacketsFromBuffer(byteBuffer: ByteBuffer): ReceivablePacket? {
-        return packetParser.parsePacket(byteBuffer)
+    private fun readPacketFromBuffer(buffer: ByteBuffer): ReceivablePacket? {
+        if (buffer.position() >= buffer.limit()) {
+            return null
+        }
+        val header = buffer.short
+        val dataSize = header - DATA_HEADER_SIZE
+        val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
+
+        return if (decryptedSize > 0) {
+            packetParser.parsePacket(buffer, decryptedSize)
+        } else null
     }
 
     private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {
@@ -84,11 +95,8 @@ open class ClientConnection(
 
     fun sendPacket(packet: SendablePacket) {
         packetsQueue.add(packet)
-        try {
-            selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
+        selector.wakeup()
     }
 
     private fun read(writeBuffer: ByteBuffer): Int {

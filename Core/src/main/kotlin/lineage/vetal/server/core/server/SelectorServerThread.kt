@@ -15,7 +15,7 @@ import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 
 /**
- * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent
+ * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent for next iteration
  */
 
 class SelectorServerThread<T : Client>(
@@ -104,9 +104,9 @@ class SelectorServerThread<T : Client>(
     }
 
     private fun createConnection() {
-        writeDebug(TAG, "Create connection")
         val socket = serverSocket.accept().apply { configureBlocking(false) }
         val client = clientFactory.createClient(selector, socket)
+        writeInfo(TAG, "New connection $client")
         _selectionAcceptFlow.tryEmit(client)
     }
 

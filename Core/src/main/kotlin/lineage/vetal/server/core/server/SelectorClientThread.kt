@@ -8,7 +8,6 @@ import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
-import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -16,6 +15,7 @@ import java.nio.ByteOrder
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
+import kotlin.Exception
 
 class SelectorClientThread<T : Client>(
     private val networkConfig: NetworkConfig,
@@ -47,12 +47,21 @@ class SelectorClientThread<T : Client>(
     var isRunning = true
 
     override fun run() {
-        connectToServer()
+        while (isRunning) {
+            try {
+                connectToServer()
+            } catch (e: Exception) {
+                writeInfo(TAG, "Disconnected from the server Reconnect in 5 sec")
+                sleep(5000)
+            }
+        }
     }
 
     fun disconnect() {
         isRunning = false
         selector.close()
+        selector.wakeup()
+        writeInfo(TAG, "Disconnected from the server")
     }
 
     private fun connectToServer() {
@@ -70,8 +79,7 @@ class SelectorClientThread<T : Client>(
         }
 
         while (isRunning) {
-            // TODO for cient we have to use timeout.. IDK why!!!!!!!
-            val readyChannels = selector.select(300)
+            val readyChannels = selector.select()
             if (readyChannels == 0) continue
 
             val keyIterator = selector.selectedKeys().iterator()
@@ -90,11 +98,6 @@ class SelectorClientThread<T : Client>(
                 keyIterator.remove()
             }
         }
-    }
-
-    private fun closeConnection() {
-        selector.close()
-        writeInfo(TAG, "Connection closed")
     }
 
     private fun finishConnection(key: SelectionKey) {
@@ -129,7 +132,7 @@ class SelectorClientThread<T : Client>(
             _selectionReadFlow.tryEmit(client to packet)
         } else {
             writeDebug(TAG, "0 packets read. Close connection")
-            closeConnection()
+            disconnect()
             _selectionCloseFlow.tryEmit(client)
         }
     }
@@ -143,7 +146,7 @@ class SelectorClientThread<T : Client>(
 
         if (connection.pendingClose) {
             // TODO should be close.
-            closeConnection()
+            disconnect()
         } else {
             key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
         }

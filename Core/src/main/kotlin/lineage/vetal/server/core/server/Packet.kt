@@ -2,10 +2,12 @@ package lineage.vetal.server.core.server
 
 import java.nio.ByteBuffer
 
-abstract class Packet
+abstract class Packet{
 
-fun Boolean.toByte(): Int {
-    return if (this) 0x01 else 0x00
+}
+
+fun Boolean?.toByte(): Int {
+    return if (this == true) 0x01 else 0x00
 }
 
 fun Int.toBoolean(): Boolean {

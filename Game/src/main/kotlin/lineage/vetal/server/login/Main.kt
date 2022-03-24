@@ -6,8 +6,6 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.core.utils.streams.openResource
 import lineage.vetal.server.login.game.GameWorld
-import lineage.vetal.server.login.gameserver.GameServer
-import lineage.vetal.server.login.model.GameConfig
 
 const val TAG = "Game"
 
@@ -19,12 +17,12 @@ fun main() {
     writeInfo(TAG, "Reading configs from $PATH_SERVER_CONFIG")
 
     val configInputStream = openResource(PATH_SERVER_CONFIG)
-    val serverConfig = GameConfig.read(configInputStream)
-    val gameWorld = GameWorld()
+    val config = GameConfig.read(configInputStream)
+    val gameContext = GameContext(config)
 
     runBlocking {
         launch {
-            GameServer(gameWorld, serverConfig).startServer()
+            GameServer(gameContext).startServer()
         }
     }
 }

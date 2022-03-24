@@ -1,10 +1,13 @@
+# Build folder
 Login/build
 Core/build
 Game/build
+/build
 
+# Ide and gradle folders and settigns
 /.idea/
 /.gradle/
-
-.DS_Store
-
 *.iml
+
+# OSX files
+.DS_Store

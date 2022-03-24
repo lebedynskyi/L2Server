@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.login
 
 import com.charleskorn.kaml.Yaml
 import lineage.vetal.server.core.NetworkConfig
@@ -10,7 +10,7 @@ import java.io.InputStream
 @Serializable
 class GameConfig(
     val bridgeServer: NetworkConfig,
-    val serverInfo: ServerInfo,
+    val serverInfo: ServerInfo
 ) {
     companion object Builder {
         fun read(path: String): GameConfig {
