@@ -4,6 +4,7 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.security.spec.RSAKeyGenParameterSpec
+import kotlin.random.Random
 
 class CryptUtil {
     companion object {
@@ -12,7 +13,6 @@ class CryptUtil {
         }
 
         private val secureRandom = SecureRandom()
-
 
         fun generateRsa128PublicKeyPair(): KeyPair {
             return keygen.genKeyPair()

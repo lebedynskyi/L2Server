@@ -15,8 +15,8 @@ class LoginClientPacketParser : PacketParser {
 
     private val TAG = "LoginClientPacketParser"
 
-    override fun parsePacket(buffer: ByteBuffer, decryptedSize: Int): ReceivablePacket? {
-        val valid = CryptUtil.verifyChecksum(buffer.array(), buffer.position(), decryptedSize)
+    override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
+        val valid = CryptUtil.verifyChecksum(buffer.array(), buffer.position(), size)
         if (!valid) {
             writeInfo(TAG, "Checksum not valid")
             return null
@@ -32,7 +32,7 @@ class LoginClientPacketParser : PacketParser {
                 null
             }
         }?.apply {
-            readFrom(buffer, null)
+            readFrom(buffer, sBuffer)
         }
     }
 }

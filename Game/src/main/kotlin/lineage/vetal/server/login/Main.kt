@@ -19,10 +19,15 @@ fun main() {
     val configInputStream = openResource(PATH_SERVER_CONFIG)
     val config = GameConfig.read(configInputStream)
     val gameContext = GameContext(config)
+    val gameServer = GameServer(gameContext)
 
     runBlocking {
         launch {
-            GameServer(gameContext).startServer()
+            gameServer.connectToBridge()
+        }
+
+        launch {
+            gameServer.startClientServer()
         }
     }
 }

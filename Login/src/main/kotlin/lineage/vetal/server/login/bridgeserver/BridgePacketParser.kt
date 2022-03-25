@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
 class BridgePacketParser : PacketParser {
     private val TAG = "BridgePacketParser"
 
-    override fun parsePacket(buffer: ByteBuffer, decryptedSize: Int): ReceivablePacket? {
+    override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         val packet = when (val opCode = buffer.get().toInt()) {
             0x01 -> RequestInit()
             0x02 -> RequestAuth()
@@ -22,7 +22,7 @@ class BridgePacketParser : PacketParser {
             }
         }
         return packet?.also {
-            it.readFrom(buffer, null)
+            it.readFrom(buffer, sBuffer)
         }
     }
 }

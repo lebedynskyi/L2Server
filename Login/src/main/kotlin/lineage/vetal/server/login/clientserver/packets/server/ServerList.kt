@@ -12,7 +12,7 @@ class ServerList(
         writeC(0x04)
         writeC(connectedServers.size)
         // Last server
-        writeC(0x00)
+        writeC(2)
 
         connectedServers.forEach {
             writeC(it.id)

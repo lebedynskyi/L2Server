@@ -11,6 +11,7 @@ import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
+// TODO wrap all read and write operation by try catch. 1 client error make crash all server
 open class ClientConnection(
     val socket: SocketChannel,
     val selector: Selector,
@@ -19,7 +20,7 @@ open class ClientConnection(
     private val crypt: ClientCrypt,
     private val packetParser: PacketParser,
 ) {
-    private val TAG = javaClass::class.java.name
+    private val TAG = "ClientConnection"
     private val packetsQueue = ConcurrentLinkedQueue<SendablePacket>()
 
     @Volatile
@@ -35,16 +36,16 @@ open class ClientConnection(
         }
 
         byteBuffer.flip()
-        return readPacketFromBuffer(byteBuffer)
+        return readPacketFromBuffer(byteBuffer, stringBuffer)
     }
 
     fun writeData(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
         byteBuffer.clear()
-        tempBuffer.clear()
 
         var packetCounter = 0
         val packetIterator = packetsQueue.iterator()
         while (packetIterator.hasNext()) {
+            tempBuffer.clear()
             packetCounter += 1
             val packet = packetIterator.next()
 
@@ -60,7 +61,7 @@ open class ClientConnection(
         writeDebug(TAG, "Sent $packetCounter packets to $clientAddress data size $wroteCount")
     }
 
-    private fun readPacketFromBuffer(buffer: ByteBuffer): ReceivablePacket? {
+    private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {
         if (buffer.position() >= buffer.limit()) {
             return null
         }
@@ -69,7 +70,7 @@ open class ClientConnection(
         val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
 
         return if (decryptedSize > 0) {
-            packetParser.parsePacket(buffer, decryptedSize)
+            packetParser.parsePacket(buffer, sBuffer, decryptedSize)
         } else null
     }
 

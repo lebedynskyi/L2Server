@@ -9,10 +9,9 @@ import lineage.vetal.server.login.bridgeclient.packets.server.UpdateOk
 import java.nio.ByteBuffer
 
 class BridgeGamePacketParser : PacketParser {
-
     private val TAG = "BridgeGamePacketParser"
 
-    override fun parsePacket(buffer: ByteBuffer, decryptedSize: Int): ReceivablePacket? {
+    override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         return when (val opCode = buffer.get().toInt()) {
             0x01 -> InitOK()
             0x02 -> AuthOk()
@@ -22,7 +21,7 @@ class BridgeGamePacketParser : PacketParser {
                 null
             }
         }?.apply {
-            readFrom(buffer, null)
+            readFrom(buffer, sBuffer)
         }
     }
 }

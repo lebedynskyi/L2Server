@@ -6,6 +6,7 @@ import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestUpdate
@@ -21,7 +22,6 @@ import lineage.vetal.server.login.clientserver.packets.server.*
 import lineage.vetal.server.login.model.AccountInfo
 import lineage.vetal.server.login.model.LobbyConfig
 import lineage.vetal.server.login.bridgeserver.packets.server.UpdateOk
-import lineage.vetal.server.login.model.SessionKey
 import javax.crypto.Cipher
 import kotlin.random.Random
 

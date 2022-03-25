@@ -84,7 +84,7 @@ abstract class ReceivablePacket : Packet() {
 
     abstract fun read()
 
-    fun readFrom(buf: ByteBuffer, tempStringBuff: StringBuffer?) {
+    fun readFrom(buf: ByteBuffer, tempStringBuff: StringBuffer) {
         buffer = buf
         sBuffer = tempStringBuff
         read()
@@ -93,7 +93,7 @@ abstract class ReceivablePacket : Packet() {
     }
 
     protected fun readB(dst: ByteArray?) {
-        buffer?.get(dst)
+        buffer!!.get(dst)
     }
 
     protected fun readC(): Int {
@@ -109,7 +109,7 @@ abstract class ReceivablePacket : Packet() {
     }
 
     protected fun readS(): String {
-        sBuffer?.delete(0, sBuffer?.length ?: 0)
+        sBuffer!!.setLength(0)
 
         while (true) {
             val ch = buffer?.char

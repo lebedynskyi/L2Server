@@ -9,7 +9,7 @@ fun writeInfo(tag: String, msg: Any) {
 }
 
 fun writeError(tag: String, msg: Any, e: Throwable) {
-    System.err.println("I: $tag: $msg")
+    System.err.println("E: $tag: $msg")
     e.printStackTrace()
 }
 

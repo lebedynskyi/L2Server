@@ -6,6 +6,7 @@ import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.client.Client
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -41,9 +42,8 @@ class SelectorServerThread<T : Client>(
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
-    private val tempReadBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
-    private val stringBuffer = StringBuffer()
+    private val stringBuffer = StringBuffer(READ_BUFFER_SIZE)
 
     @Volatile
     var isRunning = true
@@ -79,7 +79,14 @@ class SelectorServerThread<T : Client>(
                 val key = keyIterator.next()
                 when (key.readyOps()) {
                     SelectionKey.OP_ACCEPT -> createConnection()
-                    SelectionKey.OP_READ -> readPackets(key)
+                    SelectionKey.OP_READ -> {
+                        try {
+                            readPackets(key)
+                        } catch (e: Exception) {
+                            writeError(TAG, "Error reading data ", e)
+                            closeConnection(key)
+                        }
+                    }
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                         writePackets(key)

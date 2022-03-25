@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.core.model
 
 data class SessionKey(
     var playOkID1: Int,
