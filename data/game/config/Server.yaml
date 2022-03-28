@@ -12,6 +12,6 @@ bridgeServer:
   port: 2100
 
 dataBaseConfig:
-  url: "fake"
-  user: "fake"
-  password: "fake"
+  url: "jdbc:mariadb://192.168.43.180/l2db"
+  user: "root"
+  password: "l2db"

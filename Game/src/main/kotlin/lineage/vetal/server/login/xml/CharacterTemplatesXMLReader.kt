@@ -4,18 +4,18 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.model.ClassId
 import lineage.vetal.server.login.model.Location
 import lineage.vetal.server.login.model.template.ItemTemplate
-import lineage.vetal.server.login.model.template.PlayerTemplate
+import lineage.vetal.server.login.model.template.CharacterTemplate
 import lineage.vetal.server.login.model.template.SkillTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 
-class PlayerTemplatesXMLReader(
+class CharacterTemplatesXMLReader(
     val path: String
 ) : XmlReader {
     private val TAG = "CharTemplatesXMLReader"
-    private val templates: MutableMap<Int, PlayerTemplate> = mutableMapOf()
+    private val templates: MutableMap<Int, CharacterTemplate> = mutableMapOf()
 
-    fun load(): MutableMap<Int, PlayerTemplate> {
+    fun load(): MutableMap<Int, CharacterTemplate> {
         loadXml()
         return templates
     }
@@ -56,21 +56,21 @@ class PlayerTemplatesXMLReader(
                     forEach(spawnsNode, "spawn") { spawnNode -> locs.add(Location(parseAttributes(spawnNode))) }
                     set["spawnLocations"] = locs
                 }
-                templates[set.getInteger("id")] = PlayerTemplate(set)
+                templates[set.getInteger("id")] = CharacterTemplate(set)
             }
         }
     }
 
-    fun getTemplate(classId: ClassId): PlayerTemplate? {
+    fun getTemplate(classId: ClassId): CharacterTemplate? {
         return templates[classId.id]
     }
 
-    fun getTemplate(classId: Int): PlayerTemplate? {
+    fun getTemplate(classId: Int): CharacterTemplate? {
         return templates[classId]
     }
 
     fun getClassNameById(classId: Int): String {
-        val template: PlayerTemplate? = templates[classId]
+        val template: CharacterTemplate? = templates[classId]
         return template?.classId?.name ?: "Invalid class"
     }
 }
