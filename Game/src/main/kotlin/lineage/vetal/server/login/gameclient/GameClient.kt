@@ -8,8 +8,9 @@ class GameClient(
     override val connection: GameClientConnection
 ) : Client() {
     var clientState = GameClientState.LOBBY
-    var account: AccountInfo? = null
-    var sessionKey: SessionKey? = null
+    lateinit var account: AccountInfo
+    lateinit var sessionKey: SessionKey
+    var sessionId: Int = -1
 
     fun sendInitPacket() {
         connection.sendInitPacket()

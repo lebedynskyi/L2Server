@@ -4,7 +4,7 @@ package lineage.vetal.server.login.model
 /**
  * A datatype used to store character selection screen informations.
  */
-data class CharSlot(
+data class CharSelectionSlot(
     val objectId: Int,
     val name: String
 ) {
@@ -22,9 +22,9 @@ data class CharSlot(
     var hairColor = 0
     var sex = 0
     var level = 1
-    var maxHp = 0
+    var maxHp = 0.0
     var currentHp = 0.0
-    var maxMp = 0
+    var maxMp = 0.0
     var currentMp = 0.0
     var karma = 0
     var pkKills = 0

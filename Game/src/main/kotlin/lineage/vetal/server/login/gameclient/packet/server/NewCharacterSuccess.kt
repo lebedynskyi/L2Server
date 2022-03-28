@@ -3,7 +3,7 @@ package lineage.vetal.server.login.gameclient.packet.server
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.model.template.PlayerTemplate
 
-class CharTemplates(
+class NewCharacterSuccess(
     private val templated: List<PlayerTemplate>
 ) : SendablePacket() {
     override fun write() {
@@ -11,7 +11,7 @@ class CharTemplates(
         writeD(templated.size)
 
         templated.forEach {
-            writeD(it.classId.ordinal)
+            writeD(it.classId.race.id)
             writeD(it.classId.id)
             writeD(0x46)
             writeD(it.baseSTR)

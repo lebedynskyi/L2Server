@@ -5,6 +5,7 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.client.BridgeClient
+import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
@@ -19,7 +20,6 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
 import lineage.vetal.server.login.clientserver.packets.server.*
-import lineage.vetal.server.login.model.AccountInfo
 import lineage.vetal.server.login.model.LobbyConfig
 import lineage.vetal.server.login.bridgeserver.packets.server.UpdateOk
 import javax.crypto.Cipher
@@ -127,13 +127,15 @@ class LoginLobby(
                 val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.lowercase()
                 val password = String(decrypted, 0x6C, 16).trim { it <= ' ' }
 
+
+                // TODO need DB query.. Don't store password in memory
                 if (user != "qwe" || password != "qwe") {
                     onClientDisconnected(client, LoginFail.REASON_USER_OR_PASS_WRONG)
                     return
                 }
 
                 val sessionKey = SessionKey(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
-                val accountInfo = AccountInfo(user, password)
+                val accountInfo = AccountInfo(user)
 
                 writeDebug(TAG, "New account info received $accountInfo")
 

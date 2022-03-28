@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.utils.ext
 
-private val lettersRegex = "^[a-zA-Z0-9]*$".toRegex()
+private val playerNameRegex = "^[a-zA-Z0-9]{3,16}$".toRegex()
 
-fun String.isValidNickName(): Boolean {
-    return matches(lettersRegex)
+fun String.isValidPlayerName(): Boolean {
+    return matches(playerNameRegex)
 }

@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameclient.packet.client
 
-import lineage.vetal.server.core.utils.ext.isValidNickName
+import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.gameclient.GameClient
@@ -30,7 +30,7 @@ class RequestCreateCharacter : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         writeDebug(TAG, "Request to create char with name `$name`")
 
-        if (!name.isValidNickName() || name.lowercase().startsWith("gm")) {
+        if (!name.isValidPlayerName() || name.lowercase().startsWith("gm")) {
             client.sendPacket(CreateCharFail.REASON_INCORRECT_NAME)
         } else {
             client.sendPacket(CreateCharOK.STATIC_PACKET)
