@@ -1,10 +1,14 @@
 package lineage.vetal.server.login.model
 
-class Location {
+import lineage.vetal.server.login.xml.StatSet
+
+open class Location {
     @Volatile
     var x: Int
+
     @Volatile
     var y: Int
+
     @Volatile
     var z: Int
 
@@ -20,14 +24,14 @@ class Location {
         z = loc.z
     }
 
-    constructor(loc: StatsSet) {
+    constructor(loc: StatSet) {
         x = loc.getInteger("x")
         y = loc.getInteger("y")
         z = loc.getInteger("z")
     }
 
     override fun toString(): String {
-        return x.toString() + ", " + y + ", " + z
+        return "LOC: $x, $y, $z"
     }
 
     override fun hashCode(): Int {
@@ -61,6 +65,6 @@ class Location {
     }
 
     companion object {
-        val DUMMY_LOC = Location(0, 0, 0)
+        val ZERO_LOC = Location(0, 0, 0)
     }
 }

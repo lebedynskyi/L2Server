@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.model.template
 
-import lineage.vetal.server.login.model.StatsSet
+import lineage.vetal.server.login.xml.StatSet
 
-class ItemTemplate(set: StatsSet) : Template(set) {
+class ItemTemplate(set: StatSet) : Template(set) {
     val isEquipped = set.getBool("isEquipped", true)
     val count = set.getInteger("count")
 }

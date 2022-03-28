@@ -189,17 +189,11 @@ enum class ClassId(
             availableSubClasses.add(classId)
         }
         when (this) {
-            // remove restricted classes for tanks
             DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT -> availableSubClasses.removeAll(EnumSet.of(DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT))
-            // remove restricted classes for assassins
             TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER -> availableSubClasses.removeAll(EnumSet.of(TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER))
-            // remove restricted classes for archers
             HAWKEYE, SILVER_RANGER, PHANTOM_RANGER -> availableSubClasses.removeAll(EnumSet.of(HAWKEYE, SILVER_RANGER, PHANTOM_RANGER))
-            // remove restricted classes for summoners
             WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER -> availableSubClasses.removeAll(EnumSet.of(WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER))
-            // remove restricted classes for wizards
             SORCERER, SPELLSINGER, SPELLHOWLER -> availableSubClasses.removeAll(EnumSet.of(SORCERER, SPELLSINGER, SPELLHOWLER))
-            else -> throw IllegalArgumentException("IDK is happened for this moment")
         }
     }
 

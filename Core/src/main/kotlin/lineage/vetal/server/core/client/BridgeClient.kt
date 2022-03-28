@@ -1,6 +1,6 @@
 package lineage.vetal.server.core.client
 
-import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.core.ServerInfo
 
 
 class BridgeClient(

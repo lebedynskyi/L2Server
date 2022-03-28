@@ -1,16 +1,20 @@
 package lineage.vetal.server.login.model.template
 
+import lineage.vetal.server.login.xml.StatSet
 import lineage.vetal.server.login.model.*
 
-class PlayerTemplate(set: StatsSet) : CreatureTemplate(set) {
+class PlayerTemplate(set: StatSet) : CreatureTemplate(set) {
     val classId: ClassId = ClassId.VALUES[id]
     val fallHeight: Int = set.getInteger("falling_height", 333)
     val baseSwimSpeed: Int = set.getInteger("swimSpd", 1)
     val classBaseLevel: Int = set.getInteger("baseLvl")
     val fists: Int = set.getInteger("fists")
 
-    val items: List<ItemTemplate> = set.getList("items")
-    val skills: List<SkillTemplate> = set.getList("skills")
+    val items: List<ItemTemplate> get() = _items
+    val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
+
+    val _skills: MutableList<SkillTemplate> = set.getList<SkillTemplate>("skills").toMutableList()
+    val skills: List<SkillTemplate> get() = _skills
 
     private val _collisionRadiusFemale: Double = set.getDouble("radiusFemale")
     private val _collisionHeightFemale: Double = set.getDouble("heightFemale")
@@ -45,5 +49,13 @@ class PlayerTemplate(set: StatsSet) : CreatureTemplate(set) {
         return skills.asSequence()
             .filter { s: SkillTemplate -> s.id == id && s.lvl == level }
             .firstOrNull()
+    }
+
+    fun addSkillsFromParent(parentSkills: List<SkillTemplate>) {
+        _skills.addAll(skills)
+    }
+
+    override fun toString(): String {
+        return classId.className
     }
 }

@@ -39,7 +39,6 @@ class SelectorClientThread<T : Client>(
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
 
-    private val tempReadBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val stringBuffer = StringBuffer()
 
@@ -115,7 +114,7 @@ class SelectorClientThread<T : Client>(
                 writeError(TAG, "Something wrong. key is invalid", UnknownError("Unknown"))
             }
         } catch (e: Exception) {
-            writeDebug(TAG, "Unable to connect to server. Try latter")
+            writeDebug(TAG, "Unable to connect to server ${networkConfig.hostname}:${networkConfig.port}. Try latter")
             sleep(5000)
             connectToServer()
         }

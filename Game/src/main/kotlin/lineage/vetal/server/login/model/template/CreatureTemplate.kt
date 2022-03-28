@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.model.template
 
-import lineage.vetal.server.login.model.StatsSet
+import lineage.vetal.server.login.xml.StatSet
 
-open class CreatureTemplate(set: StatsSet) : Template(set){
+open class CreatureTemplate(set: StatSet) : Template(set){
     val baseSTR = set.getInteger("str", 40)
     val baseCON = set.getInteger("con", 21)
     val baseDEX = set.getInteger("dex", 30)

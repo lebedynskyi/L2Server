@@ -3,14 +3,16 @@ package lineage.vetal.server.login
 import com.charleskorn.kaml.Yaml
 import lineage.vetal.server.core.NetworkConfig
 import kotlinx.serialization.Serializable
-import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.core.DataBaseConfig
+import lineage.vetal.server.core.ServerInfo
 import java.io.File
 import java.io.InputStream
 
 @Serializable
 class GameConfig(
     val bridgeServer: NetworkConfig,
-    val serverInfo: ServerInfo
+    val serverInfo: ServerInfo,
+    val dataBaseConfig: DataBaseConfig
 ) {
     companion object Builder {
         fun read(path: String): GameConfig {

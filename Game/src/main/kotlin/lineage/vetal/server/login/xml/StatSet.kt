@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.login.xml
 
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -9,10 +9,10 @@ import kotlin.collections.HashMap
  * This class is used in order to have a set of couples (key,value).<BR></BR>
  * Methods deployed are accessors to the set (add/get value from its key) and addition of a whole set in the current one.
  */
-class StatsSet : HashMap<String, Any?> {
+class StatSet : HashMap<String, Any?> {
     constructor() : super() {}
     constructor(size: Int) : super(size) {}
-    constructor(set: StatsSet?) : super(set) {}
+    constructor(set: StatSet?) : super(set) {}
 
     operator fun set(key: String, value: Any?) {
         put(key, value)

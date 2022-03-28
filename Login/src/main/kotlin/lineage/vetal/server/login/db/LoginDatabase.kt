@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.db
 
-import lineage.vetal.server.core.config.DataBaseConfig
+import lineage.vetal.server.core.DataBaseConfig
 import lineage.vetal.server.core.db.DBConnection
 
 class LoginDatabase(dataBaseConfig: DataBaseConfig) {

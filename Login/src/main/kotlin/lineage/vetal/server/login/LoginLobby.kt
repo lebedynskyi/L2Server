@@ -1,12 +1,12 @@
 package lineage.vetal.server.login
 
+import lineage.vetal.server.core.ServerInfo
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.core.model.AccountInfo
-import lineage.vetal.server.core.model.ServerInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
@@ -20,7 +20,6 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
 import lineage.vetal.server.login.clientserver.packets.server.*
-import lineage.vetal.server.login.model.LobbyConfig
 import lineage.vetal.server.login.bridgeserver.packets.server.UpdateOk
 import javax.crypto.Cipher
 import kotlin.random.Random

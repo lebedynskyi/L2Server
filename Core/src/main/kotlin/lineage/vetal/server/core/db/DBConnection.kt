@@ -2,7 +2,7 @@ package lineage.vetal.server.core.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import lineage.vetal.server.core.config.DataBaseConfig
+import lineage.vetal.server.core.DataBaseConfig
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.sql.Connection

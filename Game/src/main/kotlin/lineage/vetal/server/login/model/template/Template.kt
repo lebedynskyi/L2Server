@@ -1,9 +1,9 @@
 package lineage.vetal.server.login.model.template
 
-import lineage.vetal.server.login.model.StatsSet
+import lineage.vetal.server.login.xml.StatSet
 
 open class Template(
-    set: StatsSet
+    set: StatSet
 ) {
     val id = set.getInteger("id")
 }
