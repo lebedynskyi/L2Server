@@ -1,34 +1,34 @@
 package lineage.vetal.server.login.bridgeserver
 
 import kotlinx.coroutines.*
-import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.core.server.SelectorServerThread
-import lineage.vetal.server.login.LoginLobby
+import lineage.vetal.server.login.LoginContext
+import lineage.vetal.server.login.bridgeserver.packets.client.BridgeClientDisconnected
 
 
 class BridgeServer(
-    private val loginLobby: LoginLobby,
-    private val bridgeNetworkConfig: NetworkConfig
+    private val context: LoginContext
 ) {
     private var selectorThread: SelectorServerThread<BridgeClient>? = null
     private val serverContext = newSingleThreadContext("Bridge")
+    private val bridgePacketHandler = BridgePacketHandler(context)
 
     suspend fun startServer() {
-        selectorThread = SelectorServerThread(bridgeNetworkConfig, BridgeFactory()).apply {
+        selectorThread = SelectorServerThread(context.config.bridgeServer, BridgeFactory()).apply {
             start()
         }
 
         withContext(serverContext) {
             launch {
                 selectorThread?.connectionReadFlow?.collect {
-                    loginLobby.onBridgePacketReceived(it.first, it.second)
+                    bridgePacketHandler.handle(it.first, it.second)
                 }
             }
 
             launch {
                 selectorThread?.connectionCloseFlow?.collect {
-                    loginLobby.onBridgeClientDisconnected(it)
+                    bridgePacketHandler.handle(it, BridgeClientDisconnected())
                 }
             }
         }

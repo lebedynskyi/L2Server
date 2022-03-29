@@ -2,6 +2,7 @@ package lineage.vetal.server.login
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
+import lineage.vetal.server.core.DataBaseConfig
 import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.ServerInfo
 import java.io.File
@@ -12,7 +13,8 @@ class LoginConfig(
     val lobbyConfig: LobbyConfig,
     val clientServer: NetworkConfig,
     val bridgeServer: NetworkConfig,
-    val registeredServers: Array<ServerInfo>
+    val registeredServers: Array<ServerInfo>,
+    val dataBaseConfig: DataBaseConfig
 ) {
     companion object Builder {
         fun read(path: String): LoginConfig {

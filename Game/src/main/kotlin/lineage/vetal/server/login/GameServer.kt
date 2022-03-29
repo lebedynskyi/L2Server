@@ -26,14 +26,13 @@ class GameServer(
 
     private val gameSelector: SelectorServerThread<GameClient>
     private val gameCoroutineContext = newSingleThreadContext("GameServer")
-    private val gamePacketHandler: GamePacketHandler
+    private val gamePacketHandler = GamePacketHandler(context)
 
     init {
         writeSection(TAG)
         bridgePacketHandler = BridgeGamePacketHandler(context)
         bridgeSelector = SelectorClientThread(context.config.bridgeServer, BridgeGameClientFactory())
 
-        gamePacketHandler = GamePacketHandler(context)
         val networkConfig = NetworkConfig(context.config.serverInfo.ip, context.config.serverInfo.port)
         gameSelector = SelectorServerThread(networkConfig, GameClientFactory())
     }

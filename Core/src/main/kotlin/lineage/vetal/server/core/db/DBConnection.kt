@@ -9,6 +9,7 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import org.slf4j.LoggerFactory
 import ch.qos.logback.classic.Level;
 import java.sql.Connection
+import kotlin.system.exitProcess
 
 class DBConnection(
     private val config: DataBaseConfig
@@ -52,6 +53,7 @@ class DBConnection(
             }
         } catch (e: Exception) {
             writeError(TAG, "Cannot connect to DB - ${config.url}", e)
+            exitProcess(1)
         }
     }
 }

@@ -25,3 +25,8 @@ registeredServers:
     isPvp: false
     maxOnline: 5
     bridgeKey: "ghJW&^#TEyuGOE*G"
+
+dataBaseConfig:
+  url: "jdbc:mariadb://192.168.43.180/l2db"
+  user: "root"
+  password: "l2db"
