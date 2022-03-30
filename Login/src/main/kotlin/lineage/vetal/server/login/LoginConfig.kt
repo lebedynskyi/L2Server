@@ -34,5 +34,6 @@ class LoginConfig(
 @Serializable
 data class LobbyConfig(
     val maxCount: Int,
-    val showLicense: Boolean
+    val showLicense: Boolean,
+    val autoRegistration: Boolean
 )

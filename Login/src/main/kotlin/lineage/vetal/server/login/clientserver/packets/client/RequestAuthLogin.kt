@@ -19,11 +19,14 @@ class RequestAuthLogin : LoginClientPacket() {
     val raw = ByteArray(128)
 
     override fun execute(client: LoginClient, context: LoginContext) {
+        // todo move to handler
         if (client.loginState != LoginState.AUTH_GG) {
             client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
             context.loginLobby.removeClient(client)
             return
         }
+
+        val accountsDao = context.loginDatabase.accountsDao
 
         val rsaCipher = Cipher.getInstance("RSA/ECB/nopadding")
         rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.getCredentialsDecryptionKey())
@@ -32,14 +35,18 @@ class RequestAuthLogin : LoginClientPacket() {
         val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.lowercase()
         val password = String(decrypted, 0x6C, 16).trim { it <= ' ' }
 
-        // TODO need DB query.. Don't store password in memory
-        if (user != "qwe" || password != "qwe") {
+        var accountInfo = accountsDao.findAccount(user)
+        if (accountInfo == null && context.config.lobbyConfig.autoRegistration)  {
+            accountsDao.insertAccount(user, password)
+            accountInfo = AccountInfo(user, password)
+        }
+
+        if (accountInfo?.account != user || accountInfo.password != password) {
             client.saveAndClose(LoginFail.REASON_USER_OR_PASS_WRONG)
             context.loginLobby.removeClient(client)
             return
         }
 
-        val accountInfo = AccountInfo(user)
         if (context.loginLobby.hasAuthedClient(accountInfo)) {
             writeDebug(TAG, "Account already in lobby $accountInfo")
             client.saveAndClose()

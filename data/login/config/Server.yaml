@@ -1,6 +1,7 @@
 lobbyConfig:
   maxCount: 2
   showLicense: true
+  autoRegistration: true
 
 clientServer:
   hostname: "*"
