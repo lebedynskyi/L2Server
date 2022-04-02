@@ -14,11 +14,31 @@ abstract class Dao(
         }
     }
 
-    fun insertUpdate(sql: String, block: (PreparedStatement) -> Unit): Int {
+    fun insertOrUpdate(sql: String, block: (PreparedStatement) -> Unit = {}): Boolean {
         return dataBase.getConnection().use {
             it.prepareStatement(sql)
                 .apply(block)
                 .executeUpdate()
+        } > 0
+    }
+
+    fun <T> ResultSet.firstOrNull(transform: (ResultSet) -> T): T? {
+        if (first()) {
+            use {
+                return transform.invoke(it)
+            }
+        } else {
+            return null
         }
+    }
+
+    fun <T> ResultSet.listOrEmpty(transform: (ResultSet) -> T): List<T> {
+        val resultList = mutableListOf<T>()
+        use {
+            while (it.next()) {
+                resultList.add(transform.invoke(it))
+            }
+        }
+        return resultList
     }
 }

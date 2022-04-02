@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.login.game.model.player
 
 import java.util.*
 
@@ -189,7 +189,9 @@ enum class ClassId(
             availableSubClasses.add(classId)
         }
         when (this) {
-            DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT -> availableSubClasses.removeAll(EnumSet.of(DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT))
+            DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT -> availableSubClasses.removeAll(EnumSet.of(
+                DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT
+            ))
             TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER -> availableSubClasses.removeAll(EnumSet.of(TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER))
             HAWKEYE, SILVER_RANGER, PHANTOM_RANGER -> availableSubClasses.removeAll(EnumSet.of(HAWKEYE, SILVER_RANGER, PHANTOM_RANGER))
             WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER -> availableSubClasses.removeAll(EnumSet.of(WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER))
@@ -209,14 +211,14 @@ enum class ClassId(
          * @param player : The [Player] to make checks on.
          * @return EnumSet<ClassId> : Available subclasses for given player.
         </ClassId> */
-//        fun getAvailableSubclasses(player: Player): EnumSet<ClassId>? {
-//            var classId: ClassId? = VALUES[player.getBaseClass()]
-//            if (classId!!._level < 2) return null
-//
-//            // handle 3rd level class
-//            if (classId._level == 3) classId = classId.parent
-//            return EnumSet.copyOf(classId!!._subclasses)
-//        }
+        fun getAvailableSubclasses(player: Player): EnumSet<ClassId>? {
+            var classId: ClassId? = VALUES[player.baseClassId]
+            if (classId!!.level < 2) return null
+
+            // handle 3rd level class
+            if (classId.level == 3) classId = classId.parent
+            return EnumSet.copyOf(classId!!.availableSubClasses)
+        }
 
         init {
             // create subclass lists

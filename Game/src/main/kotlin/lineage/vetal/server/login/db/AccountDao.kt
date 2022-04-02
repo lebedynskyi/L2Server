@@ -9,7 +9,7 @@ class AccountDao(
     db: DBConnection
 ) : Dao(db) {
     private val FIND_ACCOUNT_SQL = "SELECT * FROM `accounts` WHERE login=?"
-    private val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (id, login, password) VALUES (?,?,?)"
+    private val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (login, password) VALUES (?, ?)"
 
     fun findAccount(account: String): AccountInfo? {
         val result = query(FIND_ACCOUNT_SQL) {
@@ -25,11 +25,11 @@ class AccountDao(
         }
     }
 
-    fun insertAccount(account: AccountInfo): Boolean {
+    fun insertAccount(id: UUID, account: String, password: String): Boolean {
         return insertOrUpdate(INSERT_ACCOUNT_SQL) {
-            it.setString(1, account.id.toString())
-            it.setString(2, account.account)
-            it.setString(3, account.password)
+            it.setString(1, id.toString())
+            it.setString(2, account)
+            it.setString(3, password)
         }
     }
 }

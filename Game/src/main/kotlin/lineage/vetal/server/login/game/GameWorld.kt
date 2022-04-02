@@ -1,7 +1,9 @@
 package lineage.vetal.server.login.game
 
-class GameWorld {
-    val currentOnline get() = currentPlayers.size
+import lineage.vetal.server.login.game.model.player.Player
 
-    private val currentPlayers = mutableSetOf<GameObject>()
+class GameWorld {
+    val currentOnline get() = players.size
+
+    private val players = mutableSetOf<Player>()
 }

@@ -2,7 +2,7 @@ package lineage.vetal.server.login.gameclient.packet.server
 
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.gameclient.GameClient
-import lineage.vetal.server.login.model.CharSelectionSlot
+import lineage.vetal.server.login.game.model.CharSelectionSlot
 
 class CharSlotList(
     private val gameClient: GameClient,
@@ -27,7 +27,7 @@ class CharSlotList(
             writeS(it.name)
             writeD(it.charId)
             writeS(gameClient.account.account)
-            writeD(gameClient.sessionId)
+            writeD(gameClient.sessionKey.playOkID1)
             writeD(it.clanId)
             writeD(0x00) // Builder level
             writeD(it.sex)

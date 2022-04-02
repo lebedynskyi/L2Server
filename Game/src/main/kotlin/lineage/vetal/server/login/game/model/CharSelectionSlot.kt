@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.login.game.model
 
 
 /**

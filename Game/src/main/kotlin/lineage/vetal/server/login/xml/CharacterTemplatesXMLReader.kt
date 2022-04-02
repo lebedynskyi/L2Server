@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.xml
 
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.model.ClassId
-import lineage.vetal.server.login.model.Location
-import lineage.vetal.server.login.model.template.ItemTemplate
-import lineage.vetal.server.login.model.template.CharacterTemplate
-import lineage.vetal.server.login.model.template.SkillTemplate
+import lineage.vetal.server.login.game.model.player.ClassId
+import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.template.ItemTemplate
+import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.SkillTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 

@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.xml
 
 import lineage.vetal.server.core.utils.logs.writeError
-import lineage.vetal.server.login.model.Location
-import lineage.vetal.server.login.model.SpawnLocation
+import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.location.SpawnLocation
 import org.w3c.dom.Document
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node

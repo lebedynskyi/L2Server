@@ -1,7 +1,9 @@
-package lineage.vetal.server.login.model.template
+package lineage.vetal.server.login.game.model.template
 
+import lineage.vetal.server.login.game.model.player.ClassId
+import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.xml.StatSet
-import lineage.vetal.server.login.model.*
 
 class CharacterTemplate(set: StatSet) : CreatureTemplate(set) {
     val classId: ClassId = ClassId.VALUES[id]
@@ -11,11 +13,10 @@ class CharacterTemplate(set: StatSet) : CreatureTemplate(set) {
     val fists: Int = set.getInteger("fists")
 
     val items: List<ItemTemplate> get() = _items
-    val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
-
-    val _skills: MutableList<SkillTemplate> = set.getList<SkillTemplate>("skills").toMutableList()
     val skills: List<SkillTemplate> get() = _skills
 
+    private val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
+    private val _skills: MutableList<SkillTemplate> = set.getList<SkillTemplate>("skills").toMutableList()
     private val _collisionRadiusFemale: Double = set.getDouble("radiusFemale")
     private val _collisionHeightFemale: Double = set.getDouble("heightFemale")
     private val _spawnLocations: List<Location> = set.getList("spawnLocations")

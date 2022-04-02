@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
 import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.login.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharacterTemplate
 
 class NewCharacterSuccess(
     private val templated: List<CharacterTemplate>

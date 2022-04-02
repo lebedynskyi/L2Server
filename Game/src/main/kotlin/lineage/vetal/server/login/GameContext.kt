@@ -4,7 +4,7 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.GameWorld
-import lineage.vetal.server.login.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharacterTemplate
 import lineage.vetal.server.login.xml.CharacterTemplatesXMLReader
 import java.io.File
 
@@ -12,7 +12,7 @@ private const val PATH_SERVER_CONFIG = "game/config/Server.yaml"
 private const val PATH_CLASSES_XML = "game/xml/classes"
 
 class GameContext(
-    private val dataFolder: String
+    dataFolder: String
 ) {
     private val TAG = "GameContext"
 
@@ -20,6 +20,8 @@ class GameContext(
     val gameWorld: GameWorld
     val characterTemplates: Map<Int, CharacterTemplate>
     val gameDatabase: GameDatabase
+
+    // TODO add some additional xml reading NPC?
 
     init {
         writeSection(TAG)

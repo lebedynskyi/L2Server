@@ -10,6 +10,7 @@ import lineage.vetal.server.login.clientserver.packets.LoginClientPacket
 import lineage.vetal.server.login.clientserver.packets.server.LoginFail
 import lineage.vetal.server.login.clientserver.packets.server.LoginOk
 import lineage.vetal.server.login.clientserver.packets.server.ServerList
+import java.util.*
 import javax.crypto.Cipher
 import kotlin.random.Random
 
@@ -37,8 +38,8 @@ class RequestAuthLogin : LoginClientPacket() {
 
         var accountInfo = accountsDao.findAccount(user)
         if (accountInfo == null && context.config.lobbyConfig.autoRegistration)  {
-            accountsDao.insertAccount(user, password)
-            accountInfo = AccountInfo(user, password)
+            accountInfo = AccountInfo(UUID.randomUUID(), user, password)
+            accountsDao.insertAccount(accountInfo)
         }
 
         if (accountInfo?.account != user || accountInfo.password != password) {
@@ -53,9 +54,8 @@ class RequestAuthLogin : LoginClientPacket() {
             return
         }
 
-        // TODO check is account in game already in game Below code should be in server packet?
+        // TODO check is account already in game Below code should be in server packet?
         writeDebug(TAG, "New account info received $accountInfo")
-
 
         val sessionKey = SessionKey(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
         client.loginState = LoginState.AUTH_LOGIN

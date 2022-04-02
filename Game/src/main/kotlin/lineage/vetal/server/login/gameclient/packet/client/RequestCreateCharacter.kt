@@ -3,11 +3,15 @@ package lineage.vetal.server.login.gameclient.packet.client
 import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
+import lineage.vetal.server.login.game.model.player.Sex
+import lineage.vetal.server.login.game.model.player.Appearance
+import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameclient.GameClient
 import lineage.vetal.server.login.gameclient.packet.GamePacket
 import lineage.vetal.server.login.gameclient.packet.server.CharSlotList
 import lineage.vetal.server.login.gameclient.packet.server.CreateCharFail
 import lineage.vetal.server.login.gameclient.packet.server.CreateCharOK
+import java.util.*
 
 
 class RequestCreateCharacter : GamePacket() {
@@ -30,13 +34,100 @@ class RequestCreateCharacter : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         writeDebug(TAG, "Request to create char with name `$name`")
 
-        if (!name.isValidPlayerName() || name.lowercase().startsWith("gm")) {
-            client.sendPacket(CreateCharFail.REASON_INCORRECT_NAME)
-        } else {
-            client.sendPacket(CreateCharOK.STATIC_PACKET)
-            val charSelectInfo = CharSlotList(client, emptyList())
-            client.sendPacket(charSelectInfo)
+        // Invalid race.
+        if (race > 4 || race < 0) {
+            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
+            return
         }
+
+        // Invalid face.
+        if (face > 2 || face < 0) {
+            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
+            return
+        }
+
+        // Invalid hair style.
+        if (hairStyle < 0 || sex.toInt() == 0 && hairStyle > 4 || sex.toInt() != 0 && hairStyle > 6) {
+            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
+            return
+        }
+
+        // Invalid hair color.
+        if (hairColor > 3 || hairColor < 0) {
+            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
+            return
+        }
+
+        // Invalid name typo.
+        if (!name.isValidPlayerName()) {
+            client.sendPacket(CreateCharFail.REASON_INCORRECT_NAME)
+            return
+        }
+
+//        // Your name is already taken by a NPC.
+//        if (NpcData.getInstance().getTemplateByName(_name) != null) {
+//            sendPacket(CharCreateFail.REASON_INCORRECT_NAME)
+//            return
+//        }
+//
+//        // You already have the maximum amount of characters for this account.
+//        if (PlayerInfoTable.getInstance().getCharactersInAcc(getClient().getAccountName()) >= 7) {
+//            sendPacket(CharCreateFail.REASON_TOO_MANY_CHARACTERS)
+//            return
+//        }
+//
+//        // The name already exists.
+//        if (PlayerInfoTable.getInstance().getPlayerObjectId(_name) > 0) {
+//            sendPacket(CharCreateFail.REASON_NAME_ALREADY_EXISTS)
+//            return
+//        }
+//
+//        // The class id related to this template is post-newbie.
+//        val template: PlayerTemplate = PlayerData.getInstance().getTemplate(_classId)
+//        if (template == null || template.getClassBaseLevel() > 1) {
+//            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
+//            return
+//        }
+//
+//        // Create the player Object.
+//        val player: Player = Player.create(
+//            IdFactory.getInstance().getNextId(),
+//            template,
+//            getClient().getAccountName(),
+//            _name,
+//            _hairStyle,
+//            _hairColor,
+//            _face,
+//            Sex.VALUES.get(_sex.toInt())
+//        )
+//        if (player == null) {
+//            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
+//            return
+//        }
+
+
+        // The class id related to this template is post-newbie.
+        val playerTemplate = context.characterTemplates[classId]
+        if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {
+            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
+            return
+        }
+
+        val playerAppearance = Appearance(hairStyle, hairColor, face, Sex.values()[sex.toInt()])
+        val newPlayer = Player(
+            UUID.randomUUID(),
+            name,
+            client.account.id,
+            playerAppearance,
+            playerTemplate
+        )
+
+        context.gameDatabase.charactersDao.insertCharacter(newPlayer)
+
+        client.sendPacket(CreateCharOK.STATIC_PACKET)
+
+        val charSelectInfo = CharSlotList(client, emptyList())
+        client.sendPacket(charSelectInfo)
     }
 
     override fun read() {

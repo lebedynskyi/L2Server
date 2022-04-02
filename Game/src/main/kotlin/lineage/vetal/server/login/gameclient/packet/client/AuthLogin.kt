@@ -18,9 +18,15 @@ class AuthLogin : GamePacket() {
 
     override fun execute(client: GameClient, context: GameContext) {
         writeInfo(TAG, "Account connected $loginName")
+        val account = context.gameDatabase.accountDao.findAccount(loginName)
+        if (account == null) {
+            client.saveAndClose()
+            return
+        }
+
         val sessionKey = SessionKey(playKey1, playKey2, loginKey1, loginKey1)
         client.sessionKey = sessionKey
-        client.account = AccountInfo(loginName)
+        client.account = account
 
         // TODO check login server info about account
         client.sendPacket(CharSlotList(client, emptyList()))
