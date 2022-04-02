@@ -30,7 +30,7 @@ class CharSlotList(
             writeD(gameClient.sessionKey.playOkID1)
             writeD(it.clanId)
             writeD(0x00) // Builder level
-            writeD(it.sex)
+            writeD(it.sex.ordinal)
             writeD(it.race)
             writeD(it.baseClassId)
             writeD(0x01) // active ??

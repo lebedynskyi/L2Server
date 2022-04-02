@@ -27,9 +27,9 @@ class RequestCreateCharacter : GamePacket() {
     var men = -1
     var dex = -1
     var wit = -1
-    var hairStyle: Byte = -1
-    var hairColor: Byte = -1
-    var face: Byte = -1
+    var hairStyle: Int = -1
+    var hairColor: Int = -1
+    var face: Int = -1
 
     override fun execute(client: GameClient, context: GameContext) {
         writeDebug(TAG, "Request to create char with name `$name`")
@@ -124,9 +124,10 @@ class RequestCreateCharacter : GamePacket() {
 
         context.gameDatabase.charactersDao.insertCharacter(newPlayer)
 
+        val slots = context.gameDatabase.charactersDao.getCharSlots(client.account.id)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
 
-        val charSelectInfo = CharSlotList(client, emptyList())
+        val charSelectInfo = CharSlotList(client, slots)
         client.sendPacket(charSelectInfo)
     }
 
@@ -141,8 +142,8 @@ class RequestCreateCharacter : GamePacket() {
         men = readD()
         dex = readD()
         wit = readD()
-        hairStyle = readD().toByte()
-        hairColor = readD().toByte()
-        face = readD().toByte()
+        hairStyle = readD()
+        hairColor = readD()
+        face = readD()
     }
 }

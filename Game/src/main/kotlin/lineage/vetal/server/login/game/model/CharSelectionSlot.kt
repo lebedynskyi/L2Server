@@ -1,39 +1,39 @@
 package lineage.vetal.server.login.game.model
 
+import lineage.vetal.server.login.game.model.player.Sex
 
-/**
- * A datatype used to store character selection screen informations.
- */
 data class CharSelectionSlot(
     val objectId: Int,
-    val name: String
+    val name: String,
+    val title: String,
+    var charId: Int = 0x00030b7a,
+    var exp: Long,
+    var sp: Int,
+    var clanId: Int,
+    var race: Int,
+    var classId: Int,
+    var baseClassId: Int,
+    var deleteTimer: Long,
+    var lastAccess: Long,
+    var face: Int,
+    var hairStyle: Int,
+    var hairColor: Int,
+    var sex: Sex,
+    var level: Int,
+    var maxHp: Double,
+    var currentHp: Double,
+    var maxMp: Double,
+    var currentMp: Double,
+    var karma: Int,
+    var pkKills: Int,
+    var pvPKills: Int,
+    var augmentationId: Int,
+    var x: Int,
+    var y: Int,
+    var z: Int,
+    var accessLevel: Int
 ) {
-    var charId = 0x00030b7a
-    var exp: Long = 0
-    var sp = 0
-    var clanId = 0
-    var race = 0
-    var classId = 0
-    var baseClassId = 0
-    var deleteTimer = 0L
-    var lastAccess = 0L
-    var face = 0
-    var hairStyle = 0
-    var hairColor = 0
-    var sex = 0
-    var level = 1
-    var maxHp = 0.0
-    var currentHp = 0.0
-    var maxMp = 0.0
-    var currentMp = 0.0
-    var karma = 0
-    var pkKills = 0
-    var pvPKills = 0
-    var augmentationId = 0
-    var x = 0
-    var y = 0
-    var z = 0
-    var accessLevel = 0
+
 
     private val _paperdoll: Array<IntArray> = emptyArray()
 
