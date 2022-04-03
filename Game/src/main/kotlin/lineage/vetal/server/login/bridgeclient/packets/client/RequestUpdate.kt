@@ -2,7 +2,7 @@ package lineage.vetal.server.login.bridgeclient.packets.client
 
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.core.server.toByte
+import lineage.vetal.server.core.utils.ext.toByte
 
 class RequestUpdate(
     private val serverStatus: ServerStatus

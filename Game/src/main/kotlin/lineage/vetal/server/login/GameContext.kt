@@ -20,9 +20,10 @@ class GameContext(
     val gameWorld: GameWorld
     val characterTemplates: Map<Int, CharacterTemplate>
     val gameDatabase: GameDatabase
+    val threadPool: ThreadPool
 
     // TODO add some additional xml reading NPC?
-
+    // TODO add Game timer thread
     init {
         writeSection(TAG)
         writeInfo(TAG, "Reading configs")
@@ -32,11 +33,14 @@ class GameContext(
         config = GameConfig.read(serverConfigFile)
         gameWorld = GameWorld()
 
+        writeInfo(TAG, "Initialize thread pool")
+        threadPool = ThreadPool()
+
         val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
-        writeInfo(TAG, "Reading classes templates from${serverConfigFile.absolutePath}")
+        writeInfo(TAG, "Reading classes templates from ${charsXmlFolder.absolutePath}")
         characterTemplates = CharacterTemplatesXMLReader(charsXmlFolder.absolutePath).load()
 
         writeInfo(TAG, "Initialize database")
-        gameDatabase = GameDatabase(config.dataBaseConfig)
+        gameDatabase = GameDatabase(config.dataBaseConfig, characterTemplates)
     }
 }

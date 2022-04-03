@@ -2,7 +2,7 @@ package lineage.vetal.server.login.clientserver.packets.server
 
 import lineage.vetal.server.core.ServerInfo
 import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.core.server.toByte
+import lineage.vetal.server.core.utils.ext.toByte
 import java.net.InetAddress
 
 class ServerList(

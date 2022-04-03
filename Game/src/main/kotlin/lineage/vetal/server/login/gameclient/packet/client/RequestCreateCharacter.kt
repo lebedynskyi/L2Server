@@ -3,6 +3,7 @@ package lineage.vetal.server.login.gameclient.packet.client
 import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
+import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
@@ -113,13 +114,13 @@ class RequestCreateCharacter : GamePacket() {
             return
         }
 
-        val playerAppearance = Appearance(hairStyle, hairColor, face, Sex.values()[sex.toInt()])
         val newPlayer = Player(
             UUID.randomUUID(),
             name,
             client.account.id,
-            playerAppearance,
-            playerTemplate
+            playerTemplate,
+            Appearance(hairStyle, hairColor, face, Sex.values()[sex.toInt()]),
+            SpawnLocation(playerTemplate.randomSpawn)
         )
 
         context.gameDatabase.charactersDao.insertCharacter(newPlayer)
@@ -129,6 +130,8 @@ class RequestCreateCharacter : GamePacket() {
 
         val charSelectInfo = CharSlotList(client, slots)
         client.sendPacket(charSelectInfo)
+
+        client.characterSlots = slots
     }
 
     override fun read() {

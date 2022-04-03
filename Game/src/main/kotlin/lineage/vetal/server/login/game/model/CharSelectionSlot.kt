@@ -1,8 +1,10 @@
 package lineage.vetal.server.login.game.model
 
 import lineage.vetal.server.login.game.model.player.Sex
+import java.util.UUID
 
 data class CharSelectionSlot(
+    val id: UUID,
     val objectId: Int,
     val name: String,
     val title: String,

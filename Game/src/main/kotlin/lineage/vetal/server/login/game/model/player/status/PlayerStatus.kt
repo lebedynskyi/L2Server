@@ -2,11 +2,10 @@ package lineage.vetal.server.login.game.model.player.status
 
 import lineage.vetal.server.login.game.model.template.CharacterTemplate
 
-// TODO move some stats to parent classes
 class PlayerStatus(
-    var level: Int,
     template: CharacterTemplate
-) : PlayableStatus() {
+) : PlayableStatus(template) {
+    var level: Int = 0
     var maxHp: Int = 0
     var hp: Double = 0.0
     var maxCp: Int = 0

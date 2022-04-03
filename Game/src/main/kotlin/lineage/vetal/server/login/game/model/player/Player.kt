@@ -9,27 +9,27 @@ class Player(
     id: UUID,
     name: String,
     val accountId: UUID,
+    val charTemplate: CharacterTemplate,
     val appearance: Appearance,
-    var charTemplate: CharacterTemplate,
-    val level: Int = charTemplate.classBaseLevel,
-    val baseClassId: Int = charTemplate.id,
-    val position: SpawnLocation = SpawnLocation(charTemplate.randomSpawn)
+    val position: SpawnLocation
 ) : Playable(id, name) {
-    override var status = PlayerStatus(level, charTemplate)
+    override var status: PlayerStatus = PlayerStatus(charTemplate)
+
     val race get() = charTemplate.classId.race.ordinal
     val classId get() = charTemplate.classId.ordinal
+    var baseClassId = charTemplate.classId.id
 
-    var karma: Int = 0; private set
-    var pvpKills: Int = 0; private set
-    var pkKills: Int = 0; private set
-    var clanId: Int = 0; private set
-    var deleteTimer = 0L; private set
-    var hasDwarvenCraft = false; private set
-    var title: String? = "THE FUCK"; private set
-    var accessLevel = 0; private set
-    var isOnlineInt = 0; private set
-    var isIn7sDungeon = false; private set
-    var clanPrivileges = 0; private set
-    var wantsPeace = false; private set
-    var isNoble = false; private set
+    var karma: Int = 0
+    var pvpKills: Int = 0
+    var pkKills: Int = 0
+    var clanId: Int = 0
+    var deleteTimer = 0L
+    var hasDwarvenCraft = false
+    var title: String? = "I Did it!"
+    var accessLevel = 0
+    var isOnlineInt = 0
+    var isIn7sDungeon = false
+    var clanPrivileges = 0
+    var wantsPeace = false
+    var isNoble = false
 }

@@ -6,14 +6,6 @@ abstract class Packet{
 
 }
 
-fun Boolean?.toByte(): Int {
-    return if (this == true) 0x01 else 0x00
-}
-
-fun Int.toBoolean(): Boolean {
-    return this > 0
-}
-
 /**
 char   – can be in range -128 до 127. Size - 1 byte
 short  – can be in range -32768 до 32767. Size - 2 byte

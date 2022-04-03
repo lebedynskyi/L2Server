@@ -1,6 +1,5 @@
 package lineage.vetal.server.login.gameclient.packet.client
 
-import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.GameContext
@@ -28,8 +27,9 @@ class AuthLogin : GamePacket() {
         client.sessionKey = sessionKey
         client.account = account
 
-        // TODO check login server info about account
-        client.sendPacket(CharSlotList(client, emptyList()))
+        val slots = context.gameDatabase.charactersDao.getCharSlots(client.account.id)
+        client.characterSlots = slots
+        client.sendPacket(CharSlotList(client, slots))
     }
 
     override fun read() {

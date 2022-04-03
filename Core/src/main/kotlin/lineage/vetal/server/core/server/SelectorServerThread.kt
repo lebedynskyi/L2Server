@@ -127,9 +127,7 @@ class SelectorServerThread<T : Client>(
         if (packet != null) {
             _selectionReadFlow.tryEmit(client to packet)
         } else {
-            writeDebug(TAG, "0 packets read. Close connection")
-            closeConnection(key)
-            _selectionCloseFlow.tryEmit(client)
+            writeDebug(TAG, "0 packets read from client $client")
         }
     }
 

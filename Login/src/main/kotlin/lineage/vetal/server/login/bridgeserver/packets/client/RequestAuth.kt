@@ -2,8 +2,7 @@ package lineage.vetal.server.login.bridgeserver.packets.client
 
 import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.core.model.ServerStatus
-import lineage.vetal.server.core.server.ReceivablePacket
-import lineage.vetal.server.core.server.toBoolean
+import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.bridgeserver.packets.BridgePacket

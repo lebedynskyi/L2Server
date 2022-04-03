@@ -46,6 +46,7 @@ class SelectorClientThread<T : Client>(
     var isRunning = true
 
     override fun run() {
+        // TODO does not work loop ?
         while (isRunning) {
             try {
                 connectToServer()
