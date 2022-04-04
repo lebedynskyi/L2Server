@@ -126,8 +126,6 @@ class SelectorServerThread<T : Client>(
 
         if (packet != null) {
             _selectionReadFlow.tryEmit(client to packet)
-        } else {
-            writeDebug(TAG, "0 packets read from client $client")
         }
     }
 
@@ -135,7 +133,6 @@ class SelectorServerThread<T : Client>(
         val client = key.attachment() as T
         val connection = client.connection
 
-        writeDebug(TAG, "Write packets to $client")
         connection.writeData(writeBuffer, tempWriteBuffer)
 
         if (connection.pendingClose) {

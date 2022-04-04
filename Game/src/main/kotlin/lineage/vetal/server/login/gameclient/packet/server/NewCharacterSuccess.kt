@@ -11,8 +11,8 @@ class NewCharacterSuccess(
         writeD(templated.size)
 
         templated.forEach {
-            writeD(it.classId.race.id)
-            writeD(it.classId.id)
+            writeD(it.charClass.race.id)
+            writeD(it.charClass.id)
             writeD(0x46)
             writeD(it.baseSTR)
             writeD(0x0a)

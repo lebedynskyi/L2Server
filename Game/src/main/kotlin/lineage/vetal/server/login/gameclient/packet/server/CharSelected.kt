@@ -19,7 +19,7 @@ class CharSelected(
         writeD(0x00) // unknown
 
         writeD(player.appearance.sex.ordinal)
-        writeD(player.race)
+        writeD(player.raceId)
         writeD(player.classId)
 
         writeD(0x01)

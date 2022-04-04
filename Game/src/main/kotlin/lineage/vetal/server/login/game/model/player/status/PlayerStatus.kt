@@ -3,7 +3,7 @@ package lineage.vetal.server.login.game.model.player.status
 import lineage.vetal.server.login.game.model.template.CharacterTemplate
 
 class PlayerStatus(
-    template: CharacterTemplate
+    private val template: CharacterTemplate
 ) : PlayableStatus(template) {
     var level: Int = 0
     var maxHp: Int = 0
@@ -14,4 +14,8 @@ class PlayerStatus(
     var mp: Double = 0.0
     var exp: Long = 0
     var sp: Int = 0
+
+    override fun getBaseSwimSpeed(): Int {
+        return template.baseSwimSpeed
+    }
 }

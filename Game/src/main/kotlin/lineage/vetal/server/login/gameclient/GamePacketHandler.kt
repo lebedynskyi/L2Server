@@ -15,7 +15,7 @@ class GamePacketHandler(
             return
         }
 
-        writeDebug(TAG, packet::class.java.name)
+        writeDebug(TAG, "Client -> $client packet -> ${packet::class.java.simpleName}")
 
         when (packet) {
 

@@ -141,7 +141,6 @@ class SelectorClientThread<T : Client>(
         val client = key.attachment() as T
         val connection = client.connection
 
-        writeDebug(TAG, "Write packets to $client")
         connection.writeData(writeBuffer, tempWriteBuffer)
 
         if (connection.pendingClose) {

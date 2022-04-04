@@ -1,6 +1,7 @@
-package lineage.vetal.server.login.game.model.location
+package lineage.vetal.server.core.model.location
 
-import lineage.vetal.server.login.xml.StatSet
+import lineage.vetal.server.core.model.StatSet
+
 
 open class Location {
     @Volatile

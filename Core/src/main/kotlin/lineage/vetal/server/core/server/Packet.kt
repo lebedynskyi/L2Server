@@ -1,8 +1,9 @@
 package lineage.vetal.server.core.server
 
+import lineage.vetal.server.core.model.location.Location
 import java.nio.ByteBuffer
 
-abstract class Packet{
+abstract class Packet {
 
 }
 
@@ -63,11 +64,11 @@ abstract class SendablePacket : Packet() {
         buffer?.putChar('\u0000')
     }
 
-//    protected fun writeLoc(loc: Location) {
-//        buffer?.putInt(loc.getX())
-//        buffer?.putInt(loc.getY())
-//        buffer?.putInt(loc.getZ())
-//    }
+    protected fun writeLoc(loc: Location) {
+        buffer?.putInt(loc.x)
+        buffer?.putInt(loc.y)
+        buffer?.putInt(loc.z)
+    }
 }
 
 abstract class ReceivablePacket : Packet() {

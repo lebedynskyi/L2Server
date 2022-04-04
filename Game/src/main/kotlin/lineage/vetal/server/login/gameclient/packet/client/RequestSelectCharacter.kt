@@ -2,6 +2,7 @@ package lineage.vetal.server.login.gameclient.packet.client
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
+import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.gameclient.GameClient
 import lineage.vetal.server.login.gameclient.packet.GamePacket
 import lineage.vetal.server.login.gameclient.packet.server.CharSelected
@@ -24,7 +25,10 @@ class RequestSelectCharacter : GamePacket() {
             return
         }
 
-        val player = context.gameDatabase.charactersDao.getCharacter(slot.id)
+        val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
+            inventory = Inventory()
+        }
+
         if (player == null) {
             writeDebug(TAG, "Unable to select character for account ${client.account.account}. Cannot find player")
             client.saveAndClose()
@@ -33,7 +37,7 @@ class RequestSelectCharacter : GamePacket() {
 
         client.player = player
 
-        client.sendPacket(SSQInfo.RED_SKY_PACKET)
+        client.sendPacket(SSQInfo.REGULAR_SKY_PACKET)
         client.sendPacket(CharSelected(player, client.sessionKey.playOkID1))
     }
 

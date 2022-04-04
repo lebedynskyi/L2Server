@@ -57,8 +57,9 @@ open class ClientConnection(
             packetIterator.remove()
         }
         byteBuffer.flip()
+
+        // TODO check is packet was written to buffer or not.. It could be not enough space
         val wroteCount = write(byteBuffer)
-        writeDebug(TAG, "Sent $packetCounter packets to $clientAddress data size $wroteCount")
     }
 
     private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {

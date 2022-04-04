@@ -1,8 +1,9 @@
 package lineage.vetal.server.login.xml
 
+import lineage.vetal.server.core.model.StatSet
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.game.model.player.ClassId
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.core.model.location.Location
 import lineage.vetal.server.login.game.model.template.ItemTemplate
 import lineage.vetal.server.login.game.model.template.CharacterTemplate
 import lineage.vetal.server.login.game.model.template.SkillTemplate
@@ -26,7 +27,7 @@ class CharacterTemplatesXMLReader(
 
         // We add parent skills, if existing.
         for (template in templates.values) {
-            val parentClassId = template.classId.parent
+            val parentClassId = template.charClass.parent
             if (parentClassId != null) {
                 template.addSkillsFromParent(templates[parentClassId.id]?.skills.orEmpty())
             }
@@ -71,6 +72,6 @@ class CharacterTemplatesXMLReader(
 
     fun getClassNameById(classId: Int): String {
         val template: CharacterTemplate? = templates[classId]
-        return template?.classId?.name ?: "Invalid class"
+        return template?.charClass?.name ?: "Invalid class"
     }
 }

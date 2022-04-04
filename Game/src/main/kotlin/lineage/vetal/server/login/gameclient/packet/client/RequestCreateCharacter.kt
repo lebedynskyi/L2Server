@@ -3,7 +3,7 @@ package lineage.vetal.server.login.gameclient.packet.client
 import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.core.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player

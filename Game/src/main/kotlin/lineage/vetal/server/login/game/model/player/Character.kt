@@ -4,6 +4,8 @@ import java.util.*
 
 enum class Sex {
     MALE, FEMALE, ETC;
+
+    val id get() = ordinal
 }
 
 enum class ClassType {
@@ -20,7 +22,7 @@ enum class ClassRace(
     DWARF(0.8),
     DUMMY(0.0);
 
-    val id : Int get() = ordinal
+    val id: Int get() = ordinal
 }
 
 enum class ClassId(
@@ -151,8 +153,8 @@ enum class ClassId(
     MAESTRO(ClassRace.DWARF, ClassType.FIGHTER, 3, "Maestro", WARSMITH);
 
 
-    val id : Int get() = ordinal
-    private val availableSubClasses= mutableSetOf<ClassId>()
+    val id: Int get() = ordinal
+    private val availableSubClasses = mutableSetOf<ClassId>()
 
     override fun toString(): String {
         return className
@@ -189,13 +191,39 @@ enum class ClassId(
             availableSubClasses.add(classId)
         }
         when (this) {
-            DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT -> availableSubClasses.removeAll(EnumSet.of(
-                DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT
-            ))
-            TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER -> availableSubClasses.removeAll(EnumSet.of(TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER))
-            HAWKEYE, SILVER_RANGER, PHANTOM_RANGER -> availableSubClasses.removeAll(EnumSet.of(HAWKEYE, SILVER_RANGER, PHANTOM_RANGER))
-            WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER -> availableSubClasses.removeAll(EnumSet.of(WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER))
-            SORCERER, SPELLSINGER, SPELLHOWLER -> availableSubClasses.removeAll(EnumSet.of(SORCERER, SPELLSINGER, SPELLHOWLER))
+            DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT -> availableSubClasses.removeAll(
+                EnumSet.of(
+                    DARK_AVENGER, PALADIN, TEMPLE_KNIGHT, SHILLIEN_KNIGHT
+                )
+            )
+            TREASURE_HUNTER, ABYSS_WALKER, PLAINS_WALKER -> availableSubClasses.removeAll(
+                EnumSet.of(
+                    TREASURE_HUNTER,
+                    ABYSS_WALKER,
+                    PLAINS_WALKER
+                )
+            )
+            HAWKEYE, SILVER_RANGER, PHANTOM_RANGER -> availableSubClasses.removeAll(
+                EnumSet.of(
+                    HAWKEYE,
+                    SILVER_RANGER,
+                    PHANTOM_RANGER
+                )
+            )
+            WARLOCK, ELEMENTAL_SUMMONER, PHANTOM_SUMMONER -> availableSubClasses.removeAll(
+                EnumSet.of(
+                    WARLOCK,
+                    ELEMENTAL_SUMMONER,
+                    PHANTOM_SUMMONER
+                )
+            )
+            SORCERER, SPELLSINGER, SPELLHOWLER -> availableSubClasses.removeAll(
+                EnumSet.of(
+                    SORCERER,
+                    SPELLSINGER,
+                    SPELLHOWLER
+                )
+            )
         }
     }
 

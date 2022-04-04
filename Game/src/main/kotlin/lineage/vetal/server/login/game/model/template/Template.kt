@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.template
 
-import lineage.vetal.server.login.xml.StatSet
+import lineage.vetal.server.core.model.StatSet
 
 open class Template(
     set: StatSet

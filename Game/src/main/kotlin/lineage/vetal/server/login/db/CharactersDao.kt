@@ -4,7 +4,7 @@ import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.Dao
 import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.login.game.model.CharSelectionSlot
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.core.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.Sex
@@ -45,8 +45,8 @@ class CharactersDao(
             it.setInt(18, player.pvpKills)
             it.setInt(19, player.pkKills)
             it.setInt(20, player.clanId)
-            it.setInt(21, player.charTemplate.classId.race.ordinal)
-            it.setInt(22, player.charTemplate.classId.ordinal)
+            it.setInt(21, player.charTemplate.charClass.race.ordinal)
+            it.setInt(22, player.charTemplate.charClass.ordinal)
             it.setLong(23, player.deleteTimer)
             it.setInt(24, if (player.hasDwarvenCraft) 1 else 0)
             it.setString(25, player.title)

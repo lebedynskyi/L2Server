@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.game.model.template
 
+import lineage.vetal.server.core.model.location.Location
 import lineage.vetal.server.login.game.model.player.ClassId
-import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.player.Sex
-import lineage.vetal.server.login.xml.StatSet
+import lineage.vetal.server.core.model.StatSet
 
 class CharacterTemplate(set: StatSet) : CreatureTemplate(set) {
-    val classId: ClassId = ClassId.VALUES[id]
+    val charClass: ClassId = ClassId.VALUES[id]
     val fallHeight: Int = set.getInteger("falling_height", 333)
     val baseSwimSpeed: Int = set.getInteger("swimSpd", 1)
     val classBaseLevel: Int = set.getInteger("baseLvl")
@@ -57,6 +57,6 @@ class CharacterTemplate(set: StatSet) : CreatureTemplate(set) {
     }
 
     override fun toString(): String {
-        return classId.className
+        return charClass.className
     }
 }
