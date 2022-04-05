@@ -1,9 +1,12 @@
 package lineage.vetal.server.login.game.model.player
 
+import lineage.vetal.server.core.client.Client
 import lineage.vetal.server.core.model.location.SpawnLocation
+import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.gameclient.GameClient
 import java.util.*
 
 class Player(
@@ -14,6 +17,8 @@ class Player(
     val appearance: Appearance,
     val position: SpawnLocation
 ) : Playable(id, name) {
+    var client: GameClient? = null
+
     override var status: PlayerStatus = PlayerStatus(charTemplate)
     lateinit var inventory: Inventory
 
@@ -67,5 +72,9 @@ class Player(
 
     fun getCollisionHeight(): Double {
         return charTemplate.getCollisionHeightBySex(appearance.sex)
+    }
+
+    fun sendPacket(packet: SendablePacket) {
+        client?.sendPacket(packet)
     }
 }

@@ -6,14 +6,19 @@ import lineage.vetal.server.login.gameclient.GameClient
 import lineage.vetal.server.login.gameclient.GameClientState
 import lineage.vetal.server.login.gameclient.packet.GamePacket
 import lineage.vetal.server.login.gameclient.packet.server.UserInfo
+import java.util.Calendar
 
 class EnterWorld : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         writeInfo("ENTER", "Player ${client.player?.name} in game")
         val player = client.player ?: return
 
-        client.sendPacket(UserInfo(player))
         client.clientState = GameClientState.WORLD
+        client.sendPacket(UserInfo(player))
+
+        player.client = client
+        context.gameDatabase.charactersDao.updateLastAccess(player.id, Calendar.getInstance().timeInMillis)
+        context.gameWorld.addObject(player)
     }
 
     override fun read() {

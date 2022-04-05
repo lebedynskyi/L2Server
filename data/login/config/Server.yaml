@@ -1,5 +1,5 @@
 lobbyConfig:
-  maxCount: 2
+  maxCount: 50
   showLicense: true
   autoRegistration: true
 

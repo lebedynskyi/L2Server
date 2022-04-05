@@ -21,7 +21,8 @@ class CharactersDao(
     private val SELECT_CHARACTER_SLOTS_SQL =
         "SELECT obj_Id, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, title, accesslevel, lastAccess, base_class, id FROM characters WHERE account_id=?"
     private val SELECT_CHARACTER_SQL =
-        "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id from characters WHERE id=?"
+        "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id,hero from characters WHERE id=?"
+    private val UPDATE_lAST_ACCESS_SQL = "UPDATE characters SET lastAccess = ? WHERE id = ?"
 
     fun insertCharacter(player: Player): Boolean {
         return insertOrUpdate(INSERT_CHARACTER_SQL) {
@@ -60,6 +61,13 @@ class CharactersDao(
             it.setInt(33, player.position.x)
             it.setInt(34, player.position.y)
             it.setInt(35, player.position.z)
+        }
+    }
+
+    fun updateLastAccess(playerId: UUID, value: Long): Boolean {
+        return insertOrUpdate(UPDATE_lAST_ACCESS_SQL) {
+            it.setLong(1, value)
+            it.setString(2, playerId.toString())
         }
     }
 
@@ -143,6 +151,7 @@ class CharactersDao(
                 baseClassId = it.getInt(30)
                 isNoble = it.getInt(31).toBoolean()
                 objectId = it.getInt(35)
+                isHero = it.getInt(36).toBoolean()
             }
         }
     }

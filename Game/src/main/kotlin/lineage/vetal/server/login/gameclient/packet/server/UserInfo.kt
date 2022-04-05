@@ -194,7 +194,7 @@ class UserInfo(
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff
 
         writeC(if (player.isNoble) 1 else 0)
-        writeC(if (!player.isHero) 1 else 0)
+        writeC(if (player.isHero) 1 else 0)
         writeC(if (player.isFishing) 1 else 0)
         writeLoc(Location(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
@@ -203,6 +203,5 @@ class UserInfo(
         writeD(player.pledgeType)
         writeD(player.appearance.titleColor)
         writeD(0) // writeD(CursedWeaponManager.getInstance().getCurrentStage(player.getCursedWeaponEquippedId()))
-
     }
 }

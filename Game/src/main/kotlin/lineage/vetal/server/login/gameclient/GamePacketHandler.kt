@@ -15,7 +15,12 @@ class GamePacketHandler(
             return
         }
 
-        writeDebug(TAG, "Client -> $client packet -> ${packet::class.java.simpleName}")
+        if (client.player != null) {
+            writeDebug(TAG, "Player -> ${client.player?.name} packet -> ${packet::class.java.simpleName}")
+        } else {
+            writeDebug(TAG, "Client -> $client packet -> ${packet::class.java.simpleName}")
+        }
+
 
         when (packet) {
 

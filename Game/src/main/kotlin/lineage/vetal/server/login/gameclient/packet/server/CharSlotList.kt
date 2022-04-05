@@ -11,7 +11,7 @@ class CharSlotList(
 ) : SendablePacket() {
     override fun write() {
         if (lastActiveIndex <= -1) {
-            var lastAccess = Long.MIN_VALUE
+            var lastAccess = 0L
             slots.forEachIndexed { index, slot ->
                 if (slot.lastAccess > lastAccess) {
                     lastAccess = slot.lastAccess
@@ -23,7 +23,7 @@ class CharSlotList(
         writeC(0x13)
         writeD(slots.size)
 
-        slots.forEach {
+        slots.forEachIndexed { index, it ->
             writeS(it.name)
             writeD(it.charId)
             writeS(gameClient.account.account)
@@ -99,7 +99,7 @@ class CharSlotList(
                 else -1
             )
             writeD(it.classId)
-            writeD(0x00)//writeD(if (i == _activeId) 0x01 else 0x00)
+            writeD(if (index == lastActiveIndex) 0x01 else 0x00)
             writeC(0)//writeC(min(127, it.getEnchantEffect()))
             writeD(0)//writeD(it.getAugmentationId())
         }

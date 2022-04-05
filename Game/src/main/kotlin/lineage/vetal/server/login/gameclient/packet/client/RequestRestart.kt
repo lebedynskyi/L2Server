@@ -9,6 +9,8 @@ import lineage.vetal.server.login.gameclient.packet.server.RestartResponse
 
 class RequestRestart : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
+        val player = client.player ?: return
+
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
 
         val slots = context.gameDatabase.charactersDao.getCharSlots(client.account.id)
@@ -16,6 +18,8 @@ class RequestRestart : GamePacket() {
         client.player = null
         client.clientState = GameClientState.LOBBY
         client.sendPacket(CharSlotList(client, slots))
+
+        context.gameWorld.removeObject(player)
     }
 
     override fun read() {
