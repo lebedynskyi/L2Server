@@ -40,7 +40,7 @@ class Player(
     var allyCrestId: Int = 0
     var clanPrivelegies: Int = 0
 
-    var title: String? = "I Did it!"
+    var title: String? = "lovely"
     var isOnlineInt = 0
     var isIn7sDungeon = false
     var isInPartyMatchRoom = false

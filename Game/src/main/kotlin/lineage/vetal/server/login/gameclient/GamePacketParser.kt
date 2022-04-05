@@ -20,6 +20,7 @@ class GamePacketParser : PacketParser {
             0x0d -> RequestSelectCharacter()
             0x63 -> RequestQuestList()
             0x03 -> EnterWorld()
+            0x46 -> RequestRestart()
             0xd0 -> when (buffer.get().toInt()) {
                 0x08 -> RequestManorList()
                 else -> {

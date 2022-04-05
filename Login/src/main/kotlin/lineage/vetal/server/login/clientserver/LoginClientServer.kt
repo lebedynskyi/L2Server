@@ -9,7 +9,6 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.clientserver.packets.client.ClientConnected
-import lineage.vetal.server.login.clientserver.packets.client.ClientDisconnected
 import java.security.KeyPair
 
 class LoginClientServer(
@@ -45,7 +44,7 @@ class LoginClientServer(
         withContext(serverContext) {
             launch {
                 selectorThread.connectionCloseFlow.collect {
-                    loginPacketHandler.handle(it, ClientDisconnected())
+                    // TODO remove from lobby ? How to checked authed player?
                 }
             }
 

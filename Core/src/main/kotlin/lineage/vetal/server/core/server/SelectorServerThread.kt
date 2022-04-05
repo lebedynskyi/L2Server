@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.NetworkConfig
 import lineage.vetal.server.core.client.Client
+import lineage.vetal.server.core.client.ClientConnection
 import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
@@ -15,17 +16,15 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 
-/**
- * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent for next iteration
- */
-
+//TODO implement packet counter and limit per selection.
+//TODO Also need to introduce cache of packet that were not sent for next iteration
 class SelectorServerThread<T : Client>(
     private val networkConfig: NetworkConfig,
     private val clientFactory: ClientFactory<T>
 ) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024
     private val WRITE_BUFFER_SIZE = 64 * 1024
-    private val TAG = "SocketServerSelector"
+    private val TAG = "SelectorServerThread"
 
     private lateinit var selector: Selector
     private lateinit var serverSocket: ServerSocketChannel
@@ -79,14 +78,7 @@ class SelectorServerThread<T : Client>(
                 val key = keyIterator.next()
                 when (key.readyOps()) {
                     SelectionKey.OP_ACCEPT -> createConnection()
-                    SelectionKey.OP_READ -> {
-                        try {
-                            readPackets(key)
-                        } catch (e: Exception) {
-                            writeError(TAG, "Error reading data ", e)
-                            closeConnection(key)
-                        }
-                    }
+                    SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                         writePackets(key)
@@ -106,8 +98,10 @@ class SelectorServerThread<T : Client>(
         writeInfo(TAG, "Server closed")
     }
 
-    private fun closeConnection(key: SelectionKey) {
-        key.channel().close()
+    private fun closeClient(client: T, connection: ClientConnection) {
+        writeInfo(TAG," Closed connection with client $client")
+        connection.closeSocket()
+        _selectionCloseFlow.tryEmit(client)
     }
 
     private fun createConnection() {
@@ -121,24 +115,34 @@ class SelectorServerThread<T : Client>(
         val client = key.attachment() as T
         val connection = client.connection
 
-        writeDebug(TAG, "Read packets from $client")
-        val packet = connection.readData(readBuffer, stringBuffer)
+        try {
+            writeDebug(TAG, "Read packets from $client")
+            val packet = connection.readData(readBuffer, stringBuffer)
 
-        if (packet != null) {
-            _selectionReadFlow.tryEmit(client to packet)
+            if (packet != null) {
+                _selectionReadFlow.tryEmit(client to packet)
+            } else if (connection.pendingClose) {
+                closeClient(client, connection)
+            }
+        } catch (e: Exception) {
+            writeError(TAG, "Cannot read packets", e)
+            closeClient(client, connection)
         }
     }
 
     private fun writePackets(key: SelectionKey) {
         val client = key.attachment() as T
         val connection = client.connection
-
-        connection.writeData(writeBuffer, tempWriteBuffer)
-
-        if (connection.pendingClose) {
-            closeConnection(key)
-        } else {
+        try {
+            connection.writeData(writeBuffer, tempWriteBuffer)
             key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+
+            if (connection.pendingClose) {
+                closeClient(client, connection)
+            }
+        } catch (e: Exception) {
+            writeError(TAG, "Cannot write packets", e)
+            closeClient(client, connection)
         }
     }
 }

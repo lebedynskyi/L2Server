@@ -3,6 +3,7 @@ package lineage.vetal.server.login.gameclient.packet.client
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.gameclient.GameClient
+import lineage.vetal.server.login.gameclient.GameClientState
 import lineage.vetal.server.login.gameclient.packet.GamePacket
 import lineage.vetal.server.login.gameclient.packet.server.UserInfo
 
@@ -12,6 +13,7 @@ class EnterWorld : GamePacket() {
         val player = client.player ?: return
 
         client.sendPacket(UserInfo(player))
+        client.clientState = GameClientState.WORLD
     }
 
     override fun read() {

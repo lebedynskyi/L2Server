@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import lineage.vetal.server.core.client.BridgeClient
 import lineage.vetal.server.core.server.SelectorServerThread
 import lineage.vetal.server.login.LoginContext
-import lineage.vetal.server.login.bridgeserver.packets.client.BridgeClientDisconnected
 
 
 class BridgeServer(
@@ -28,7 +27,7 @@ class BridgeServer(
 
             launch {
                 selectorThread?.connectionCloseFlow?.collect {
-                    bridgePacketHandler.handle(it, BridgeClientDisconnected())
+                    // Nothing to do here ?
                 }
             }
         }

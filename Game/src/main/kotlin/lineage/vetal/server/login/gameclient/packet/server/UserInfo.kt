@@ -25,6 +25,7 @@ class UserInfo(
         writeD(player.raceId)
         writeD(player.appearance.sex.id)
         writeD(player.classId)
+
         writeD(player.status.level)
         writeQ(player.status.exp)
         writeD(player.status.getSTR())
@@ -177,7 +178,6 @@ class UserInfo(
         writeC(if (player.isInPartyMatchRoom) 1 else 0)
         writeD(0) // writeD(player.getAbnormalEffect()) // Body effect. Big head? Stealth? Etc
 
-
         writeC(0x00)
         writeD(player.clanPrivelegies)
         writeH(player.recomLeft)
@@ -194,7 +194,7 @@ class UserInfo(
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff
 
         writeC(if (player.isNoble) 1 else 0)
-        writeC(if (player.isHero) 1 else 0)
+        writeC(if (!player.isHero) 1 else 0)
         writeC(if (player.isFishing) 1 else 0)
         writeLoc(Location(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)

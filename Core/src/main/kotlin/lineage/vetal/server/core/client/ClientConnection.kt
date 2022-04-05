@@ -3,7 +3,6 @@ package lineage.vetal.server.core.client
 import lineage.vetal.server.core.server.DATA_HEADER_SIZE
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.core.utils.logs.writeDebug
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
@@ -32,6 +31,8 @@ open class ClientConnection(
 
         val readResult = read(byteBuffer)
         if (readResult <= 0) {
+            // data < 0 means connection closed
+            pendingClose = true
             return null
         }
 
@@ -109,7 +110,8 @@ open class ClientConnection(
         return socket.write(writeBuffer)
     }
 
-    fun close() {
-        pendingClose = true
+    fun closeSocket() {
+        selectionKey.cancel()
+        socket.close()
     }
 }

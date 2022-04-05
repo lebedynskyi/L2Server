@@ -4,6 +4,7 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.gameclient.GameClient
+import lineage.vetal.server.login.gameclient.GameClientState
 import lineage.vetal.server.login.gameclient.packet.GamePacket
 import lineage.vetal.server.login.gameclient.packet.server.CharSelected
 import lineage.vetal.server.login.gameclient.packet.server.SSQInfo
@@ -39,6 +40,7 @@ class RequestSelectCharacter : GamePacket() {
 
         client.sendPacket(SSQInfo.REGULAR_SKY_PACKET)
         client.sendPacket(CharSelected(player, client.sessionKey.playOkID1))
+        client.clientState = GameClientState.LOADING
     }
 
     override fun read() {
