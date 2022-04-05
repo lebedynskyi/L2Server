@@ -21,7 +21,7 @@ class CharactersDao(
     private val SELECT_CHARACTER_SLOTS_SQL =
         "SELECT obj_Id, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, title, accesslevel, lastAccess, base_class, id FROM characters WHERE account_id=?"
     private val SELECT_CHARACTER_SQL =
-        "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z from characters WHERE id=?"
+        "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id from characters WHERE id=?"
 
     fun insertCharacter(player: Player): Boolean {
         return insertOrUpdate(INSERT_CHARACTER_SQL) {
@@ -142,6 +142,7 @@ class CharactersDao(
                 wantsPeace = it.getInt(29).toBoolean()
                 baseClassId = it.getInt(30)
                 isNoble = it.getInt(31).toBoolean()
+                objectId = it.getInt(35)
             }
         }
     }
