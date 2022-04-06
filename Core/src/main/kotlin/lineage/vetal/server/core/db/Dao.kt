@@ -7,7 +7,7 @@ abstract class Dao(
     private val dataBase: DBConnection
 ) {
     fun query(sql: String, block: (PreparedStatement) -> Unit): ResultSet {
-        return dataBase.getConnection().use {
+        return dataBase.getConnection().let {
             it.prepareStatement(sql)
                 .apply(block)
                 .executeQuery()
@@ -23,13 +23,14 @@ abstract class Dao(
     }
 
     fun <T> ResultSet.firstOrNull(transform: (ResultSet) -> T): T? {
+        var result: T? = null
         if (first()) {
             use {
-                return transform.invoke(it)
+                result = transform.invoke(it)
             }
-        } else {
-            return null
         }
+
+        return result
     }
 
     fun <T> ResultSet.listOrEmpty(transform: (ResultSet) -> T): List<T> {
@@ -39,6 +40,7 @@ abstract class Dao(
                 resultList.add(transform.invoke(it))
             }
         }
+
         return resultList
     }
 }

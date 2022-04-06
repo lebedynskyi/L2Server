@@ -12,11 +12,9 @@ class AccountDao(
     private val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (id, login, password) VALUES (?,?,?)"
 
     fun findAccount(account: String): AccountInfo? {
-        val result = query(FIND_ACCOUNT_SQL) {
+        return query(FIND_ACCOUNT_SQL) {
             it.setString(1, account)
-        }
-
-        return result.firstOrNull {
+        }.firstOrNull {
             AccountInfo(
                 UUID.fromString(it.getString(1)),
                 it.getString(2),

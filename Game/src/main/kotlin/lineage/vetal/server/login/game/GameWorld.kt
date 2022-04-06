@@ -3,9 +3,11 @@ package lineage.vetal.server.login.game
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameclient.packet.server.CharInfo
+import lineage.vetal.server.login.gameclient.packet.server.DeleteObject
 import lineage.vetal.server.login.gameclient.packet.server.UserInfo
 import javax.swing.text.Position
 
+// TODO use blocks and regions in game. For now it is ok to use global world
 class GameWorld {
     val currentOnline get() = _players.size
     val players: List<Player> get() = _players
@@ -27,15 +29,10 @@ class GameWorld {
         } else {
             _objects.remove(obj)
         }
+        broadCastPacket(DeleteObject(obj))
     }
 
     fun broadCastPacket(packet: SendablePacket, range: Int = 0) {
-        _players.forEach {
-            it.sendPacket(packet)
-        }
-    }
-
-    fun broadCastPacket(position: Position, packet: SendablePacket, range: Int = 0) {
         _players.forEach {
             it.sendPacket(packet)
         }
