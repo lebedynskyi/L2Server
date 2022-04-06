@@ -72,87 +72,91 @@ class CharactersDao(
     }
 
     fun getCharSlots(id: UUID): List<CharSelectionSlot> {
-        return query(SELECT_CHARACTER_SLOTS_SQL) {
-            it.setString(1, id.toString())
-        }.listOrEmpty {
-            CharSelectionSlot(
-                objectId = it.getInt(1),
-                name = it.getString(2),
-                level = it.getInt(3),
-                maxHp = it.getDouble(4),
-                currentHp = it.getDouble(5),
-                maxMp = it.getDouble(6),
-                currentMp = it.getDouble(7),
-                face = it.getInt(8),
-                hairStyle = it.getInt(9),
-                hairColor = it.getInt(10),
-                sex = Sex.values()[it.getInt(11)],
-                x = it.getInt(12),
-                y = it.getInt(13),
-                z = it.getInt(14),
-                exp = it.getLong(15),
-                sp = it.getInt(16),
-                karma = it.getInt(17),
-                pvPKills = it.getInt(18),
-                pkKills = it.getInt(19),
-                clanId = it.getInt(20),
-                race = it.getInt(21),
-                classId = it.getInt(22),
-                deleteTimer = it.getLong(23),
-                title = it.getString(24),
-                accessLevel = it.getInt(25),
-                lastAccess = it.getLong(26),
-                baseClassId = it.getInt(27),
-                id = UUID.fromString(it.getString(28)),
-                augmentationId = 0
-            )
-        }
+        return queryList(SELECT_CHARACTER_SLOTS_SQL,
+            prepare = {
+                it.setString(1, id.toString())
+            },
+            transform = {
+                CharSelectionSlot(
+                    objectId = it.getInt(1),
+                    name = it.getString(2),
+                    level = it.getInt(3),
+                    maxHp = it.getDouble(4),
+                    currentHp = it.getDouble(5),
+                    maxMp = it.getDouble(6),
+                    currentMp = it.getDouble(7),
+                    face = it.getInt(8),
+                    hairStyle = it.getInt(9),
+                    hairColor = it.getInt(10),
+                    sex = Sex.values()[it.getInt(11)],
+                    x = it.getInt(12),
+                    y = it.getInt(13),
+                    z = it.getInt(14),
+                    exp = it.getLong(15),
+                    sp = it.getInt(16),
+                    karma = it.getInt(17),
+                    pvPKills = it.getInt(18),
+                    pkKills = it.getInt(19),
+                    clanId = it.getInt(20),
+                    race = it.getInt(21),
+                    classId = it.getInt(22),
+                    deleteTimer = it.getLong(23),
+                    title = it.getString(24),
+                    accessLevel = it.getInt(25),
+                    lastAccess = it.getLong(26),
+                    baseClassId = it.getInt(27),
+                    id = UUID.fromString(it.getString(28)),
+                    augmentationId = 0
+                )
+            }
+        )
     }
 
     fun getCharacter(id: UUID): Player? {
-        return query(SELECT_CHARACTER_SQL) {
-            it.setString(1, id.toString())
-        }.firstOrNull {
-            val classId = it.getInt(21)
-            val template = charTemplates.getValue(classId)
-            val location = SpawnLocation(it.getInt(32), it.getInt(33), it.getInt(34), 0)
-            val appearance = Appearance(it.getInt(13), it.getInt(14), it.getInt(15), Sex.values()[it.getInt(16)])
-            Player(
-                UUID.fromString(it.getString(1)),
-                it.getString(2),
-                UUID.fromString(it.getString(3)),
-                template,
-                appearance,
-                location
-            ).apply {
-                status = PlayerStatus(template).apply {
-                    level = it.getInt(4)
-                    maxHp = it.getInt(5)
-                    hp = it.getDouble(6)
-                    maxCp = it.getInt(7)
-                    cp = it.getDouble(8)
-                    maxMp = it.getInt(9)
-                    mp = it.getDouble(10)
-                    exp = it.getLong(11)
-                    sp = it.getInt(12)
+        return querySingle(SELECT_CHARACTER_SQL,
+            prepare = { it.setString(1, id.toString()) },
+            transform = {
+                val classId = it.getInt(21)
+                val template = charTemplates.getValue(classId)
+                val location = SpawnLocation(it.getInt(32), it.getInt(33), it.getInt(34), 0)
+                val appearance = Appearance(it.getInt(13), it.getInt(14), it.getInt(15), Sex.values()[it.getInt(16)])
+                Player(
+                    UUID.fromString(it.getString(1)),
+                    it.getString(2),
+                    UUID.fromString(it.getString(3)),
+                    template,
+                    appearance,
+                    location
+                ).apply {
+                    status = PlayerStatus(template).apply {
+                        level = it.getInt(4)
+                        maxHp = it.getInt(5)
+                        hp = it.getDouble(6)
+                        maxCp = it.getInt(7)
+                        cp = it.getDouble(8)
+                        maxMp = it.getInt(9)
+                        mp = it.getDouble(10)
+                        exp = it.getLong(11)
+                        sp = it.getInt(12)
+                    }
+                    karma = it.getInt(17)
+                    pvpKills = it.getInt(18)
+                    pkKills = it.getInt(19)
+                    clanId = it.getInt(20)
+                    deleteTimer = it.getLong(22)
+                    hasDwarvenCraft = it.getInt(23).toBoolean()
+                    title = it.getString(24)
+                    accessLevel = it.getInt(25)
+                    isOnlineInt = it.getInt(26)
+                    isIn7sDungeon = it.getInt(27).toBoolean()
+                    clanPrivileges = it.getInt(28)
+                    wantsPeace = it.getInt(29).toBoolean()
+                    baseClassId = it.getInt(30)
+                    isNoble = it.getInt(31).toBoolean()
+                    objectId = it.getInt(35)
+                    isHero = it.getInt(36).toBoolean()
                 }
-                karma = it.getInt(17)
-                pvpKills = it.getInt(18)
-                pkKills = it.getInt(19)
-                clanId = it.getInt(20)
-                deleteTimer = it.getLong(22)
-                hasDwarvenCraft = it.getInt(23).toBoolean()
-                title = it.getString(24)
-                accessLevel = it.getInt(25)
-                isOnlineInt = it.getInt(26)
-                isIn7sDungeon = it.getInt(27).toBoolean()
-                clanPrivileges = it.getInt(28)
-                wantsPeace = it.getInt(29).toBoolean()
-                baseClassId = it.getInt(30)
-                isNoble = it.getInt(31).toBoolean()
-                objectId = it.getInt(35)
-                isHero = it.getInt(36).toBoolean()
             }
-        }
+        )
     }
 }

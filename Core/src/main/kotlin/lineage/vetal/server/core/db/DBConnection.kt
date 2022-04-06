@@ -23,7 +23,7 @@ class DBConnection(
         testConnection()
     }
 
-    internal fun getConnection(): Connection = databaseSource.connection
+    internal val connection: Connection get() = databaseSource.connection
 
     private fun initializeLoggers() {
         // TODO need logger configuration for this

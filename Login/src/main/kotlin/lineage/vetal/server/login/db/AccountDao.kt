@@ -12,15 +12,16 @@ class AccountDao(
     private val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (id, login, password) VALUES (?,?,?)"
 
     fun findAccount(account: String): AccountInfo? {
-        return query(FIND_ACCOUNT_SQL) {
-            it.setString(1, account)
-        }.firstOrNull {
-            AccountInfo(
-                UUID.fromString(it.getString(1)),
-                it.getString(2),
-                it.getString(3)
-            )
-        }
+        return querySingle(FIND_ACCOUNT_SQL,
+            prepare = { it.setString(1, account) },
+            transform = {
+                AccountInfo(
+                    UUID.fromString(it.getString(1)),
+                    it.getString(2),
+                    it.getString(3)
+                )
+            }
+        )
     }
 
     fun insertAccount(account: AccountInfo): Boolean {
