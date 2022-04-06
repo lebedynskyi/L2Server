@@ -1,6 +1,5 @@
 package lineage.vetal.server.login.game.model.player
 
-import lineage.vetal.server.core.client.Client
 import lineage.vetal.server.core.model.location.SpawnLocation
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.items.Inventory
@@ -15,8 +14,8 @@ class Player(
     val accountId: UUID,
     val charTemplate: CharacterTemplate,
     val appearance: Appearance,
-    val position: SpawnLocation
-) : Playable(id, name) {
+    position: SpawnLocation
+) : Playable(id, name, position) {
     var client: GameClient? = null
 
     override var status: PlayerStatus = PlayerStatus(charTemplate)
@@ -67,7 +66,7 @@ class Player(
     var pledgeClass = 0
 
     var isSitting: Boolean = false
-    var isRunning: Boolean = false
+    var isRunning: Boolean = true
     var isInCombat: Boolean = false
     var isAlikeDead: Boolean = false
 

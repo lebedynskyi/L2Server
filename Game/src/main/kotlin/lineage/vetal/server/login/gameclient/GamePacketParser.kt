@@ -14,6 +14,7 @@ class GamePacketParser : PacketParser {
         val opCode = buffer.get().toUByte().toInt()
         return when (opCode) {
             0x00 -> ProtocolVersion()
+            0x01 -> RequestMoveToLocation()
             0x08 -> AuthLogin()
             0x0e -> RequestCharacterTemplates()
             0x0b -> RequestCreateCharacter()

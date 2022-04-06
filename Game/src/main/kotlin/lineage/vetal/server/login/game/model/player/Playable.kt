@@ -1,10 +1,12 @@
 package lineage.vetal.server.login.game.model.player
 
+import lineage.vetal.server.core.model.location.SpawnLocation
 import java.util.UUID
 
 abstract class Playable(
     id: UUID,
     name: String,
-) : Creature(id, name) {
+    position: SpawnLocation
+) : Creature(id, name, position) {
 
 }
