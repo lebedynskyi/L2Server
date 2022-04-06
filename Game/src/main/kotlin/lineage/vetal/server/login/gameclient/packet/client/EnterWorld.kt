@@ -14,9 +14,8 @@ class EnterWorld : GamePacket() {
         val player = client.player ?: return
 
         client.clientState = GameClientState.WORLD
-        client.sendPacket(UserInfo(player))
-
         player.client = client
+        player.sendPacket(UserInfo(player))
         context.gameDatabase.charactersDao.updateLastAccess(player.id, Calendar.getInstance().timeInMillis)
         context.gameWorld.addObject(player)
     }

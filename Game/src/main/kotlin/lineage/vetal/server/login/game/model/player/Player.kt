@@ -66,6 +66,11 @@ class Player(
     var pledgeType = 0
     var pledgeClass = 0
 
+    var isSitting: Boolean = false
+    var isRunning: Boolean = false
+    var isInCombat: Boolean = false
+    var isAlikeDead: Boolean = false
+
     fun getCollisionRadius(): Double {
         return charTemplate.getCollisionRadiusBySex(appearance.sex)
     }

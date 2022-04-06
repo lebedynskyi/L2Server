@@ -2,31 +2,49 @@ package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.gameclient.packet.server.CharInfo
+import lineage.vetal.server.login.gameclient.packet.server.UserInfo
+import javax.swing.text.Position
 
 class GameWorld {
-    val currentOnline get() = players.size
-    private val players = mutableListOf<Player>()
-    private val objects = mutableListOf<GameObject>()
+    val currentOnline get() = _players.size
+    val players: List<Player> get() = _players
+    private val _players = mutableListOf<Player>()
+    private val _objects = mutableListOf<GameObject>()
 
     fun addObject(obj: GameObject) {
         if (obj is Player) {
-            players.add(obj)
+            spawnPlayer(obj)
+            _players.add(obj)
         } else {
-            objects.add(obj)
+            _objects.add(obj)
         }
     }
 
     fun removeObject(obj: GameObject) {
         if (obj is Player) {
-            players.remove(obj)
+            _players.remove(obj)
         } else {
-            objects.remove(obj)
+            _objects.remove(obj)
         }
     }
 
     fun broadCastPacket(packet: SendablePacket, range: Int = 0) {
-        players.forEach {
+        _players.forEach {
             it.sendPacket(packet)
+        }
+    }
+
+    fun broadCastPacket(position: Position, packet: SendablePacket, range: Int = 0) {
+        _players.forEach {
+            it.sendPacket(packet)
+        }
+    }
+
+    private fun spawnPlayer(player: Player) {
+        for (p in players) {
+            p.sendPacket(CharInfo(player))
+            player.sendPacket(CharInfo(p))
         }
     }
 }

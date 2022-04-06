@@ -39,6 +39,7 @@ class DBConnection(
             jdbcUrl = config.url
             username = config.user;
             password = config.password
+            connectionTimeout = config.timeOut
             driverClassName = "org.mariadb.jdbc.Driver"
             addDataSourceProperty("cachePrepStmts", "true");
             addDataSourceProperty("prepStmtCacheSize", "250");

@@ -7,7 +7,7 @@ abstract class Dao(
     private val dataBase: DBConnection
 ) {
     fun query(sql: String, block: (PreparedStatement) -> Unit): ResultSet {
-        return dataBase.getConnection().let {
+        return dataBase.getConnection().use {
             it.prepareStatement(sql)
                 .apply(block)
                 .executeQuery()

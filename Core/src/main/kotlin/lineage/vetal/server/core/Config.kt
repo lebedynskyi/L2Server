@@ -9,6 +9,7 @@ data class DataBaseConfig(
     val url: String,
     val user: String,
     val password: String,
+    val timeOut: Long
 )
 
 @Serializable
