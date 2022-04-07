@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.template
 
-import lineage.vetal.server.core.model.StatSet
+import lineage.vetal.server.login.xml.StatSet
 
 open class CreatureTemplate(set: StatSet) : Template(set){
     val baseSTR = set.getInteger("str", 40)

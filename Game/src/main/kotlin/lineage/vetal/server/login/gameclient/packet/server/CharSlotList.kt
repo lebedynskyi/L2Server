@@ -1,14 +1,14 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.gameclient.GameClient
 import lineage.vetal.server.login.game.model.CharSelectionSlot
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class CharSlotList(
     private val gameClient: GameClient,
     private val slots: List<CharSelectionSlot>,
     var lastActiveIndex: Int = -1
-) : SendablePacket() {
+) : GameServerPacket() {
     override fun write() {
         if (lastActiveIndex <= -1) {
             var lastAccess = 0L

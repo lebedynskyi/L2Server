@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.template
 
-import lineage.vetal.server.core.model.StatSet
+import lineage.vetal.server.login.xml.StatSet
 
 class SkillTemplate(set: StatSet) : Template(set) {
     val minLvl = set.getInteger("minLvl")

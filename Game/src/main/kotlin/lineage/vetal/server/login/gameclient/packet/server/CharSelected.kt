@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class CharSelected(
     private val player: Player,
     private val playOKId1: Int
-) : SendablePacket() {
+) : GameServerPacket() {
     override fun write() {
         writeC(0x15)
 

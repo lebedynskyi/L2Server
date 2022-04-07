@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
-open class CreateCharFail(private val _error: Int) : SendablePacket() {
+open class CreateCharFail(private val _error: Int) : GameServerPacket() {
     companion object {
         val REASON_CREATION_FAILED = CreateCharFail(0x00)
         val REASON_TOO_MANY_CHARACTERS = CreateCharFail(0x01)

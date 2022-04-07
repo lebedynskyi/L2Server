@@ -1,13 +1,13 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.model.location.Location
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.player.Creature
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class MoveToLocation(
     creature: Creature,
     destination: Location
-) : SendablePacket() {
+) : GameServerPacket() {
     private val _objectId: Int
 
     private var targetX = 0

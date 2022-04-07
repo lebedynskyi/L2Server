@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class RestartResponse private constructor(
     private val result: Int
-) : SendablePacket() {
+) : GameServerPacket() {
     override fun write() {
         writeC(0x5f)
         writeD(result)

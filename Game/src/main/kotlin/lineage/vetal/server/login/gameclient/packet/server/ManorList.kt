@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
-class ManorList : SendablePacket() {
+class ManorList : GameServerPacket() {
     override fun write() {
         writeC(0xFE)
         writeH(0x1B)

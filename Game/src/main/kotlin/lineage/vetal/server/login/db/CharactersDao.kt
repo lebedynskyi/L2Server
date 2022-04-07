@@ -4,17 +4,17 @@ import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.Dao
 import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.login.game.model.CharSelectionSlot
-import lineage.vetal.server.core.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
 import java.util.*
 
 class CharactersDao(
     db: DBConnection,
-    private val charTemplates: MutableMap<Int, CharacterTemplate>
+    private val charTemplates: MutableMap<Int, CharTemplate>
 ) : Dao(db) {
     private val INSERT_CHARACTER_SQL =
         "INSERT INTO characters (id,account_id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"

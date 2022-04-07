@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class CryptInit(
     private val key: ByteArray
-) : SendablePacket() {
+) : GameServerPacket() {
 
     override fun write() {
         writeC(0x00)

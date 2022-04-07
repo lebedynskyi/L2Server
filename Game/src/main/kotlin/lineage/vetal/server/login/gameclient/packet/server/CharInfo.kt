@@ -1,13 +1,13 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.model.location.Location
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.player.Paperdoll
 import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class CharInfo(
     private val player: Player
-) : SendablePacket() {
+) : GameServerPacket() {
 
     override fun write() {
         writeC(0x03)

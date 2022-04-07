@@ -1,9 +1,8 @@
 package lineage.vetal.server.login.xml
 
-import lineage.vetal.server.core.model.StatSet
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.model.location.Location
-import lineage.vetal.server.core.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.location.SpawnLocation
 import org.w3c.dom.Document
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
@@ -105,19 +104,19 @@ interface XmlReader {
         return parseShort(attrs.getNamedItem(name), defaultValue)
     }
 
-    fun parseInt(node: Node?, defaultValue: Int? = -1): Int {
-        return if (node != null) Integer.decode(node.nodeValue) else defaultValue!!
+    fun parseInt(node: Node?, defaultValue: Int? = -1): Int? {
+        return if (node != null) Integer.decode(node.nodeValue) else defaultValue
     }
 
-    fun parseInteger(node: Node?, defaultValue: Int? = null): Int {
-        return if (node != null) Integer.decode(node.nodeValue) else defaultValue!!
+    fun parseInteger(node: Node?, defaultValue: Int? = null): Int? {
+        return if (node != null) Integer.decode(node.nodeValue) else defaultValue
     }
 
-    fun parseInteger(attrs: NamedNodeMap, name: String?): Int {
+    fun parseInteger(attrs: NamedNodeMap, name: String?): Int? {
         return parseInteger(attrs.getNamedItem(name))
     }
 
-    fun parseInteger(attrs: NamedNodeMap, name: String?, defaultValue: Int?): Int {
+    fun parseInteger(attrs: NamedNodeMap, name: String?, defaultValue: Int?): Int? {
         return parseInteger(attrs.getNamedItem(name), defaultValue)
     }
 
@@ -215,18 +214,18 @@ interface XmlReader {
 
     fun parseLocation(n: Node): Location {
         val attrs = n.attributes
-        val x = parseInteger(attrs, "x")
-        val y = parseInteger(attrs, "y")
-        val z = parseInteger(attrs, "z")
+        val x = parseInteger(attrs, "x") ?: 0
+        val y = parseInteger(attrs, "y") ?: 0
+        val z = parseInteger(attrs, "z") ?: 0
         return Location(x, y, z)
     }
 
     fun parseSpawnLocation(n: Node): SpawnLocation {
         val attrs = n.attributes
-        val x = parseInteger(attrs, "x")
-        val y = parseInteger(attrs, "y")
-        val z = parseInteger(attrs, "z")
-        val heading = parseInteger(attrs, "heading", 0)
+        val x = parseInteger(attrs, "x") ?: 0
+        val y = parseInteger(attrs, "y") ?: 0
+        val z = parseInteger(attrs, "z") ?: 0
+        val heading = parseInteger(attrs, "heading") ?: 0
         return SpawnLocation(x, y, z, heading)
     }
 

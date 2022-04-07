@@ -1,4 +1,4 @@
-package lineage.vetal.server.core.model.location
+package lineage.vetal.server.login.game.model.location
 
 
 class SpawnLocation(

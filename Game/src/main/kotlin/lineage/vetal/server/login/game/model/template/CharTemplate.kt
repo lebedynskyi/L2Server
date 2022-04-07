@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.game.model.template
 
-import lineage.vetal.server.core.model.location.Location
+import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.player.ClassId
 import lineage.vetal.server.login.game.model.player.Sex
-import lineage.vetal.server.core.model.StatSet
+import lineage.vetal.server.login.xml.StatSet
 
-class CharacterTemplate(set: StatSet) : CreatureTemplate(set) {
+class CharTemplate(set: StatSet) : CreatureTemplate(set) {
     val charClass: ClassId = ClassId.VALUES[id]
     val fallHeight: Int = set.getInteger("falling_height", 333)
     val baseSwimSpeed: Int = set.getInteger("swimSpd", 1)

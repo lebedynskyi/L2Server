@@ -1,9 +1,9 @@
 package lineage.vetal.server.login.game.model.player.status
 
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
 
 abstract class PlayableStatus(
-    private val template: CharacterTemplate
+    private val template: CharTemplate
 ) : CreatureStatus(template) {
     override fun getINT(): Int {
         return template.baseINT

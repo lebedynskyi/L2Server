@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.game.model.player
 
-import lineage.vetal.server.core.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.gameclient.GameClient
 import java.util.*
 
@@ -12,7 +12,7 @@ class Player(
     id: UUID,
     name: String,
     val accountId: UUID,
-    val charTemplate: CharacterTemplate,
+    val charTemplate: CharTemplate,
     val appearance: Appearance,
     position: SpawnLocation
 ) : Playable(id, name, position) {

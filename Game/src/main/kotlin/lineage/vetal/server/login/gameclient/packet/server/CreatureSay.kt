@@ -1,13 +1,13 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.SayType
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 import java.sql.ResultSet
 import kotlin.Int
 import kotlin.String
 
-class CreatureSay : SendablePacket {
+class CreatureSay : GameServerPacket {
     val objectId: Int
     var name: String? = null
     var content: String? = null

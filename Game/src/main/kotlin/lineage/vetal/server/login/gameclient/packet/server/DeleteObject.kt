@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.GameObject
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class DeleteObject(
     val obj: GameObject,
     val isSeated: Boolean = false
-) : SendablePacket() {
+) : GameServerPacket() {
 
     override fun write() {
         writeC(0x12)

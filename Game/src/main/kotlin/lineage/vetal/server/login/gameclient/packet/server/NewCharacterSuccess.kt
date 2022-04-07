@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
 
 class NewCharacterSuccess(
-    private val templated: List<CharacterTemplate>
-) : SendablePacket() {
+    private val templated: List<CharTemplate>
+) : GameServerPacket() {
     override fun write() {
         writeC(0x17)
         writeD(templated.size)

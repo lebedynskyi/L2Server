@@ -1,10 +1,11 @@
 package lineage.vetal.server.login.gameclient.packet.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.login.gameclient.packet.GameServerPacket
+
 
 class SSQInfo private constructor(
     private val _state: Int
-) : SendablePacket() {
+) : GameServerPacket() {
     companion object {
         val REGULAR_SKY_PACKET = SSQInfo(256)
         val DUSK_SKY_PACKET = SSQInfo(257)

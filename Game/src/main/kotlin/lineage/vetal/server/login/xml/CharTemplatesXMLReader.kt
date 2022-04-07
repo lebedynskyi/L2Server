@@ -1,29 +1,25 @@
 package lineage.vetal.server.login.xml
 
-import lineage.vetal.server.core.model.StatSet
-import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.game.model.player.ClassId
 import lineage.vetal.server.core.model.location.Location
 import lineage.vetal.server.login.game.model.template.ItemTemplate
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.game.model.template.SkillTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 
-class CharacterTemplatesXMLReader(
+class CharTemplatesXMLReader(
     val path: String
 ) : XmlReader {
     private val TAG = "CharTemplatesXMLReader"
-    private val templates: MutableMap<Int, CharacterTemplate> = mutableMapOf()
+    private val templates: MutableMap<Int, CharTemplate> = mutableMapOf()
 
-    fun load(): MutableMap<Int, CharacterTemplate> {
+    fun load(): MutableMap<Int, CharTemplate> {
         loadXml()
         return templates
     }
 
     private fun loadXml() {
         parse(path)
-        writeInfo(TAG, "Loaded ${templates.size} player classes templates.")
 
         // We add parent skills, if existing.
         for (template in templates.values) {
@@ -57,21 +53,8 @@ class CharacterTemplatesXMLReader(
                     forEach(spawnsNode, "spawn") { spawnNode -> locs.add(Location(parseAttributes(spawnNode))) }
                     set["spawnLocations"] = locs
                 }
-                templates[set.getInteger("id")] = CharacterTemplate(set)
+                templates[set.getInteger("id")] = CharTemplate(set)
             }
         }
-    }
-
-    fun getTemplate(classId: ClassId): CharacterTemplate? {
-        return templates[classId.id]
-    }
-
-    fun getTemplate(classId: Int): CharacterTemplate? {
-        return templates[classId]
-    }
-
-    fun getClassNameById(classId: Int): String {
-        val template: CharacterTemplate? = templates[classId]
-        return template?.charClass?.name ?: "Invalid class"
     }
 }

@@ -1,4 +1,4 @@
-package lineage.vetal.server.core.model
+package lineage.vetal.server.login.xml
 
 import java.lang.IllegalArgumentException
 import java.util.*

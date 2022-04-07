@@ -1,9 +1,9 @@
 package lineage.vetal.server.login.game.model.player.status
 
-import lineage.vetal.server.login.game.model.template.CharacterTemplate
+import lineage.vetal.server.login.game.model.template.CharTemplate
 
 class PlayerStatus(
-    private val template: CharacterTemplate
+    private val template: CharTemplate
 ) : PlayableStatus(template) {
     var level: Int = 0
     var maxHp: Int = 0
