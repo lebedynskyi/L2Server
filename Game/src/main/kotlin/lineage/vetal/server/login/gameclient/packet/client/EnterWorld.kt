@@ -17,7 +17,7 @@ class EnterWorld : GamePacket() {
         player.client = client
         player.sendPacket(UserInfo(player))
         context.gameDatabase.charactersDao.updateLastAccess(player.id, Calendar.getInstance().timeInMillis)
-        context.gameWorld.addObject(player)
+        context.gameWorld.spawn(player)
     }
 
     override fun read() {

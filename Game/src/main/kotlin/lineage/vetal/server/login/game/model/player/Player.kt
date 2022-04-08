@@ -6,6 +6,7 @@ import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.gameclient.GameClient
+import lineage.vetal.server.login.gameclient.packet.server.MoveToLocation
 import java.util.*
 
 class Player(

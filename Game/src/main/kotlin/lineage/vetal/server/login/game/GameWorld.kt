@@ -1,47 +1,105 @@
 package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.server.SendablePacket
+import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.npc.Npc
+import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameclient.packet.server.CharInfo
-import lineage.vetal.server.login.gameclient.packet.server.DeleteObject
-import lineage.vetal.server.login.gameclient.packet.server.UserInfo
-import javax.swing.text.Position
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.abs
 
-// TODO use blocks and regions in game. For now it is ok to use global world
 class GameWorld {
+    private val TAG = "GameWorld"
+
+    // Geodata min/max tiles
+    val TILE_X_MIN = 16
+    val TILE_X_MAX = 26
+    val TILE_Y_MIN = 10
+    val TILE_Y_MAX = 25
+
+    // Map dimensions
+    val TILE_SIZE = 32768
+    val WORLD_X_MIN = (TILE_X_MIN - 20) * TILE_SIZE
+    val WORLD_X_MAX = (TILE_X_MAX - 19) * TILE_SIZE - 1
+    val WORLD_Y_MIN = (TILE_Y_MIN - 18) * TILE_SIZE
+    val WORLD_Y_MAX = (TILE_Y_MAX - 17) * TILE_SIZE - 1
+    val WORLD_Z_MAX = 16410
+
+    // Regions and offsets
+    val REGION_SIZE = 2048
+    val REGIONS_X = (WORLD_X_MAX - WORLD_X_MIN + 1) / REGION_SIZE
+    val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
+    val REGION_X_OFFSET = abs(WORLD_X_MIN / REGION_SIZE)
+    val REGION_Y_OFFSET = abs(WORLD_Y_MIN / REGION_SIZE)
+
     val currentOnline get() = _players.size
-    val players: List<Player> get() = _players
-    private val _players = mutableListOf<Player>()
-    private val _objects = mutableListOf<GameObject>()
+    private val _players = ConcurrentHashMap<Int, Player>()
+    private val _objects = ConcurrentHashMap<Int, GameObject>()
+    private val _npc = ConcurrentHashMap<Int, Npc>()
+    //    private val _montsers = ConcurrentHashMap<Int, Monster>()
 
-    fun addObject(obj: GameObject) {
-        if (obj is Player) {
-            spawnPlayer(obj)
-            _players.add(obj)
-        } else {
-            _objects.add(obj)
+    private val _worldRegions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x ->
+        Array(REGIONS_Y) { y ->
+            WorldRegion(x, y)
         }
     }
 
-    fun removeObject(obj: GameObject) {
-        if (obj is Player) {
-            _players.remove(obj)
-        } else {
-            _objects.remove(obj)
+    init {
+        for (x in 0 until REGIONS_X) {
+            for (y in 0 until REGIONS_Y) {
+                for (ix in -1..1) {
+                    for (iy in -1..1) {
+                        if (isValidRegion(x + ix, y + iy)) {
+                            _worldRegions[x + ix][y + iy].addSurroundingRegion(_worldRegions[x][y])
+                        }
+                    }
+                }
+            }
         }
-        broadCastPacket(DeleteObject(obj))
     }
 
-    fun broadCastPacket(packet: SendablePacket, range: Int = 0) {
-        _players.forEach {
+    fun spawn(obj: Creature) {
+        val region = getRegion(obj.position)
+        if (region == null) {
+            writeDebug(TAG, "Cannot find region for position ${obj.position}")
+            return
+        }
+        obj.region = region
+        when (obj) {
+            is Player -> region.addPlayer(obj)
+            is Npc -> region.addNpc(obj)
+        }
+    }
+
+    fun decay(obj: GameObject) {
+        val region = getRegion(obj.position)
+        if (region == null) {
+            writeDebug(TAG, "Cannot find region for position ${obj.position}")
+            return
+        }
+        obj.region  = null
+        when (obj) {
+            is Player -> region.removePlayer(obj)
+        }
+    }
+
+    fun broadCastPacket(packet: SendablePacket) {
+        _players.values.forEach {
             it.sendPacket(packet)
         }
     }
 
-    private fun spawnPlayer(player: Player) {
-        for (p in players) {
-            p.sendPacket(CharInfo(player))
-            player.sendPacket(CharInfo(p))
-        }
+    fun getRegion(loc: Location): WorldRegion? {
+        return getRegion(loc.x, loc.y)
+    }
+
+    fun getRegion(x: Int, y: Int): WorldRegion? {
+        return _worldRegions[(x - WORLD_X_MIN) / REGION_SIZE][(y - WORLD_Y_MIN) / REGION_SIZE]
+    }
+
+    private fun isValidRegion(x: Int, y: Int): Boolean {
+        return (x in 0 until REGIONS_X && y in 0 until REGIONS_Y)
     }
 }

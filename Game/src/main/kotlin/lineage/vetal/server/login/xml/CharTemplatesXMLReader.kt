@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.xml
 
-import lineage.vetal.server.core.model.location.Location
+import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.template.ItemTemplate
 import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.game.model.template.SkillTemplate

@@ -19,7 +19,7 @@ class RequestRestart : GamePacket() {
         client.clientState = GameClientState.LOBBY
         client.sendPacket(CharSlotList(client, slots))
 
-        context.gameWorld.removeObject(player)
+        context.gameWorld.decay(player)
     }
 
     override fun read() {

@@ -17,8 +17,7 @@ class RequestMoveToLocation : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
         val newLocation = SpawnLocation(targetX, targetY, targetZ, 0)
-        player.position = newLocation
-        client.sendPacket(MoveToLocation(player, newLocation))
+        player.moveToLocation(newLocation)
     }
 
     override fun read() {

@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.gameclient.packet.client
 
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.gameclient.GameClient
 import lineage.vetal.server.login.gameclient.packet.GamePacket
@@ -14,7 +15,10 @@ class ProtocolVersion : GamePacket() {
             740 -> client.sendInitPacket()
             744 -> client.sendInitPacket()
             746 -> client.sendInitPacket()
-            else -> client.saveAndClose()
+            else -> {
+                writeInfo("PROTOCOL", "Unknown protocol version $version")
+//                client.saveAndClose()
+            }
         }
     }
 

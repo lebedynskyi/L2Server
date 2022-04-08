@@ -22,10 +22,7 @@ class Say2 : GamePacket() {
         val sayType = SayType.values()[typeId]
         text = text.replace("\\\\n", "")
 
-        //  check message type. Check command ?
-
-        // Where to put logic ? All logics in packets? What if player impacts on world?
-        context.gameWorld.broadCastPacket(CreatureSay(player, sayType, text))
+        player.say(sayType, text)
     }
 
     override fun read() {

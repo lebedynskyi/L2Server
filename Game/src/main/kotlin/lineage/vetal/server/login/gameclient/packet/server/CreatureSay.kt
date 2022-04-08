@@ -3,7 +3,6 @@ package lineage.vetal.server.login.gameclient.packet.server
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameclient.packet.GameServerPacket
-import java.sql.ResultSet
 import kotlin.Int
 import kotlin.String
 
@@ -21,15 +20,6 @@ class CreatureSay : GameServerPacket {
         creature.name,
         content
     )
-
-    constructor(rs: ResultSet) : this(
-        rs.getInt("player_oid"),
-        SayType.valueOf(rs.getString("type")),
-        rs.getString("player_name"),
-        rs.getString("content")
-    )
-
-    constructor(type: SayType, name: String?, content: String?) : this(0, type, name, content) {}
 
     constructor(objectId: Int, sayType: SayType, name: String?, content: String?) {
         this.objectId = objectId
