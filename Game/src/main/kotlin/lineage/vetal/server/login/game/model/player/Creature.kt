@@ -15,7 +15,7 @@ abstract class Creature(
 
     open fun say(sayType: SayType, text: String) {
         if (sayType != SayType.HERO_VOICE) {
-            region?.broadCast(CreatureSay(this, sayType, text))
+            region?.broadCast(CreatureSay(this, sayType, text), this)
         } else {
             // Broadcast world
         }

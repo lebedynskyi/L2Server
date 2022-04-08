@@ -95,7 +95,7 @@ class GameWorld {
         return getRegion(loc.x, loc.y)
     }
 
-    fun getRegion(x: Int, y: Int): WorldRegion? {
+    fun getRegion(x: Int, y: Int): WorldRegion {
         return _worldRegions[(x - WORLD_X_MIN) / REGION_SIZE][(y - WORLD_Y_MIN) / REGION_SIZE]
     }
 

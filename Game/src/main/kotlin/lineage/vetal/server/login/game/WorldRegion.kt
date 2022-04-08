@@ -2,6 +2,7 @@ package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.npc.Npc
+import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameclient.packet.server.CharInfo
 import lineage.vetal.server.login.gameclient.packet.server.DeleteObject
@@ -16,6 +17,10 @@ class WorldRegion(
     private val _players = ConcurrentHashMap<Int, Player>()
 
     fun addSurroundingRegion(worldRegion: WorldRegion) {
+        if (worldRegion.tileX == tileX && worldRegion.tileY == tileY) {
+            return
+        }
+
         surroundRegions.add(worldRegion)
     }
 
@@ -24,8 +29,8 @@ class WorldRegion(
             player.sendPacket(CharInfo(it))
         }
 
-        _players[player.objectId] = player
         broadCast(CharInfo(player))
+        _players[player.objectId] = player
     }
 
     fun removePlayer(player: Player) {
@@ -37,7 +42,7 @@ class WorldRegion(
 
     }
 
-    fun broadCast(packet: SendablePacket, range: Int = Integer.MAX_VALUE) {
+    fun broadCast(packet: SendablePacket, owner: Creature? = null, range: Int = Integer.MAX_VALUE) {
         flattenPlayers().forEach {
             it.sendPacket(packet)
         }

@@ -7,7 +7,7 @@ import lineage.vetal.server.login.game.model.template.CreatureTemplate
 abstract class CreatureStatus(
     private val template: CreatureTemplate
 ) {
-    var isRunning = false
+    var isRunning = true
 
     open fun getINT(): Int {
         return template.baseINT
