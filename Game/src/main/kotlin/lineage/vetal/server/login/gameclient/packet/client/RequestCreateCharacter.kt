@@ -108,7 +108,7 @@ class RequestCreateCharacter : GamePacket() {
 
 
         // The class id related to this template is post-newbie.
-        val playerTemplate = context.characterTemplates[classId]
+        val playerTemplate = context.charStatsData[classId]
         if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {
             client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
             return

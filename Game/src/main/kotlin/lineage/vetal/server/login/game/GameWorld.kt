@@ -2,15 +2,17 @@ package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
-import lineage.vetal.server.login.gameclient.packet.server.CharInfo
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 
-class GameWorld {
+class GameWorld(
+    val npc: List<Npc>
+) {
     private val TAG = "GameWorld"
 
     // Geodata min/max tiles
@@ -37,7 +39,6 @@ class GameWorld {
     val currentOnline get() = _players.size
     private val _players = ConcurrentHashMap<Int, Player>()
     private val _objects = ConcurrentHashMap<Int, GameObject>()
-    private val _npc = ConcurrentHashMap<Int, Npc>()
     //    private val _montsers = ConcurrentHashMap<Int, Monster>()
 
     private val _worldRegions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x ->
@@ -58,6 +59,30 @@ class GameWorld {
                 }
             }
         }
+
+        var counter = 0
+        npc.forEach {
+            val region = getRegion(it.position)
+            if (region != null) {
+                counter += 1
+                region.addNpc(it)
+            } else {
+                writeInfo(TAG, "Cannot find region for ${it.position} with id ${it.objectId}")
+            }
+        }
+        writeInfo("World", "added $counter npcs to world")
+
+
+        var mostPopulated: WorldRegion? = null
+        _worldRegions.forEach { xR ->
+            xR.forEach { yR ->
+                if (mostPopulated == null || (mostPopulated?._npc?.size ?: 0) < yR._npc.size) {
+                    mostPopulated = yR
+                }
+            }
+        }
+
+        writeInfo("World", "most populated region is  x=${mostPopulated?.tileX} y=${mostPopulated?.tileY} -> $mostPopulated")
     }
 
     fun spawn(obj: Creature) {
@@ -79,7 +104,7 @@ class GameWorld {
             writeDebug(TAG, "Cannot find region for position ${obj.position}")
             return
         }
-        obj.region  = null
+        obj.region = null
         when (obj) {
             is Player -> region.removePlayer(obj)
         }

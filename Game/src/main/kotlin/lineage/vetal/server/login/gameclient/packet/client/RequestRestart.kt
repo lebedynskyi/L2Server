@@ -20,6 +20,7 @@ class RequestRestart : GamePacket() {
         client.sendPacket(CharSlotList(client, slots))
 
         context.gameWorld.decay(player)
+        context.gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
     }
 
     override fun read() {

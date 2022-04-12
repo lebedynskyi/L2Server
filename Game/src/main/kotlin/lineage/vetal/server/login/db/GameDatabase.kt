@@ -10,10 +10,12 @@ class GameDatabase(
 ) {
     val accountDao: AccountDao
     val charactersDao: CharactersDao
+    val spawnDao: SpawnDao
 
     init {
         val dbConnection = DBConnection(dataBaseConfig)
         charactersDao = CharactersDao(dbConnection, characterTemplates)
         accountDao = AccountDao(dbConnection)
+        spawnDao = SpawnDao(dbConnection)
     }
 }

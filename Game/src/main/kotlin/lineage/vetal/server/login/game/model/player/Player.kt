@@ -45,7 +45,6 @@ class Player(
     var allyCrestId: Int = 0
     var clanPrivelegies: Int = 0
 
-    var title: String? = "lovely"
     var isOnlineInt = 0
     var isIn7sDungeon = false
     var isInPartyMatchRoom = false
@@ -53,7 +52,6 @@ class Player(
     var isNoble = false
     var isHero = false
     var isFishing = false
-    var isFlying = false
     var isMounted = false
     var mountType: Int = 0
 
@@ -67,9 +65,10 @@ class Player(
     var pledgeClass = 0
 
     var isSitting: Boolean = false
-    var isRunning: Boolean = true
-    var isInCombat: Boolean = false
-    var isAlikeDead: Boolean = false
+
+    init {
+        isRunning = true
+    }
 
     fun getCollisionRadius(): Double {
         return charTemplate.getCollisionRadiusBySex(appearance.sex)

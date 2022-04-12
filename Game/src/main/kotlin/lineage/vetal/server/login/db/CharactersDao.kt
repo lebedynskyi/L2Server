@@ -23,6 +23,7 @@ class CharactersDao(
     private val SELECT_CHARACTER_SQL =
         "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id,hero from characters WHERE id=?"
     private val UPDATE_lAST_ACCESS_SQL = "UPDATE characters SET lastAccess = ? WHERE id = ?"
+    private val UPDATE_COORDINATES_SQL = "UPDATE characters SET x = ?, y = ?, z = ? WHERE id = ?"
 
     fun insertCharacter(player: Player): Boolean {
         return insertOrUpdate(INSERT_CHARACTER_SQL) {
@@ -68,6 +69,15 @@ class CharactersDao(
         return insertOrUpdate(UPDATE_lAST_ACCESS_SQL) {
             it.setLong(1, value)
             it.setString(2, playerId.toString())
+        }
+    }
+
+    fun updateCoordinates(playerId: UUID, location: SpawnLocation): Boolean {
+        return insertOrUpdate(UPDATE_COORDINATES_SQL) {
+            it.setInt(1, location.x)
+            it.setInt(2, location.y)
+            it.setInt(3, location.z)
+            it.setString(4, playerId.toString())
         }
     }
 

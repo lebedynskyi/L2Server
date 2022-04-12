@@ -3,6 +3,7 @@ package lineage.vetal.server.login.game
 import lineage.vetal.server.login.game.model.location.SpawnLocation
 import java.util.UUID
 
+// TODO get rid of ID - UUID. Need to use objectId
 open class GameObject(
     val id: UUID,
     var name: String,

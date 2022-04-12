@@ -128,7 +128,11 @@ class NpcXMLReader(
 //                    )
 //                }
                 if (npcId != null) {
-                    npcs[npcId] = if (set.getBool("mustUsePetTemplate", false)) PetTemplate(set) else NpcTemplate(set)
+                    npcs[npcId] = if (set.getBool("mustUsePetTemplate", false)){
+                        PetTemplate(set)
+                    }else {
+                        NpcTemplate(set)
+                    }
                 }
             }
         }

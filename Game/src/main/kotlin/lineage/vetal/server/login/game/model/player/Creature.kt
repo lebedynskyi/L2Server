@@ -13,6 +13,13 @@ abstract class Creature(
     position: SpawnLocation
 ) : GameObject(id, name, position) {
 
+    var title: String? = null
+
+    var isRunning: Boolean = false
+    var isInCombat: Boolean = false
+    var isAlikeDead: Boolean = false
+    var isFlying = false
+
     open fun say(sayType: SayType, text: String) {
         if (sayType != SayType.HERO_VOICE) {
             region?.broadCast(CreatureSay(this, sayType, text), this)

@@ -7,9 +7,12 @@ import java.util.*
 
 class Npc(
     id: UUID,
-    name: String,
-    position: SpawnLocation,
     val template: NpcTemplate,
-) : Creature(id, name, position) {
+    val spawnData: SpawnData?
+) : Creature(id, template.name, spawnData?.spawnLocation ?: SpawnLocation(0, 0, 0, 0)) {
     override val status: NpcStatus = NpcStatus(template)
+
+    init {
+        
+    }
 }

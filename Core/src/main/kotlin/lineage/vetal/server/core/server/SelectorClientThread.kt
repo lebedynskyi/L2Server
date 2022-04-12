@@ -146,8 +146,6 @@ class SelectorClientThread<T : Client>(
         if (connection.pendingClose) {
             // TODO should be close.
             disconnect()
-        } else {
-            key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
         }
     }
 }

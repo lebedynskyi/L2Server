@@ -54,13 +54,16 @@ open class ClientConnection(
             writePacketToBuffer(packet, tempBuffer)
             tempBuffer.flip()
             byteBuffer.put(tempBuffer)
-
             packetIterator.remove()
         }
-        byteBuffer.flip()
 
         // TODO check is packet was written to buffer or not.. It could be not enough space
-        val wroteCount = write(byteBuffer)
+        byteBuffer.flip()
+        val sentBytesCount = write(byteBuffer)
+
+        if (packetsQueue.size <=0) {
+            selectionKey.interestOps(selectionKey.interestOps() and SelectionKey.OP_WRITE.inv())
+        }
     }
 
     private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {
