@@ -3,8 +3,6 @@ package lineage.vetal.server.core.server
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.NetworkConfig
-import lineage.vetal.server.core.client.Client
-import lineage.vetal.server.core.client.ClientFactory
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
@@ -126,7 +124,7 @@ class SelectorClientThread<T : Client>(
         val connection = client.connection
 
         writeDebug(TAG, "Read packets from $client")
-        val packet = connection.readData(readBuffer, stringBuffer)
+        val packet = connection.readPackets(readBuffer, stringBuffer)
 
         if (packet != null) {
             _selectionReadFlow.tryEmit(client to packet)
@@ -141,7 +139,7 @@ class SelectorClientThread<T : Client>(
         val client = key.attachment() as T
         val connection = client.connection
 
-        connection.writeData(writeBuffer, tempWriteBuffer)
+        connection.writePackets(writeBuffer, tempWriteBuffer)
 
         if (connection.pendingClose) {
             // TODO should be close.

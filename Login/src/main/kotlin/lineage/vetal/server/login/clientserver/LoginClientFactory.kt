@@ -1,7 +1,6 @@
 package lineage.vetal.server.login.clientserver
 
-import lineage.vetal.server.core.client.ClientFactory
-import lineage.vetal.server.core.server.SocketConnectionFilter
+import lineage.vetal.server.core.server.ClientFactory
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
@@ -10,7 +9,6 @@ import java.security.KeyPair
 import kotlin.random.Random
 
 class LoginClientFactory(
-    private val connectionFilter: SocketConnectionFilter,
     private val blowFishKeys: Array<ByteArray>,
     private val rsaPairs: Array<KeyPair>
 ) : ClientFactory<LoginClient> {

@@ -1,7 +1,4 @@
-package lineage.vetal.server.core.client
-
-import lineage.vetal.server.core.server.SendablePacket
-import lineage.vetal.server.core.server.ServerClose
+package lineage.vetal.server.core.server
 
 abstract class Client {
     abstract val connection: ClientConnection
@@ -10,9 +7,9 @@ abstract class Client {
         connection.sendPacket(packet)
     }
 
-    open fun saveAndClose(reason: SendablePacket = ServerClose.STATIC_PACKET) {
+    open fun saveAndClose(reason: SendablePacket? = null) {
         connection.pendingClose = true
-        connection.sendPacket(reason)
+        connection.askClose(reason)
     }
 
     override fun toString(): String {

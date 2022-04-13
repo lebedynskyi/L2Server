@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.bridgeserver
 
-import lineage.vetal.server.core.client.*
+import lineage.vetal.server.core.bridge.*
+import lineage.vetal.server.core.server.ClientFactory
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector

@@ -1,4 +1,6 @@
-package lineage.vetal.server.core.server
+package lineage.vetal.server.login.gameclient.packet.server
+
+import lineage.vetal.server.core.server.SendablePacket
 
 
 class ServerClose private constructor() : SendablePacket() {

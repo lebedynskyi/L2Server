@@ -1,6 +1,5 @@
-package lineage.vetal.server.core.client
+package lineage.vetal.server.core.server
 
-import lineage.vetal.server.core.server.ReceivablePacket
 import java.nio.ByteBuffer
 
 interface PacketParser {

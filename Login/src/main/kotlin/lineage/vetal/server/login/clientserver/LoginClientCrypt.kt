@@ -2,7 +2,7 @@ package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.core.encryption.BlowFishCrypt
 import lineage.vetal.server.core.encryption.CryptUtil
-import lineage.vetal.server.core.client.ClientCrypt
+import lineage.vetal.server.core.server.ClientCrypt
 import java.math.BigInteger
 import java.security.KeyPair
 import java.security.interfaces.RSAPublicKey

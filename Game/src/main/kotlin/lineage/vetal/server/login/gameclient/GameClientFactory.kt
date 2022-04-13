@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameclient
 
-import lineage.vetal.server.core.client.ClientFactory
+import lineage.vetal.server.core.server.ClientFactory
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector

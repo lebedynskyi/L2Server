@@ -1,6 +1,7 @@
-package lineage.vetal.server.core.client
+package lineage.vetal.server.core.bridge
 
 import lineage.vetal.server.core.encryption.BlowFishCrypt
+import lineage.vetal.server.core.server.ClientCrypt
 import java.util.concurrent.atomic.AtomicBoolean
 
 class BridgeCrypt : ClientCrypt() {

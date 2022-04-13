@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.bridgeclient
 
-import lineage.vetal.server.core.client.PacketParser
+import lineage.vetal.server.core.server.PacketParser
 import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.bridgeclient.packets.server.AuthOk

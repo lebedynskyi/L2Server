@@ -1,8 +1,5 @@
-package lineage.vetal.server.core.client
+package lineage.vetal.server.core.server
 
-import lineage.vetal.server.core.server.DATA_HEADER_SIZE
-import lineage.vetal.server.core.server.ReceivablePacket
-import lineage.vetal.server.core.server.SendablePacket
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
@@ -10,7 +7,6 @@ import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
-// TODO wrap all read and write operation by try catch. 1 client error make crash all server
 open class ClientConnection(
     val socket: SocketChannel,
     val selector: Selector,
@@ -20,16 +16,31 @@ open class ClientConnection(
     private val packetParser: PacketParser,
 ) {
     private val TAG = "ClientConnection"
+    private val DATA_HEADER_SIZE = 2
     private val packetsQueue = ConcurrentLinkedQueue<SendablePacket>()
 
     @Volatile
-    var pendingClose = false
+    internal var pendingClose = false
 
-    fun readData(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): ReceivablePacket? {
+    fun sendPacket(packet: SendablePacket) {
+        packetsQueue.add(packet)
+        selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
+        selector.wakeup()
+    }
+
+    internal fun askClose(lastPacket: SendablePacket? = null) {
+        packetsQueue.clear()
+        pendingClose = true
+        if (lastPacket != null) {
+            sendPacket(lastPacket)
+        }
+    }
+
+    fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): ReceivablePacket? {
         byteBuffer.clear()
         stringBuffer.setLength(0)
 
-        val readResult = read(byteBuffer)
+        val readResult = readData(byteBuffer)
         if (readResult <= 0) {
             // data < 0 means connection closed
             pendingClose = true
@@ -40,7 +51,7 @@ open class ClientConnection(
         return readPacketFromBuffer(byteBuffer, stringBuffer)
     }
 
-    fun writeData(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
+    internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
         byteBuffer.clear()
 
         var packetCounter = 0
@@ -51,6 +62,7 @@ open class ClientConnection(
             val packet = packetIterator.next()
 
             // TODO check is packet was written to buffer or not.. It could be not enough space
+            // temp buffer is needed to check is enough capacity in byte buffer
             writePacketToBuffer(packet, tempBuffer)
             tempBuffer.flip()
             byteBuffer.put(tempBuffer)
@@ -59,11 +71,16 @@ open class ClientConnection(
 
         // TODO check is packet was written to buffer or not.. It could be not enough space
         byteBuffer.flip()
-        val sentBytesCount = write(byteBuffer)
+        val sentBytesCount = writeData(byteBuffer)
 
-        if (packetsQueue.size <=0) {
+        if (packetsQueue.size <= 0) {
             selectionKey.interestOps(selectionKey.interestOps() and SelectionKey.OP_WRITE.inv())
         }
+    }
+
+    internal fun closeSocket() {
+        selectionKey.cancel()
+        socket.close()
     }
 
     private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {
@@ -99,22 +116,11 @@ open class ClientConnection(
         buffer.position(dataStartPosition + encryptedSize)
     }
 
-    fun sendPacket(packet: SendablePacket) {
-        packetsQueue.add(packet)
-        selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
-        selector.wakeup()
-    }
-
-    private fun read(writeBuffer: ByteBuffer): Int {
+    private fun readData(writeBuffer: ByteBuffer): Int {
         return socket.read(writeBuffer)
     }
 
-    private fun write(writeBuffer: ByteBuffer): Int {
+    private fun writeData(writeBuffer: ByteBuffer): Int {
         return socket.write(writeBuffer)
-    }
-
-    fun closeSocket() {
-        selectionKey.cancel()
-        socket.close()
     }
 }

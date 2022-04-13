@@ -1,4 +1,4 @@
-package lineage.vetal.server.core.client
+package lineage.vetal.server.core.server
 
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel

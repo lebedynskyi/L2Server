@@ -2,7 +2,9 @@ package lineage.vetal.server.login.game.model.items
 
 import lineage.vetal.server.login.game.model.player.Paperdoll
 
-class Inventory : ItemContainer {
+class Inventory(
+
+) : ItemContainer {
     var currentWeight: Int = 0
     var weightLimit: Int = 0
 

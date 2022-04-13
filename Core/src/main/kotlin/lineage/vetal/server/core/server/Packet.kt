@@ -3,7 +3,9 @@ package lineage.vetal.server.core.server
 import java.nio.ByteBuffer
 
 abstract class Packet {
-
+    override fun toString(): String {
+        return this::class.java.simpleName
+    }
 }
 
 /**
@@ -15,8 +17,6 @@ float  – can be in range 2.22507e-308 до 1.79769e+308. Size - 8 byte
 string – Text(UTF8).Each letter is 2 bytes, 1st - the code of letter, 2nd –
 number of code table. The end of line is 0 symbol
  */
-
-const val DATA_HEADER_SIZE = 2
 
 abstract class SendablePacket : Packet() {
     private var buffer: ByteBuffer? = null
@@ -107,9 +107,5 @@ abstract class ReceivablePacket : Packet() {
         }
 
         return sBuffer.toString()
-    }
-
-    override fun toString(): String {
-        return javaClass.name
     }
 }

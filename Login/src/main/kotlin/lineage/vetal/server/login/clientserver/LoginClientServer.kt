@@ -17,7 +17,6 @@ class LoginClientServer(
     private val TAG = "LoginClientServer"
     private val blowFishKeys: Array<ByteArray>
     private val rsaPairs: Array<KeyPair>
-    private val filter: SocketConnectionFilter
     private val connectionFactory: LoginClientFactory
 
     private lateinit var selectorThread: SelectorServerThread<LoginClient>
@@ -32,8 +31,7 @@ class LoginClientServer(
         rsaPairs = Array(32) { CryptUtil.generateRsa128PublicKeyPair() }
         writeInfo(TAG, "Generated ${rsaPairs.size} rsa keys")
 
-        filter = SocketConnectionFilter(emptyList())
-        connectionFactory = LoginClientFactory(filter, blowFishKeys, rsaPairs)
+        connectionFactory = LoginClientFactory(blowFishKeys, rsaPairs)
     }
 
     suspend fun startServer() {
