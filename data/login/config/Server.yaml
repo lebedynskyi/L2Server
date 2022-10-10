@@ -20,7 +20,7 @@ registeredServers:
     maxOnline: 5
     bridgeKey: "fhgj#G$FSWD&T&#3"
   - id: 2
-    ip: "192.168.43.144"
+    ip: "192.168.1.2"
     port: 7777
     ageLimit: 18
     isPvp: false
@@ -28,7 +28,7 @@ registeredServers:
     bridgeKey: "ghJW&^#TEyuGOE*G"
 
 dataBaseConfig:
-  url: "jdbc:mariadb://192.168.43.180/l2db"
+  url: "jdbc:mariadb://172.16.168.5/l2db"
   user: "root"
   password: "l2db"
   timeOut: 5000

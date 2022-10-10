@@ -15,7 +15,7 @@ class LoginClientPacketHandler(
             return
         }
 
-        writeDebug(TAG, packet::class.java.name)
+        writeDebug(TAG, packet::class.java.simpleName)
 
         when (packet) {
 

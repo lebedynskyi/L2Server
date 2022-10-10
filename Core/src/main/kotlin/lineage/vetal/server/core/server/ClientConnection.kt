@@ -1,5 +1,6 @@
 package lineage.vetal.server.core.server
 
+import lineage.vetal.server.core.utils.logs.writeError
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
@@ -79,8 +80,12 @@ open class ClientConnection(
     }
 
     internal fun closeSocket() {
-        selectionKey.cancel()
-        socket.close()
+        try {
+            selectionKey.cancel()
+            socket.close()
+        } catch (e: Exception) {
+            writeError(TAG, "Unable to close connection", e)
+        }
     }
 
     private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {

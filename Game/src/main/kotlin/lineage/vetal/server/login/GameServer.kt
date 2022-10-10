@@ -4,8 +4,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import lineage.vetal.server.core.NetworkConfig
-import lineage.vetal.server.core.server.SelectorClientThread
-import lineage.vetal.server.core.server.SelectorServerThread
+import lineage.vetal.server.core.server.SelectorThread
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.bridgeclient.BridgeGameClient
 import lineage.vetal.server.login.bridgeclient.BridgeGameClientFactory
@@ -20,21 +19,21 @@ class GameServer(
 ) {
     val TAG = "GameServer"
 
-    private val bridgeSelector: SelectorClientThread<BridgeGameClient>
+    private val bridgeSelector: SelectorThread<BridgeGameClient>
     private val bridgeCoroutineContext = newSingleThreadContext("BridgeClient")
     private val bridgePacketHandler: BridgeGamePacketHandler
 
-    private val gameSelector: SelectorServerThread<GameClient>
+    private val gameSelector: SelectorThread<GameClient>
     private val gameCoroutineContext = newSingleThreadContext("GameServer")
     private val gamePacketHandler = GamePacketHandler(context)
 
     init {
         writeSection(TAG)
         bridgePacketHandler = BridgeGamePacketHandler(context)
-        bridgeSelector = SelectorClientThread(context.config.bridgeServer, BridgeGameClientFactory())
+        bridgeSelector = SelectorThread(context.config.bridgeServer, BridgeGameClientFactory(), isServer = false)
 
         val networkConfig = NetworkConfig(context.config.serverInfo.ip, context.config.serverInfo.port)
-        gameSelector = SelectorServerThread(networkConfig, GameClientFactory())
+        gameSelector = SelectorThread(networkConfig, GameClientFactory())
     }
 
     suspend fun connectToBridge() {

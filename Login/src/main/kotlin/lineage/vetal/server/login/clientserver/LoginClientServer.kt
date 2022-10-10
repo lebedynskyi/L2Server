@@ -19,7 +19,7 @@ class LoginClientServer(
     private val rsaPairs: Array<KeyPair>
     private val connectionFactory: LoginClientFactory
 
-    private lateinit var selectorThread: SelectorServerThread<LoginClient>
+    private lateinit var selectorThread: SelectorThread<LoginClient>
     private val serverContext = newSingleThreadContext("Login")
     private val loginPacketHandler = LoginClientPacketHandler(context)
 
@@ -35,7 +35,7 @@ class LoginClientServer(
     }
 
     suspend fun startServer() {
-        selectorThread = SelectorServerThread(context.config.clientServer, connectionFactory).apply {
+        selectorThread = SelectorThread(context.config.clientServer, connectionFactory).apply {
             start()
         }
 

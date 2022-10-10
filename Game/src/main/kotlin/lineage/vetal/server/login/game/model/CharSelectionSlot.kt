@@ -7,7 +7,7 @@ data class CharSelectionSlot(
     val id: UUID,
     val objectId: Int,
     val name: String,
-    val title: String,
+    val title: String?,
     var charId: Int = 0x00030b7a,
     var exp: Long,
     var sp: Int,

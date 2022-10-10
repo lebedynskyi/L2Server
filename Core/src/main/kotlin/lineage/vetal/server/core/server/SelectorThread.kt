@@ -3,6 +3,7 @@ package lineage.vetal.server.core.server
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import lineage.vetal.server.core.NetworkConfig
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.net.InetSocketAddress
@@ -11,53 +12,81 @@ import java.nio.ByteOrder
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
+import java.nio.channels.SocketChannel
 
 //TODO implement packet counter and limit per selection.
-class SelectorServerThread<T : Client>(
-    private val networkConfig: NetworkConfig,
-    private val clientFactory: ClientFactory<T>
+class SelectorThread<T : Client>(
+    private val config: NetworkConfig,
+    private val clientFactory: ClientFactory<T>,
+    private val isServer: Boolean = true,
+    private val TAG: String = "Selector"
 ) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024
     private val WRITE_BUFFER_SIZE = 64 * 1024
-    private val TAG = "SelectorServerThread"
 
-    private lateinit var selector: Selector
-    private lateinit var serverSocket: ServerSocketChannel
+    val connectionAcceptFlow get() = _selectionAcceptFlow.asSharedFlow()
+    val connectionReadFlow get() = _selectionReadFlow.asSharedFlow()
+    val connectionCloseFlow get() = _selectionCloseFlow.asSharedFlow()
 
     private val _selectionAcceptFlow = MutableSharedFlow<T>(1)
-    val connectionAcceptFlow = _selectionAcceptFlow.asSharedFlow()
-
     private val _selectionCloseFlow = MutableSharedFlow<T>(1)
-    val connectionCloseFlow = _selectionCloseFlow.asSharedFlow()
-
     private val _selectionReadFlow = MutableSharedFlow<Pair<T, ReceivablePacket>>(1)
-    val connectionReadFlow = _selectionReadFlow.asSharedFlow()
 
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
-
     private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val stringBuffer = StringBuffer(READ_BUFFER_SIZE)
 
     @Volatile
-    var isRunning = true
+    private var isRunning = false
+    private lateinit var selector: Selector
 
-    override fun run() = openServer()
+    override fun run() {
+        isRunning = true
+
+        if (isServer) {
+            openServer()
+        } else {
+            openClient()
+        }
+    }
 
     private fun openServer() {
-        val address = if (networkConfig.hostname.isBlank() || networkConfig.hostname == "*") {
-            InetSocketAddress(networkConfig.port)
+        val address = if (config.hostname.isBlank() || config.hostname == "*") {
+            InetSocketAddress(config.port)
         } else {
-            InetSocketAddress(networkConfig.hostname, networkConfig.port)
+            InetSocketAddress(config.hostname, config.port)
         }
+
         selector = Selector.open()
-        serverSocket = ServerSocketChannel.open().apply {
+        ServerSocketChannel.open().apply {
             socket().bind(address)
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${networkConfig.hostname}:${networkConfig.port}")
+        writeInfo(TAG, "Listening clients on ${config.hostname}:${config.port}")
+        loopSelector()
+        closeSelector()
+    }
 
+    private fun openClient() {
+        if (!isServer && (config.hostname.isBlank() || config.hostname == "*")) {
+            throw IllegalArgumentException("ip/host should be direct address for clients")
+        }
+        val address = InetSocketAddress(config.hostname, config.port)
+
+        selector = Selector.open()
+        SocketChannel.open().apply {
+            configureBlocking(false)
+            connect(address)
+            register(selector, SelectionKey.OP_CONNECT)
+        }
+        writeInfo(TAG, "Connecting to ${config.hostname}:${config.port}")
+        loopSelector()
+        closeSelector()
+    }
+
+    private fun loopSelector() {
         while (isRunning) {
             val readyChannels = selector.select()
             if (readyChannels == 0) continue
@@ -66,7 +95,8 @@ class SelectorServerThread<T : Client>(
             while (keyIterator.hasNext()) {
                 val key = keyIterator.next()
                 when (key.readyOps()) {
-                    SelectionKey.OP_ACCEPT -> acceptConnection()
+                    SelectionKey.OP_CONNECT -> finishConnection(key)
+                    SelectionKey.OP_ACCEPT -> acceptConnection(key)
                     SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -78,16 +108,42 @@ class SelectorServerThread<T : Client>(
                 keyIterator.remove()
             }
         }
-
-        closeServer()
     }
 
+    fun closeSelector() {
+        isRunning = false
+        selector.close()
+        writeInfo(TAG, "Selector closed")
+    }
 
-    private fun acceptConnection() {
+    private fun acceptConnection(key: SelectionKey) {
+        val serverSocket = key.channel() as ServerSocketChannel
         val socket = serverSocket.accept().apply { configureBlocking(false) }
         val client = clientFactory.createClient(selector, socket)
         writeInfo(TAG, "New connection $client")
         _selectionAcceptFlow.tryEmit(client)
+    }
+
+    private fun finishConnection(key: SelectionKey) {
+        try {
+            val socket = (key.channel() as SocketChannel)
+            socket.finishConnect()
+
+            // key might have been invalidated on finishConnect()
+            if (key.isValid) {
+                key.interestOps(key.interestOps() and SelectionKey.OP_CONNECT.inv())
+                writeDebug(TAG, "Connected to ${config.hostname}:${config.port}")
+                clientFactory.createClient(selector, socket)
+                val client = key.attachment() as T
+                _selectionAcceptFlow.tryEmit(client)
+            } else {
+                writeError(TAG, "Something wrong. key is invalid", UnknownError("Unknown"))
+            }
+        } catch (e: Exception) {
+            writeError(TAG, "Unable to connect to server ${config.hostname}:${config.port}. Try again in 5 second", e)
+            sleep(5000)
+            openClient()
+        }
     }
 
     private fun readPackets(key: SelectionKey) {
@@ -100,11 +156,11 @@ class SelectorServerThread<T : Client>(
             if (packet != null) {
                 _selectionReadFlow.tryEmit(client to packet)
             } else if (connection.pendingClose) {
-                closeClient(client, connection)
+                closeConnection(client, connection)
             }
         } catch (e: Exception) {
             writeError(TAG, "Cannot read packets", e)
-            closeClient(client, connection)
+            closeConnection(client, connection)
         }
     }
 
@@ -116,20 +172,15 @@ class SelectorServerThread<T : Client>(
             key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
 
             if (connection.pendingClose) {
-                closeClient(client, connection)
+                closeConnection(client, connection)
             }
         } catch (e: Exception) {
             writeError(TAG, "Cannot write packets", e)
-            closeClient(client, connection)
+            closeConnection(client, connection)
         }
     }
 
-    private fun closeServer() {
-        selector.close()
-        writeInfo(TAG, "Server closed")
-    }
-
-    private fun closeClient(client: T, connection: ClientConnection) {
+    private fun closeConnection(client: T, connection: ClientConnection) {
         writeInfo(TAG, " Closed connection with client $client")
         connection.closeSocket()
         _selectionCloseFlow.tryEmit(client)
