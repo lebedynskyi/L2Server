@@ -23,3 +23,11 @@ Client -> Player -> World -> Player -> Client
 - Equipment
 - ~~NPC spawn~~
 
+**TODO list**
+- Separate Core (Shared) and Network
+- Separate config and models for status and packet?
+- All configs should have Prefix `Config`
+- New naming for clients and servers
+- Separate `GameServer` and `GameBridge`
+- Remove ip from Registered server. It should come directly from connected server in `ServerStatus`. By default the same as LoginServer ?
+

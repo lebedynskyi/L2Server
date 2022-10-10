@@ -2,11 +2,11 @@
 Login/build
 Core/build
 Game/build
-/build
+*build/
 
 # Ide and gradle folders and settigns
-/.idea/
-/.gradle/
+*.idea/
+*.gradle/
 *.iml
 
 # OSX files
