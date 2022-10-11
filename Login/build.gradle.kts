@@ -17,6 +17,6 @@ tasks.withType<Jar> {
 }
 
 dependencies {
-    implementation(project(":Core"))
+    implementation(project(":Shared"))
     implementation(project(":Network"))
 }
