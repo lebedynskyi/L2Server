@@ -1,4 +1,4 @@
-package lineage.vetal.server.core.server
+package vetal.server.network
 
 import java.nio.ByteBuffer
 

@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.gameclient
 
-import lineage.vetal.server.core.server.ClientConnection
-import lineage.vetal.server.core.server.PacketParser
 import lineage.vetal.server.login.gameclient.packet.server.CryptInit
+import vetal.server.network.ClientConnection
+import vetal.server.network.PacketParser
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector

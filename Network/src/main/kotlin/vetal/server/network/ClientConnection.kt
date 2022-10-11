@@ -1,6 +1,6 @@
-package lineage.vetal.server.core.server
+package vetal.server.network
 
-import lineage.vetal.server.core.utils.logs.writeError
+import vetal.server.writeError
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey

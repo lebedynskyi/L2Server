@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.bridgeserver.packets.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import vetal.server.network.SendablePacket
+
 
 class InitOK : SendablePacket() {
     override fun write() {

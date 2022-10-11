@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import lineage.vetal.server.core.server.SendablePacket
+import vetal.server.network.SendablePacket
+
 
 class PlayOk(
     val loginOk1: Int,

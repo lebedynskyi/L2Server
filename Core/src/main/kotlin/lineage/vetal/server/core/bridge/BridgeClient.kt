@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.bridge
 
 import lineage.vetal.server.core.ServerInfo
-import lineage.vetal.server.core.server.Client
+import vetal.server.network.Client
 
 
 class BridgeClient(

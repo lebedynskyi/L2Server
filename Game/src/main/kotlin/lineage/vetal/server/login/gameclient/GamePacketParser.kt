@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.gameclient
 
-import lineage.vetal.server.core.server.PacketParser
-import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.gameclient.packet.client.*
+import vetal.server.network.PacketParser
+import vetal.server.network.ReceivablePacket
 import java.nio.ByteBuffer
 
 class GamePacketParser : PacketParser {

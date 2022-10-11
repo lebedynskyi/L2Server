@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.bridgeclient.packets.client
 
-import lineage.vetal.server.core.server.SendablePacket
+import vetal.server.network.SendablePacket
+
 
 class RequestInit(
     private var serverId: Int

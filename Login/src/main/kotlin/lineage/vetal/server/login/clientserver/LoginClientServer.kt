@@ -4,11 +4,11 @@ import lineage.vetal.server.core.encryption.CryptUtil
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import lineage.vetal.server.core.server.*
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.clientserver.packets.client.ClientConnected
+import vetal.server.network.SelectorThread
 import java.security.KeyPair
 
 class LoginClientServer(
@@ -35,7 +35,11 @@ class LoginClientServer(
     }
 
     suspend fun startServer() {
-        selectorThread = SelectorThread(context.config.clientServer, connectionFactory).apply {
+        selectorThread = SelectorThread(
+            context.config.clientServer.hostname,
+            context.config.clientServer.port,
+            connectionFactory
+        ).apply {
             start()
         }
 

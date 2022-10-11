@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.gameclient
 
-import lineage.vetal.server.core.server.Client
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.login.game.model.CharSelectionSlot
 import lineage.vetal.server.login.game.model.player.Player
+import vetal.server.network.Client
 
 
 class GameClient(

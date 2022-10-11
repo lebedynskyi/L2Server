@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.bridgeclient
 
-import lineage.vetal.server.core.server.PacketParser
-import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.bridgeclient.packets.server.AuthOk
 import lineage.vetal.server.login.bridgeclient.packets.server.InitOK
 import lineage.vetal.server.login.bridgeclient.packets.server.UpdateOk
+import vetal.server.network.PacketParser
+import vetal.server.network.ReceivablePacket
 import java.nio.ByteBuffer
 
 class BridgeGamePacketParser : PacketParser {

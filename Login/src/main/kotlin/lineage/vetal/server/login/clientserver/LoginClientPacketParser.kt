@@ -1,14 +1,14 @@
 package lineage.vetal.server.login.clientserver
 
-import lineage.vetal.server.core.server.PacketParser
 import lineage.vetal.server.core.encryption.CryptUtil
-import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.clientserver.packets.client.RequestAuthLogin
 import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
+import vetal.server.network.PacketParser
+import vetal.server.network.ReceivablePacket
 import java.nio.ByteBuffer
 
 class LoginClientPacketParser : PacketParser {

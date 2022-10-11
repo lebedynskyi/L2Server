@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.bridge
 
-import lineage.vetal.server.core.server.ClientConnection
-import lineage.vetal.server.core.server.PacketParser
+import vetal.server.network.ClientConnection
+import vetal.server.network.PacketParser
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector

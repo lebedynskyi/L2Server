@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.bridgeclient
 
-import lineage.vetal.server.core.server.ReceivablePacket
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.login.bridgeclient.packets.server.AuthOk
+import vetal.server.network.ReceivablePacket
 
 class BridgeGamePacketHandler(
     private val context: GameContext

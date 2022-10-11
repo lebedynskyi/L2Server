@@ -1,11 +1,10 @@
-package lineage.vetal.server.core.server
+package vetal.server.network
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import lineage.vetal.server.core.NetworkConfig
-import lineage.vetal.server.core.utils.logs.writeDebug
-import lineage.vetal.server.core.utils.logs.writeError
-import lineage.vetal.server.core.utils.logs.writeInfo
+import vetal.server.writeDebug
+import vetal.server.writeError
+import vetal.server.writeInfo
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -16,7 +15,8 @@ import java.nio.channels.SocketChannel
 
 //TODO implement packet counter and limit per selection.
 class SelectorThread<T : Client>(
-    private val config: NetworkConfig,
+    private val hostName: String,
+    private val port: Int,
     private val clientFactory: ClientFactory<T>,
     private val isServer: Boolean = true,
     private val TAG: String = "Selector"
@@ -52,10 +52,10 @@ class SelectorThread<T : Client>(
     }
 
     private fun openServer() {
-        val address = if (config.hostname.isBlank() || config.hostname == "*") {
-            InetSocketAddress(config.port)
+        val address = if (hostName.isBlank() || hostName == "*") {
+            InetSocketAddress(port)
         } else {
-            InetSocketAddress(config.hostname, config.port)
+            InetSocketAddress(hostName, port)
         }
 
         selector = Selector.open()
@@ -64,16 +64,16 @@ class SelectorThread<T : Client>(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${config.hostname}:${config.port}")
+        writeInfo(TAG, "Listening clients on ${hostName}:${port}")
         loopSelector()
         closeSelector()
     }
 
     private fun openClient() {
-        if (!isServer && (config.hostname.isBlank() || config.hostname == "*")) {
+        if (!isServer && (hostName.isBlank() || hostName == "*")) {
             throw IllegalArgumentException("ip/host should be direct address for clients")
         }
-        val address = InetSocketAddress(config.hostname, config.port)
+        val address = InetSocketAddress(hostName, port)
 
         selector = Selector.open()
         SocketChannel.open().apply {
@@ -81,7 +81,7 @@ class SelectorThread<T : Client>(
             connect(address)
             register(selector, SelectionKey.OP_CONNECT)
         }
-        writeInfo(TAG, "Connecting to ${config.hostname}:${config.port}")
+        writeInfo(TAG, "Connecting to ${hostName}:${port}")
         loopSelector()
         closeSelector()
     }
@@ -132,7 +132,7 @@ class SelectorThread<T : Client>(
             // key might have been invalidated on finishConnect()
             if (key.isValid) {
                 key.interestOps(key.interestOps() and SelectionKey.OP_CONNECT.inv())
-                writeDebug(TAG, "Connected to ${config.hostname}:${config.port}")
+                writeDebug(TAG, "Connected to ${hostName}:${port}")
                 clientFactory.createClient(selector, socket)
                 val client = key.attachment() as T
                 _selectionAcceptFlow.tryEmit(client)
@@ -140,7 +140,7 @@ class SelectorThread<T : Client>(
                 writeError(TAG, "Something wrong. key is invalid", UnknownError("Unknown"))
             }
         } catch (e: Exception) {
-            writeError(TAG, "Unable to connect to server ${config.hostname}:${config.port}. Try again in 5 second", e)
+            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in 5 second", e)
             sleep(5000)
             openClient()
         }

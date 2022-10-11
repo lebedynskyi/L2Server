@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.game
 
-import lineage.vetal.server.core.server.SendablePacket
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameclient.packet.server.CharInfo
 import lineage.vetal.server.login.gameclient.packet.server.DeleteObject
 import lineage.vetal.server.login.gameclient.packet.server.NpcInfo
+import vetal.server.network.SendablePacket
 import java.util.concurrent.ConcurrentHashMap
 
 // TODO broadcast issue. Player should receive packet that is sent by this player

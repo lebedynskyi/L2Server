@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.clientserver
 
-import lineage.vetal.server.core.server.ClientConnection
 import lineage.vetal.server.login.clientserver.packets.server.Init
+import vetal.server.network.ClientConnection
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector

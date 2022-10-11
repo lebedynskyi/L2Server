@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":Network"))
+
     // Kotlin coroutines
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
 

@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameclient
 
-import lineage.vetal.server.core.server.ClientCrypt
+import vetal.server.network.ClientCrypt
 import kotlin.random.Random
 
 class GameClientCrypt private constructor(
