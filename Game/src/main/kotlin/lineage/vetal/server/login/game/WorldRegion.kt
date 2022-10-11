@@ -3,9 +3,9 @@ package lineage.vetal.server.login.game
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
-import lineage.vetal.server.login.gameclient.packet.server.CharInfo
-import lineage.vetal.server.login.gameclient.packet.server.DeleteObject
-import lineage.vetal.server.login.gameclient.packet.server.NpcInfo
+import lineage.vetal.server.login.gameserver.packet.server.CharInfo
+import lineage.vetal.server.login.gameserver.packet.server.DeleteObject
+import lineage.vetal.server.login.gameserver.packet.server.NpcInfo
 import vetal.server.network.SendablePacket
 import java.util.concurrent.ConcurrentHashMap
 

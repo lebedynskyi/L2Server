@@ -4,7 +4,7 @@ import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.CharTemplate
-import lineage.vetal.server.login.gameclient.GameClient
+import lineage.vetal.server.login.gameserver.GameClient
 import vetal.server.network.SendablePacket
 import java.util.*
 

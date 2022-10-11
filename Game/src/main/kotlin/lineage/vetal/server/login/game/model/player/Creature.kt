@@ -3,8 +3,8 @@ package lineage.vetal.server.login.game.model.player
 import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.GameObject
 import lineage.vetal.server.login.game.model.player.status.CreatureStatus
-import lineage.vetal.server.login.gameclient.packet.server.CreatureSay
-import lineage.vetal.server.login.gameclient.packet.server.MoveToLocation
+import lineage.vetal.server.login.gameserver.packet.server.CreatureSay
+import lineage.vetal.server.login.gameserver.packet.server.MoveToLocation
 import java.util.*
 
 abstract class Creature(
