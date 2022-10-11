@@ -13,8 +13,8 @@ class GameClientFactory : ClientFactory<GameClient> {
         val crypt = GameClientCrypt.newInstance()
         val parser = GamePacketParser()
         val connection = GameClientConnection(socket, selector, selectionKey, address, crypt, parser)
-        return GameClient(connection,).apply {
-            selectionKey.attach(this)
+        return GameClient(connection,).also {
+            selectionKey.attach(it)
         }
     }
 }

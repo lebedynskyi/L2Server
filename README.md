@@ -24,11 +24,10 @@ Client -> Player -> World -> Player -> Client
 - ~~NPC spawn~~
 
 **TODO list**
+- New naming for clients and servers
+- Selector should be able to receive list of packets. It is important when client sends a lot of data
 - ~~Separate Core (Shared) and Network~~
 - ~~Separate config and models for status and packet?~~
 - ~~All configs should have Prefix Config~~
-- New naming for clients and servers
-- Separate `GameServer` and `GameBridge`
-- Selector should be able to receive list of packets. It is important when client sends a lot of data
+- ~~Separate `GameServer` and `GameBridge` .~~
 - ~~Remove ip from Registered server. It should come directly from connected server in `ServerStatus`. By default, the same as LoginServer ?~~
-

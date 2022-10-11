@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.bridgeclient
 
+import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.bridgeclient.packets.BridgeGamePacket
@@ -11,7 +12,7 @@ class BridgeGamePacketHandler(
 ) {
     private val TAG = "BridgeGamePacketHandler"
 
-    fun handle(client: BridgeGameClient, packet: ReceivablePacket) {
+    fun handle(client: BridgeClient, packet: ReceivablePacket) {
         if (packet !is BridgeGamePacket) {
             return
         }

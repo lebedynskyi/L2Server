@@ -13,10 +13,11 @@ fun main(args: Array<String>) {
     val dataFolder = args[0]
     val gameContext = GameContext(dataFolder)
     val gameServer = GameServer(gameContext)
+    val bridgeClient = BridgeClient(gameContext)
 
     runBlocking {
         launch {
-            gameServer.connectToBridge()
+            bridgeClient.connectToBridge()
         }
 
         launch {

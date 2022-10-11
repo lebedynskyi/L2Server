@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.gameclient
 
+import lineage.vetal.server.core.utils.ext.ifNullOrBlank
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.gameclient.packet.GamePacket
@@ -15,12 +16,7 @@ class GamePacketHandler(
             return
         }
 
-        if (client.player != null) {
-            writeDebug(TAG, "Player -> ${client.player?.name} packet -> ${packet::class.java.simpleName}")
-        } else {
-            writeDebug(TAG, "Client -> $client packet -> ${packet::class.java.simpleName}")
-        }
-
+        writeDebug(TAG, "Player `${client.player?.name?.ifNullOrBlank { client.account.account }}` packet -> ${packet::class.java.simpleName}")
 
         when (packet) {
 
