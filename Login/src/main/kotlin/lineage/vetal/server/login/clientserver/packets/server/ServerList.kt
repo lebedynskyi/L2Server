@@ -6,15 +6,15 @@ import vetal.server.network.SendablePacket
 import java.net.InetAddress
 
 class ServerList(
-    private val connectedServers: List<ConfigRegisteredServer>
+    private val registeredServers: List<ConfigRegisteredServer>
 ) : SendablePacket() {
     override fun write() {
         writeC(0x04)
-        writeC(connectedServers.size)
+        writeC(registeredServers.size)
         // Last server
         writeC(2)
 
-        connectedServers.forEach {
+        registeredServers.forEach {
             writeC(it.id)
             // IP
             val raw = InetAddress.getByName(it.ip).address

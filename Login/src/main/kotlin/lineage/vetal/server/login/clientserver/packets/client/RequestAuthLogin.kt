@@ -65,7 +65,7 @@ class RequestAuthLogin : LoginClientPacket() {
         if (context.config.lobbyConfig.showLicense) {
             client.sendPacket(LoginOk(sessionKey.loginOkID1, sessionKey.loginOkID2))
         } else {
-            client.sendPacket(ServerList(context.loginLobby.serverList))
+            client.sendPacket(ServerList(context.loginLobby.registeredServers))
         }
     }
 

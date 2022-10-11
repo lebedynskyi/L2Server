@@ -6,11 +6,9 @@ import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
 
 class LoginLobby(
-    private val configLoginLobby: ConfigLoginLobby,
-    private val registeredServers: Array<ConfigRegisteredServer>
+    val configLoginLobby: ConfigLoginLobby,
+    val registeredServers: List<ConfigRegisteredServer>
 ) {
-    val serverList get() = registeredServers.toList()
-
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
 

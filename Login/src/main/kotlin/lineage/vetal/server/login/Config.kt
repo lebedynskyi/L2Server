@@ -13,7 +13,7 @@ class ConfigLogin(
     val lobbyConfig: ConfigLoginLobby,
     val clientServer: ConfigNetwork,
     val bridgeServer: ConfigNetwork,
-    val registeredServers: Array<ConfigRegisteredServer>,
+    val registeredServers: List<ConfigRegisteredServer>,
     val dataBaseConfig: ConfigDataBase
 ) {
     companion object Builder {

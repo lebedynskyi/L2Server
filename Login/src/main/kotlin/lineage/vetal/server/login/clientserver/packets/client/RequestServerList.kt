@@ -17,7 +17,7 @@ class RequestServerList : LoginClientPacket() {
             return
         }
 
-        client.sendPacket(ServerList(context.loginLobby.serverList))
+        client.sendPacket(ServerList(context.loginLobby.registeredServers))
     }
 
     override fun read() {

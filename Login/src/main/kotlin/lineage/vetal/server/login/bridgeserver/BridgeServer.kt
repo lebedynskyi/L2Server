@@ -1,7 +1,6 @@
 package lineage.vetal.server.login.bridgeserver
 
 import kotlinx.coroutines.*
-import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.LoginContext
 import vetal.server.network.SelectorThread
 
