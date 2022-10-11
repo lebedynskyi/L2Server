@@ -18,7 +18,7 @@ class BridgeServer(
             context.config.bridgeServer.hostname,
             context.config.bridgeServer.port,
             BridgeFactory(),
-            isServer = true
+            TAG = "BridgeServerSelector"
         ).apply {
             start()
         }

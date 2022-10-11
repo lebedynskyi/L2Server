@@ -13,7 +13,7 @@ class LoginContext(
 ) {
     private val TAG = "LoginContext"
 
-    var config: LoginConfig
+    var config: ConfigLogin
     val loginDatabase: LoginDatabase
     val loginLobby: LoginLobby
 
@@ -23,7 +23,7 @@ class LoginContext(
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
 
-        config = LoginConfig.read(serverConfigFile)
+        config = ConfigLogin.read(serverConfigFile)
         loginLobby = LoginLobby(config.lobbyConfig, config.registeredServers)
 
         writeInfo(TAG, "Initialize database")

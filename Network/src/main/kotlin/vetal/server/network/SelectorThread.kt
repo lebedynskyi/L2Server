@@ -140,7 +140,7 @@ class SelectorThread<T : Client>(
                 writeError(TAG, "Something wrong. key is invalid", UnknownError("Unknown"))
             }
         } catch (e: Exception) {
-            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in 5 second", e)
+            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in 5 second")
             sleep(5000)
             openClient()
         }
@@ -184,5 +184,9 @@ class SelectorThread<T : Client>(
         writeInfo(TAG, " Closed connection with client $client")
         connection.closeSocket()
         _selectionCloseFlow.tryEmit(client)
+
+        if (!isServer) {
+            openClient()
+        }
     }
 }

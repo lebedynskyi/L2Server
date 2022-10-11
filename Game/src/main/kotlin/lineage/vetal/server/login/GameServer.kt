@@ -3,7 +3,7 @@ package lineage.vetal.server.login
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import lineage.vetal.server.core.NetworkConfig
+import lineage.vetal.server.core.ConfigNetwork
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.bridgeclient.BridgeGameClient
 import lineage.vetal.server.login.bridgeclient.BridgeGameClientFactory
@@ -34,11 +34,12 @@ class GameServer(
             context.config.bridgeServer.hostname,
             context.config.bridgeServer.port,
             BridgeGameClientFactory(),
-            isServer = false
+            isServer = false,
+            TAG = "BridgeClientSelector"
         )
 
-        val networkConfig = NetworkConfig(context.config.serverInfo.ip, context.config.serverInfo.port)
-        gameSelector = SelectorThread(networkConfig.hostname, networkConfig.port, GameClientFactory())
+        val configNetwork = ConfigNetwork(context.config.serverInfo.ip, context.config.serverInfo.port)
+        gameSelector = SelectorThread(configNetwork.hostname, configNetwork.port, GameClientFactory(), TAG = "GameServerSelector")
     }
 
     suspend fun connectToBridge() {

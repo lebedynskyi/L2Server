@@ -15,7 +15,7 @@ class RequestInit : BridgePacket() {
         val server = context.loginLobby.getRegisteredServer(serverId)
         if (server != null) {
             client.connection.crypt.init(server.bridgeKey.toByteArray())
-            client.connectedServerInfo = server
+            client.connectedConfigRegisteredServer = server
             client.sendPacket(InitOK())
             writeInfo(TAG, "Server with id ${server.id} connected")
         } else {

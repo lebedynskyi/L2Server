@@ -15,6 +15,14 @@ class LoginClient(
     fun sendInitPacket() {
         connection.sendInitPacket(sessionId)
     }
+
+    override fun toString(): String {
+        return if (account != null) {
+            "LoginClient: address $connection"
+        } else {
+            "LoginClient: ${account?.account} address $connection"
+        }
+    }
 }
 
 enum class LoginState {

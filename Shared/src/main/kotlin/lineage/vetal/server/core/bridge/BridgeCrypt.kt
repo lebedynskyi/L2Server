@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class BridgeCrypt : ClientCrypt() {
     private lateinit var blowFish: BlowFishCrypt
-    private val isStaticRead = AtomicBoolean(true)
-    private val isStaticWrite = AtomicBoolean(true)
+    private val isStaticEncrypt = AtomicBoolean(true)
+    private val isStaticDecrypt = AtomicBoolean(true)
 
     fun init(blowFishKey: ByteArray) {
         blowFish = BlowFishCrypt(blowFishKey)
@@ -19,7 +19,7 @@ class BridgeCrypt : ClientCrypt() {
         newSize += 8 - newSize % 8
 
         // First packet is not encrypted.
-        return if (isStaticRead.getAndSet(false)) {
+        return if (isStaticEncrypt.getAndSet(false)) {
             originalSize
         } else {
             blowFish.encrypt(raw, offset, newSize)
@@ -28,7 +28,7 @@ class BridgeCrypt : ClientCrypt() {
 
     override fun decrypt(raw: ByteArray, offset: Int, originalSize: Int): Int {
         // First packet is not encrypted
-        return if (isStaticWrite.getAndSet(false)) {
+        return if (isStaticDecrypt.getAndSet(false)) {
             originalSize
         } else {
             blowFish.decrypt(raw, offset, originalSize )

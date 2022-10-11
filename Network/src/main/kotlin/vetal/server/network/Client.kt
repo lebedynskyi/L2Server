@@ -13,6 +13,6 @@ abstract class Client {
     }
 
     override fun toString(): String {
-        return "Client ${connection.clientAddress.address.hostAddress}"
+        return "Client $connection"
     }
 }

@@ -38,7 +38,8 @@ class LoginClientServer(
         selectorThread = SelectorThread(
             context.config.clientServer.hostname,
             context.config.clientServer.port,
-            connectionFactory
+            connectionFactory,
+            TAG = "LoginClientSelector"
         ).apply {
             start()
         }

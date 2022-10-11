@@ -5,7 +5,7 @@ import kotlinx.serialization.Transient
 import lineage.vetal.server.core.model.ServerStatus
 
 @Serializable
-data class DataBaseConfig(
+data class ConfigDataBase(
     val url: String,
     val user: String,
     val password: String,
@@ -13,13 +13,13 @@ data class DataBaseConfig(
 )
 
 @Serializable
-data class NetworkConfig(
+data class ConfigNetwork(
     val hostname: String,
     val port: Int
 )
 
 @Serializable
-data class ServerInfo(
+data class ConfigRegisteredServer(
     val id: Int,
     val ip: String,
     val port: Int,

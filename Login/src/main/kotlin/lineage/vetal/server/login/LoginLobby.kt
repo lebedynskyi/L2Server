@@ -1,13 +1,13 @@
 package lineage.vetal.server.login
 
-import lineage.vetal.server.core.ServerInfo
+import lineage.vetal.server.core.ConfigRegisteredServer
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
 
 class LoginLobby(
-    private val lobbyConfig: LobbyConfig,
-    private val registeredServers: Array<ServerInfo>
+    private val configLoginLobby: ConfigLoginLobby,
+    private val registeredServers: Array<ConfigRegisteredServer>
 ) {
     val serverList get() = registeredServers.toList()
 
@@ -32,10 +32,10 @@ class LoginLobby(
     }
 
     fun canAcceptMoreClients(): Boolean {
-        return connectedClients.size < lobbyConfig.maxCount
+        return connectedClients.size < configLoginLobby.maxCount
     }
 
-    fun getRegisteredServer(serverId: Int): ServerInfo? {
+    fun getRegisteredServer(serverId: Int): ConfigRegisteredServer? {
         return registeredServers.firstOrNull { it.id == serverId }
     }
 

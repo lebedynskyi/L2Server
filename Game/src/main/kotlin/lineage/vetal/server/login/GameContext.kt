@@ -21,7 +21,7 @@ class GameContext(
 ) {
     private val TAG = "GameContext"
 
-    val config: GameConfig
+    val config: ConfigGame
     val gameWorld: GameWorld
     val gameDatabase: GameDatabase
     val threadPool: ThreadPool
@@ -35,7 +35,7 @@ class GameContext(
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
 
-        config = GameConfig.read(serverConfigFile)
+        config = ConfigGame.read(serverConfigFile)
 
         writeInfo(TAG, "Initialize thread pool")
         threadPool = ThreadPool()

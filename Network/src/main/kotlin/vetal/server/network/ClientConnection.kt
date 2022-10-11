@@ -9,10 +9,10 @@ import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
 open class ClientConnection(
-    val socket: SocketChannel,
-    val selector: Selector,
-    val selectionKey: SelectionKey,
-    val clientAddress: InetSocketAddress,
+    private val socket: SocketChannel,
+    private val selector: Selector,
+    private val selectionKey: SelectionKey,
+    private val clientAddress: InetSocketAddress,
     private val crypt: ClientCrypt,
     private val packetParser: PacketParser,
 ) {
@@ -127,5 +127,9 @@ open class ClientConnection(
 
     private fun writeData(writeBuffer: ByteBuffer): Int {
         return socket.write(writeBuffer)
+    }
+
+    override fun toString(): String {
+        return clientAddress.toString()
     }
 }

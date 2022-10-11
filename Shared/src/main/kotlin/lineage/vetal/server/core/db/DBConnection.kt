@@ -3,7 +3,7 @@ package lineage.vetal.server.core.db
 import ch.qos.logback.classic.Logger
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import lineage.vetal.server.core.DataBaseConfig
+import lineage.vetal.server.core.ConfigDataBase
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import org.slf4j.LoggerFactory
@@ -12,7 +12,7 @@ import java.sql.Connection
 import kotlin.system.exitProcess
 
 class DBConnection(
-    private val config: DataBaseConfig
+    private val config: ConfigDataBase
 ) {
     private val TAG = "DataBase"
     private lateinit var databaseSource: HikariDataSource
