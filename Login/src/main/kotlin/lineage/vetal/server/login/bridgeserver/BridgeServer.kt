@@ -9,31 +9,31 @@ import vetal.server.network.SelectorThread
 class BridgeServer(
     private val context: LoginContext
 ) {
-    private var selectorThread: SelectorThread<BridgeClient>? = null
-    private val serverContext = newSingleThreadContext("Bridge")
+    private var selectorThread: SelectorThread<BridgeClient>
+    private val serverScope = CoroutineScope(Dispatchers.IO + Job())
     private val bridgePacketHandler = BridgePacketHandler(context)
 
-    suspend fun startServer() {
+    init {
         selectorThread = SelectorThread(
             context.config.bridgeServer.hostname,
             context.config.bridgeServer.port,
             BridgeFactory(),
             TAG = "BridgeServerSelector"
-        ).apply {
-            start()
+        )
+    }
+
+    fun startServer() {
+        selectorThread.start()
+
+        serverScope.launch {
+            selectorThread.connectionCloseFlow.collect {
+                // Nothing to do here ?
+            }
         }
 
-        withContext(serverContext) {
-            launch {
-                selectorThread?.connectionReadFlow?.collect {
-                    bridgePacketHandler.handle(it.first, it.second)
-                }
-            }
-
-            launch {
-                selectorThread?.connectionCloseFlow?.collect {
-                    // Nothing to do here ?
-                }
+        serverScope.launch {
+            selectorThread.connectionReadFlow.collect {
+                bridgePacketHandler.handle(it.first, it.second)
             }
         }
     }

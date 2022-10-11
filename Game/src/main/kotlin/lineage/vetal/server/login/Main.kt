@@ -1,7 +1,6 @@
 package lineage.vetal.server.login
 
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import lineage.vetal.server.core.utils.logs.writeDebug
 
 const val TAG = "Game"
 
@@ -12,16 +11,9 @@ fun main(args: Array<String>) {
 
     val dataFolder = args[0]
     val gameContext = GameContext(dataFolder)
-    val gameServer = GameServer(gameContext)
-    val bridgeClient = BridgeClient(gameContext)
 
-    runBlocking {
-        launch {
-            bridgeClient.connectToBridge()
-        }
+    GameServer(gameContext).startServer()
+    BridgeClient(gameContext).startClient()
 
-        launch {
-            gameServer.startClientServer()
-        }
-    }
+    writeDebug(TAG, "Finished Game initialization")
 }

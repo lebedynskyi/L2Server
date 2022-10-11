@@ -1,8 +1,6 @@
 package lineage.vetal.server.login
 
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.bridgeserver.BridgeServer
 import lineage.vetal.server.login.clientserver.LoginClientServer
 
@@ -17,14 +15,8 @@ fun main(args: Array<String>) {
     val dataFolder = args[0]
     val context = LoginContext(dataFolder)
 
-    runBlocking {
-        launch {
-            LoginClientServer(context).startServer()
-        }
-        launch {
-            BridgeServer(context).startServer()
-        }
-    }
+    LoginClientServer(context).startServer()
+    BridgeServer(context).startServer()
 
-    writeDebug(TAG, "Finished")
+    writeInfo(TAG, "Finished Login initialization")
 }

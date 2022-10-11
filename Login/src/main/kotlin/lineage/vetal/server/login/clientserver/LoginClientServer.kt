@@ -1,9 +1,7 @@
 package lineage.vetal.server.login.clientserver
 
+import kotlinx.coroutines.*
 import lineage.vetal.server.core.encryption.CryptUtil
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.LoginContext
@@ -19,8 +17,8 @@ class LoginClientServer(
     private val rsaPairs: Array<KeyPair>
     private val connectionFactory: LoginClientFactory
 
-    private lateinit var selectorThread: SelectorThread<LoginClient>
-    private val serverContext = newSingleThreadContext("Login")
+    private var selectorThread: SelectorThread<LoginClient>
+    private val serverScope = CoroutineScope(Dispatchers.IO + Job())
     private val loginPacketHandler = LoginClientPacketHandler(context)
 
     init {
@@ -32,35 +30,32 @@ class LoginClientServer(
         writeInfo(TAG, "Generated ${rsaPairs.size} rsa keys")
 
         connectionFactory = LoginClientFactory(blowFishKeys, rsaPairs)
-    }
 
-    suspend fun startServer() {
         selectorThread = SelectorThread(
             context.config.clientServer.hostname,
             context.config.clientServer.port,
             connectionFactory,
             TAG = "LoginClientSelector"
-        ).apply {
-            start()
+        )
+    }
+
+    fun startServer() {
+        selectorThread.start()
+        serverScope.launch {
+            selectorThread.connectionCloseFlow.collect {
+                // TODO remove from lobby ? How to checked authed player?
+            }
         }
 
-        withContext(serverContext) {
-            launch {
-                selectorThread.connectionCloseFlow.collect {
-                    // TODO remove from lobby ? How to checked authed player?
-                }
+        serverScope.launch {
+            selectorThread.connectionAcceptFlow.collect {
+                loginPacketHandler.handle(it, ClientConnected())
             }
+        }
 
-            launch {
-                selectorThread.connectionAcceptFlow.collect {
-                    loginPacketHandler.handle(it, ClientConnected())
-                }
-            }
-
-            launch {
-                selectorThread.connectionReadFlow.collect {
-                    loginPacketHandler.handle(it.first, it.second)
-                }
+        serverScope.launch {
+            selectorThread.connectionReadFlow.collect {
+                loginPacketHandler.handle(it.first, it.second)
             }
         }
     }

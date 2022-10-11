@@ -13,7 +13,7 @@ Maybe I need to introduce some Manager / Handler and World object should become 
 - [X] User login
 - [ ] Login Server <-> Game Server communication (Partially done)
 - [X] Character creation and choosing of already created
-- [X] Entering world
+- [X] ÏEntering world
 - [X] Movement and saving its state without AI
 - [X] Chat of all types without validation
 

@@ -1,8 +1,9 @@
 package lineage.vetal.server.login
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.bridgeclient.BridgeGameClientFactory
 import lineage.vetal.server.login.bridgeclient.BridgeGamePacketHandler
@@ -13,8 +14,8 @@ class BridgeClient(
     context: GameContext
 ) {
     private val bridgeSelector: SelectorThread<BridgeClient>
-    private val bridgeCoroutineContext = newSingleThreadContext("BridgeClient")
     private val bridgePacketHandler: BridgeGamePacketHandler
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
     init {
         bridgePacketHandler = BridgeGamePacketHandler(context)
@@ -27,20 +28,18 @@ class BridgeClient(
         )
     }
 
-    suspend fun connectToBridge() {
+    fun startClient() {
         bridgeSelector.start()
 
-        withContext(bridgeCoroutineContext) {
-            launch {
-                bridgeSelector.connectionAcceptFlow.collect {
-                    bridgePacketHandler.handle(it, BridgeConnected())
-                }
+        coroutineScope.launch {
+            bridgeSelector.connectionAcceptFlow.collect {
+                bridgePacketHandler.handle(it, BridgeConnected())
             }
+        }
 
-            launch {
-                bridgeSelector.connectionReadFlow.collect {
-                    bridgePacketHandler.handle(it.first, it.second)
-                }
+        coroutineScope.launch {
+            bridgeSelector.connectionReadFlow.collect {
+                bridgePacketHandler.handle(it.first, it.second)
             }
         }
     }
