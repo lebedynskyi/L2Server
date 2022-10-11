@@ -1,8 +1,6 @@
 package lineage.vetal.server.core
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import lineage.vetal.server.core.model.ServerStatus
 
 @Serializable
 data class ConfigDataBase(
@@ -27,8 +25,4 @@ data class ConfigRegisteredServer(
     val isPvp: Boolean,
     val maxOnline: Int,
     val bridgeKey: String
-) {
-
-    @Transient
-    var serverStatus: ServerStatus? = null
-}
+)

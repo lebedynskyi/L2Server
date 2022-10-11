@@ -14,10 +14,9 @@ class RequestInit : BridgePacket() {
     override fun execute(client: BridgeClient, context: LoginContext) {
         val server = context.loginLobby.getRegisteredServer(serverId)
         if (server != null) {
-            client.connection.crypt.init(server.bridgeKey.toByteArray())
-            client.connectedServer = server
+            client.connection.crypt.init(server.config.bridgeKey.toByteArray())
+            client.serverInfo = server
             client.sendPacket(InitOK())
-            writeInfo(TAG, "Server with id ${server.id} connected")
         } else {
             writeInfo(TAG, "Unknown server. Close connection")
             client.saveAndClose()

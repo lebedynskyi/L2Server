@@ -27,6 +27,7 @@ class RequestUpdate : BridgePacket() {
             readD(),
             readD(),
             readC().toBoolean(),
+            readS()
         )
     }
 }

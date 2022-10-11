@@ -12,11 +12,9 @@ class ClientConnected : LoginClientPacket() {
     private val TAG = "ClientConnected"
 
     override fun execute(client: LoginClient, context: LoginContext) {
-        if (context.loginLobby.canAcceptMoreClients()) {
+        if (context.loginLobby.acceptNewClient(client)) {
             writeDebug(TAG, "New $client added to lobby")
-            context.loginLobby.acceptNewClient(client)
             client.loginState = LoginState.CONNECTED
-
             client.sendInitPacket()
             return
         }

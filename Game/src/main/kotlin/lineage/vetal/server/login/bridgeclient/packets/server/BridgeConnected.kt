@@ -13,7 +13,8 @@ class BridgeConnected : BridgeGamePacket() {
         client.status = ServerStatus(
             context.config.serverInfo.id,
             context.gameWorld.currentOnline,
-            true
+            true,
+            context.config.serverInfo.ip
         )
 
         client.sendPacket(RequestInit(context.config.serverInfo.id))

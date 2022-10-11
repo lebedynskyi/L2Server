@@ -9,6 +9,7 @@ class RequestInit(
 
     override fun write() {
         writeC(0x01)
+
         writeD(serverId)
     }
 }

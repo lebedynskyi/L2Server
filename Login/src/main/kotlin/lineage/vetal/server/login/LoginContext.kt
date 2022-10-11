@@ -3,6 +3,7 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.db.LoginDatabase
+import lineage.vetal.server.login.model.ServerInfo
 import java.io.File
 
 private const val PATH_SERVER_CONFIG = "login/config/Server.yaml"
@@ -24,7 +25,7 @@ class LoginContext(
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
 
         config = ConfigLogin.read(serverConfigFile)
-        loginLobby = LoginLobby(config.lobbyConfig, config.registeredServers)
+        loginLobby = LoginLobby(config.lobbyConfig, config.registeredServers.map { ServerInfo(it) })
 
         writeInfo(TAG, "Initialize database")
         loginDatabase = LoginDatabase(config.dataBaseConfig)

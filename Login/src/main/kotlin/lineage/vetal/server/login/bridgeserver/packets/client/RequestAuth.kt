@@ -27,7 +27,8 @@ class RequestAuth : BridgePacket() {
         serverStatus = ServerStatus(
             readD(),
             readD(),
-            readC().toBoolean()
+            readC().toBoolean(),
+            readS()
         )
     }
 }

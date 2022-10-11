@@ -14,5 +14,6 @@ class RequestUpdate(
         writeD(serverStatus.id)
         writeD(serverStatus.onlineCount)
         writeC(serverStatus.isOnline.toByte())
+        writeS(serverStatus.ip)
     }
 }

@@ -18,9 +18,9 @@ class LoginClient(
 
     override fun toString(): String {
         return if (account != null) {
-            "LoginClient: address $connection"
-        } else {
             "LoginClient: ${account?.account} address $connection"
+        } else {
+            "LoginClient: address $connection"
         }
     }
 }

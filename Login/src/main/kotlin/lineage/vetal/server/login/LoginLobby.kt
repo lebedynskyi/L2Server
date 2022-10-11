@@ -1,13 +1,13 @@
 package lineage.vetal.server.login
 
-import lineage.vetal.server.core.ConfigRegisteredServer
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
+import lineage.vetal.server.login.model.ServerInfo
 
 class LoginLobby(
-    val configLoginLobby: ConfigLoginLobby,
-    val registeredServers: List<ConfigRegisteredServer>
+    private val lobbyConfig: ConfigLoginLobby,
+    val registeredServers: List<ServerInfo>
 ) {
     private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
@@ -30,16 +30,16 @@ class LoginLobby(
     }
 
     fun canAcceptMoreClients(): Boolean {
-        return connectedClients.size < configLoginLobby.maxCount
+        return connectedClients.size < lobbyConfig.maxCount
     }
 
-    fun getRegisteredServer(serverId: Int): ConfigRegisteredServer? {
-        return registeredServers.firstOrNull { it.id == serverId }
+    fun getRegisteredServer(serverId: Int): ServerInfo? {
+        return registeredServers.firstOrNull { it.config.id == serverId }
     }
 
     fun updateServerStatus(serverStatus: ServerStatus): Boolean {
-        registeredServers.firstOrNull { it.id == serverStatus.id }?.let {
-            it.serverStatus = serverStatus
+        registeredServers.firstOrNull { it.config.id == serverStatus.id }?.let {
+            it.status = serverStatus
             return true
         }
 
