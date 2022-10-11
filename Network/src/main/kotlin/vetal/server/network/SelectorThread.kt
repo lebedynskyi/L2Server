@@ -151,6 +151,7 @@ class SelectorThread<T : Client>(
         val connection = client.connection
 
         try {
+            // TODO should be list of packets
             val packet = connection.readPackets(readBuffer, stringBuffer)
 
             if (packet != null) {

@@ -1,7 +1,6 @@
-package lineage.vetal.server.login.model
+package lineage.vetal.server.core.model
 
 import lineage.vetal.server.core.ConfigRegisteredServer
-import lineage.vetal.server.core.model.ServerStatus
 
 class ServerInfo(
     val config: ConfigRegisteredServer,

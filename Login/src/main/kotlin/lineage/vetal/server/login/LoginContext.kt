@@ -3,7 +3,7 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.db.LoginDatabase
-import lineage.vetal.server.login.model.ServerInfo
+import lineage.vetal.server.core.model.ServerInfo
 import java.io.File
 
 private const val PATH_SERVER_CONFIG = "login/config/Server.yaml"

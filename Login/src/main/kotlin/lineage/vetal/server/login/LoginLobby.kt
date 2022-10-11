@@ -3,7 +3,7 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
-import lineage.vetal.server.login.model.ServerInfo
+import lineage.vetal.server.core.model.ServerInfo
 
 class LoginLobby(
     private val lobbyConfig: ConfigLoginLobby,
