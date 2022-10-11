@@ -24,9 +24,13 @@ open class ClientConnection(
     internal var pendingClose = false
 
     fun sendPacket(packet: SendablePacket) {
-        packetsQueue.add(packet)
-        selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
-        selector.wakeup()
+        if (selectionKey.isValid) {
+            packetsQueue.add(packet)
+            selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
+            selector.wakeup()
+        } else {
+            writeError(TAG, "Selection key is not active. Probably closed")
+        }
     }
 
     internal fun askClose(lastPacket: SendablePacket? = null) {

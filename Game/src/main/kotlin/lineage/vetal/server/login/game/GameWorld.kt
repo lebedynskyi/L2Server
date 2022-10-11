@@ -93,7 +93,10 @@ class GameWorld(
         }
         obj.region = region
         when (obj) {
-            is Player -> region.addPlayer(obj)
+            is Player -> {
+                region.addPlayer(obj)
+                _players[obj.objectId] = obj
+            }
             is Npc -> region.addNpc(obj)
         }
     }

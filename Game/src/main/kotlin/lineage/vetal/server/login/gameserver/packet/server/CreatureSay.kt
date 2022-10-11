@@ -7,33 +7,27 @@ import kotlin.Int
 import kotlin.String
 
 class CreatureSay : GameServerPacket {
-    val objectId: Int
+    var objectId: Int = 0
     var name: String? = null
     var content: String? = null
     private val sayType: SayType
     private var sysStringId = 0// from sysstring-e.dat
     private var sysMsgId = 0 // from systemmsg-e.dat
 
-    constructor(creature: Creature, sayType: SayType, content: String?) : this(
-        creature.objectId,
-        sayType,
-        creature.name,
-        content
-    )
+    constructor(creature: Creature, sayType: SayType, content: String) :
+            this(creature.objectId, sayType, creature.name, content)
 
-    constructor(objectId: Int, sayType: SayType, name: String?, content: String?) {
+    constructor(objectId: Int, sayType: SayType, name: String?, content: String) {
         this.objectId = objectId
         this.sayType = sayType
         this.name = name
         this.content = content
     }
-//
-//    constructor(sayType: SayType, sysStringId: Int, sysMsgId: SystemMessageId) {
-//        objectId = 0
-//        _sayType = sayType
-//        _sysStringId = sysStringId
-//        _sysMsgId = sysMsgId.getId()
-//    }
+
+    constructor(sayType: SayType, content: String) {
+        this.sayType = sayType
+        this.content = content
+    }
 
     override fun write() {
         writeC(0x4a)

@@ -36,11 +36,10 @@ class RequestSelectCharacter : GamePacket() {
             return
         }
 
+        client.clientState = GameClientState.LOADING
         client.player = player
-
         client.sendPacket(SSQInfo.REGULAR_SKY_PACKET)
         client.sendPacket(CharSelected(player, client.sessionKey.playOkID1))
-        client.clientState = GameClientState.LOADING
     }
 
     override fun read() {

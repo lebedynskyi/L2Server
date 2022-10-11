@@ -5,6 +5,7 @@ import lineage.vetal.server.login.game.GameObject
 import lineage.vetal.server.login.game.model.player.status.CreatureStatus
 import lineage.vetal.server.login.gameserver.packet.server.CreatureSay
 import lineage.vetal.server.login.gameserver.packet.server.MoveToLocation
+import vetal.server.writeError
 import java.util.*
 
 abstract class Creature(
@@ -12,9 +13,9 @@ abstract class Creature(
     name: String,
     position: SpawnLocation
 ) : GameObject(id, name, position) {
+    private val TAG = "Creature"
 
     var title: String? = null
-
     var isRunning: Boolean = false
     var isInCombat: Boolean = false
     var isAlikeDead: Boolean = false
@@ -24,7 +25,7 @@ abstract class Creature(
         if (sayType != SayType.HERO_VOICE) {
             region?.broadCast(CreatureSay(this, sayType, text), this)
         } else {
-            // Broadcast world
+            writeError(TAG, "Broadcast packet is not implemented")
         }
     }
 

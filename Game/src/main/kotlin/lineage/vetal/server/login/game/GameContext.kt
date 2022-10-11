@@ -1,9 +1,10 @@
-package lineage.vetal.server.login
+package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
+import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.GameWorld
+import lineage.vetal.server.login.game.manager.GameAnnounceManager
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.game.model.template.NpcTemplate
@@ -23,8 +24,8 @@ class GameContext(
 
     val config: ConfigGame
     val gameWorld: GameWorld
+    var announcer: GameAnnounceManager
     val gameDatabase: GameDatabase
-    val threadPool: ThreadPool
 
     val charStatsData: Map<Int, CharTemplate>
     val npcsData: Map<Int, NpcTemplate>
@@ -36,9 +37,6 @@ class GameContext(
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
 
         config = ConfigGame.read(serverConfigFile)
-
-        writeInfo(TAG, "Initialize thread pool")
-        threadPool = ThreadPool()
 
         val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
         writeInfo(TAG, "Reading classes templates from ${charsXmlFolder.absolutePath}")
@@ -53,6 +51,8 @@ class GameContext(
         writeInfo(TAG, "Initialize database")
         gameDatabase = GameDatabase(config.dataBaseConfig, charStatsData)
 
+        writeInfo(TAG, "Start managers")
+
         val spawnData = gameDatabase.spawnDao.getSpawnList()
         val loadedNpc = npcsData.map {
             Npc(UUID.randomUUID(), it.value, spawnData.find { data -> data.npcTemplateId ==  it.value.idTemplate}).apply {
@@ -62,5 +62,9 @@ class GameContext(
         writeInfo(TAG, "Created ${loadedNpc.size} NPCs")
 
         gameWorld = GameWorld(loadedNpc)
+
+        announcer = GameAnnounceManager(gameWorld).apply {
+//            start()
+        }
     }
 }
