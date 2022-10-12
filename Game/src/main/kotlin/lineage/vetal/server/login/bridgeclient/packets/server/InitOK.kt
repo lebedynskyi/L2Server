@@ -1,9 +1,9 @@
 package lineage.vetal.server.login.bridgeclient.packets.server
 
 import lineage.vetal.server.core.bridge.BridgeClient
-import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
+import lineage.vetal.server.login.game.GameContext
 import vetal.server.writeError
 
 class InitOK : BridgeGamePacket() {

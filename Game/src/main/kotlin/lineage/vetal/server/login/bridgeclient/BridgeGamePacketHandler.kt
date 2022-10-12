@@ -2,9 +2,9 @@ package lineage.vetal.server.login.bridgeclient
 
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.GameContext
 import lineage.vetal.server.login.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.login.bridgeclient.packets.server.AuthOk
+import lineage.vetal.server.login.game.GameContext
 import vetal.server.network.ReceivablePacket
 
 class BridgeGamePacketHandler(

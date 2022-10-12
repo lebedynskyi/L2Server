@@ -8,6 +8,7 @@ import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.bridgeclient.BridgeGameClientFactory
 import lineage.vetal.server.login.bridgeclient.BridgeGamePacketHandler
 import lineage.vetal.server.login.bridgeclient.packets.server.BridgeConnected
+import lineage.vetal.server.login.game.GameContext
 import vetal.server.network.SelectorThread
 
 class BridgeClient(

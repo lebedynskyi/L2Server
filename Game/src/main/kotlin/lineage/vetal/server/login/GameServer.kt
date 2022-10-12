@@ -1,6 +1,7 @@
 package lineage.vetal.server.login
 
 import kotlinx.coroutines.*
+import lineage.vetal.server.login.game.GameContext
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientFactory
 import lineage.vetal.server.login.gameserver.GamePacketHandler

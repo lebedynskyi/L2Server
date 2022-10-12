@@ -2,7 +2,7 @@ package lineage.vetal.server.login.gameserver
 
 import lineage.vetal.server.core.utils.ext.ifNullOrBlank
 import lineage.vetal.server.core.utils.logs.writeDebug
-import lineage.vetal.server.login.GameContext
+import lineage.vetal.server.login.game.GameContext
 import lineage.vetal.server.login.gameserver.packet.GamePacket
 import vetal.server.network.ReceivablePacket
 
