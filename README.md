@@ -24,11 +24,11 @@ Maybe I need to introduce some Manager / Handler and World object should become 
 
 **Tech TODO list**
 - [ ] After adding announcer something wrong with sending packets to some clients
+- [ ] Sending ServerStatusUpdate via some manager ?
 - [ ] New naming for clients and servers
 - [ ] Selector should be able to receive list of packets. It is important when client sends a lot of data
 - [ ] Validation of logged-in user via Login Server <-> Game Server communication
-- [ ] Sending ServerStatusUpdate via some manager ?
-- [ ] Remove user from login lobby after connect to game server. Need to finish bridge communication
+- [x] Remove user from login lobby after connect to game server. Need to finish bridge communication
 - [ ] Remove user from game world after logout
-- [ ] Implement packet for logout
+- [x] Implement packet for logout
 - [ ] Select and save account for game client after connect to game server

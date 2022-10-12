@@ -13,7 +13,7 @@ import vetal.server.writeDebug
 class GameClient(
     override val connection: GameClientConnection,
 ) : Client() {
-    private val TAG = "GameClient"
+    val TAG = "GameClient"
     lateinit var account: AccountInfo
     lateinit var sessionKey: SessionKey
     var clientState = GameClientState.LOBBY
@@ -24,11 +24,6 @@ class GameClient(
 
     fun sendInitPacket() {
         connection.sendInitPacket()
-    }
-
-    override fun sendPacket(packet: SendablePacket) {
-        super.sendPacket(packet)
-        writeDebug(TAG, "`${packet::class.java.simpleName}` -> ${player?.name?.ifNullOrBlank { account.account }}")
     }
 }
 

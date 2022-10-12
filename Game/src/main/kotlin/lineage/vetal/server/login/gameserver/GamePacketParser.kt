@@ -16,6 +16,7 @@ class GamePacketParser : PacketParser {
             0x00 -> ProtocolVersion()
             0x01 -> RequestMoveToLocation()
             0x08 -> AuthLogin()
+            0x09 -> RequestQuit()
             0x0e -> RequestCharacterTemplates()
             0x0b -> RequestCreateCharacter()
             0x0d -> RequestSelectCharacter()

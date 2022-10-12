@@ -169,8 +169,10 @@ class SelectorThread<T : Client>(
         val client = key.attachment() as T
         val connection = client.connection
         try {
-            connection.writePackets(writeBuffer, tempWriteBuffer)
-            key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+            val writeFinished = connection.writePackets(writeBuffer, tempWriteBuffer)
+            if (writeFinished) {
+                key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
+            }
 
             if (connection.pendingClose) {
                 closeConnection(client, connection)

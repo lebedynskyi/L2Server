@@ -56,14 +56,12 @@ open class ClientConnection(
         return readPacketFromBuffer(byteBuffer, stringBuffer)
     }
 
-    internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) {
+    internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) :Boolean {
         byteBuffer.clear()
 
-        var packetCounter = 0
         val packetIterator = packetsQueue.iterator()
         while (packetIterator.hasNext()) {
             tempBuffer.clear()
-            packetCounter += 1
             val packet = packetIterator.next()
 
             // TODO check is packet was written to buffer or not.. It could be not enough space
@@ -74,13 +72,10 @@ open class ClientConnection(
             packetIterator.remove()
         }
 
-        // TODO check is packet was written to buffer or not.. It could be not enough space
+        // TODO check is packet was written to buffer or not.. It could be not enough space in socket
         byteBuffer.flip()
         val sentBytesCount = writeData(byteBuffer)
-
-        if (packetsQueue.size <= 0) {
-            selectionKey.interestOps(selectionKey.interestOps() and SelectionKey.OP_WRITE.inv())
-        }
+        return packetsQueue.size <= 0
     }
 
     internal fun closeSocket() {
