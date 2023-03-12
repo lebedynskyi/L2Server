@@ -10,7 +10,7 @@ import java.security.PrivateKey
 
 // TODO wrap some how credentials keys
 class LoginClientConnection(
-    private val loginCrypt: LoginClientCrypt,
+    private val loginCrypt: LoginConnectionCrypt,
     loginPacketParser: LoginClientPacketParser,
     socket: SocketChannel,
     selector: Selector,

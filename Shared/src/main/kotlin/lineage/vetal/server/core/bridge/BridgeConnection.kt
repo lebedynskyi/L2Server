@@ -8,7 +8,7 @@ import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 
 class BridgeConnection(
-    val crypt: BridgeCrypt,
+    val crypt: BridgeConnectionCrypt,
     socket: SocketChannel,
     selector: Selector,
     selectionKey: SelectionKey,

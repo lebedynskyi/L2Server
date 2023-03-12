@@ -1,10 +1,10 @@
 package lineage.vetal.server.core.bridge
 
 import lineage.vetal.server.core.encryption.BlowFishCrypt
-import vetal.server.network.ClientCrypt
+import vetal.server.network.ConnectionCrypt
 import java.util.concurrent.atomic.AtomicBoolean
 
-class BridgeCrypt : ClientCrypt() {
+class BridgeConnectionCrypt : ConnectionCrypt() {
     private lateinit var blowFish: BlowFishCrypt
     private val isStaticEncrypt = AtomicBoolean(true)
     private val isStaticDecrypt = AtomicBoolean(true)

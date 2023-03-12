@@ -99,7 +99,7 @@ abstract class ReceivablePacket : Packet() {
 
         while (true) {
             val ch = buffer?.char
-            if (ch != null && ch.toByte() != 0.toByte()) {
+            if (ch != null && ch.code.toByte() != 0.toByte()) {
                 sBuffer?.append(ch)
             } else {
                 break

@@ -64,7 +64,7 @@ class GameContext(
         gameWorld = GameWorld(loadedNpc)
 
         announcer = GameAnnounceManager(gameWorld).apply {
-//            start()
+            start()
         }
     }
 }

@@ -20,6 +20,7 @@ class Init(
 
         // RSA Public Key
         writeB(publicKey)
+        System.err.println(publicKey.toString())
 
         // unk GG related?
         writeD(0x29DD954E)

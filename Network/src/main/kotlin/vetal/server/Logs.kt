@@ -11,20 +11,20 @@ const val ANSI_CYAN = "\u001B[36m"
 const val ANSI_WHITE = "\u001B[37m"
 
 fun writeDebug(tag: String, msg: Any) {
-    println("$ANSI_RESET D: $tag: $msg")
+    println("$ANSI_RESET D: $tag: $ANSI_RESET$msg")
 }
 
 fun writeInfo(tag: String, msg: Any) {
-    println("$ANSI_BLUE I: $tag: $msg")
+    println("$ANSI_BLUE I: $tag: $ANSI_RESET$msg")
 }
 
 fun writeError(tag: String, msg: Any, e: Throwable) {
-    System.err.println("$ANSI_RED E: $tag: $msg")
+    System.err.println("$ANSI_RED E: $tag: $ANSI_RESET$msg")
     e.printStackTrace()
 }
 
 fun writeError(tag: String, msg: Any) {
-    System.err.println("$ANSI_RED E: $tag: $msg")
+    System.err.println("$ANSI_RED E: $tag: $ANSI_RESET$msg")
 }
 
 fun writeSection(section: String, char: Char = '-') {

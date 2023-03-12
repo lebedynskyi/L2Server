@@ -8,7 +8,7 @@ import lineage.vetal.server.login.game.model.npc.SpawnData
 class SpawnDao(
     dbConnection: DBConnection
 ) : Dao(dbConnection) {
-    val QUERY_SPAWN_LIST = "SELECT * from spawnlist"
+    private val QUERY_SPAWN_LIST = "SELECT * from spawnlist"
 
     fun getSpawnList(): List<SpawnData> {
         return queryList(QUERY_SPAWN_LIST) {

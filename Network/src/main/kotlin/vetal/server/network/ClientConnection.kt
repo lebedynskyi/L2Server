@@ -13,7 +13,7 @@ open class ClientConnection(
     private val selector: Selector,
     private val selectionKey: SelectionKey,
     private val clientAddress: InetSocketAddress,
-    private val crypt: ClientCrypt,
+    private val crypt: ConnectionCrypt,
     private val packetParser: PacketParser,
 ) {
     private val TAG = "ClientConnection"
@@ -75,6 +75,7 @@ open class ClientConnection(
         // TODO check is packet was written to buffer or not.. It could be not enough space in socket
         byteBuffer.flip()
         val sentBytesCount = writeData(byteBuffer)
+        System.err.println("Send $sentBytesCount bytes")
         return packetsQueue.size <= 0
     }
 

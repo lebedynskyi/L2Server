@@ -13,7 +13,7 @@ class GameAnnounceManager(
     private val gameWorld: GameWorld
 ) : Manager() {
     private val TAG = "Announce"
-    private val announcements = listOf("Hello on mega server", "This is the best server", "I did it", "Some random message")
+    private val announcements = listOf("Hello on mega server", "This is the best server", "I did it", "Another random message")
 
     override fun start() {
         coroutineScope.launch {

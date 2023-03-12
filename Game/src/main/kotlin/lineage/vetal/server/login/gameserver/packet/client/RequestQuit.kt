@@ -8,6 +8,9 @@ import lineage.vetal.server.login.gameserver.packet.server.LeaveWorld
 class RequestQuit: GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         client.saveAndClose(LeaveWorld())
+        client.player?.let {
+            context.gameWorld.decay(it)
+        }
     }
 
     override fun read() {

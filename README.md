@@ -26,9 +26,10 @@ Maybe I need to introduce some Manager / Handler and World object should become 
 - [ ] After adding announcer something wrong with sending packets to some clients
 - [ ] Sending ServerStatusUpdate via some manager ?
 - [ ] New naming for clients and servers
-- [ ] Selector should be able to receive list of packets. It is important when client sends a lot of data
+- [ ] Selector should be able to receive list of packets?  1 packet to avoid race condition ?
 - [ ] Validation of logged-in user via Login Server <-> Game Server communication
 - [x] Remove user from login lobby after connect to game server. Need to finish bridge communication
 - [ ] Remove user from game world after logout
 - [x] Implement packet for logout
 - [ ] Select and save account for game client after connect to game server
+- [ ] Some timer to check players in lobby who does not send any commands. 10 - 15 sec? 

@@ -20,7 +20,6 @@ class UserInfo(
         writeD(player.objectId)
         writeS(
             player.name // if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
-
         )
         writeD(player.raceId)
         writeD(player.appearance.sex.id)

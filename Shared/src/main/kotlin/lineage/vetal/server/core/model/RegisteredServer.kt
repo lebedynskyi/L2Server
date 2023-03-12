@@ -2,7 +2,7 @@ package lineage.vetal.server.core.model
 
 import lineage.vetal.server.core.ConfigRegisteredServer
 
-class ServerInfo(
+class RegisteredServer(
     val config: ConfigRegisteredServer,
     var status: ServerStatus? = null
 )

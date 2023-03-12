@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ConfigDataBase(
+    val driver: String,
     val url: String,
     val user: String,
     val password: String,

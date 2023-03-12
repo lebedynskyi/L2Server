@@ -85,19 +85,19 @@ class GameWorld(
         writeInfo("World", "most populated region is  x=${mostPopulated?.tileX} y=${mostPopulated?.tileY} -> $mostPopulated")
     }
 
-    fun spawn(obj: Creature) {
-        val region = getRegion(obj.position)
+    fun spawn(creature: Creature) {
+        val region = getRegion(creature.position)
         if (region == null) {
-            writeDebug(TAG, "Cannot find region for position ${obj.position}")
+            writeDebug(TAG, "Cannot find region for position ${creature.position}")
             return
         }
-        obj.region = region
-        when (obj) {
+        creature.region = region
+        when (creature) {
             is Player -> {
-                region.addPlayer(obj)
-                _players[obj.objectId] = obj
+                region.addPlayer(creature)
+                _players[creature.objectId] = creature
             }
-            is Npc -> region.addNpc(obj)
+            is Npc -> region.addNpc(creature)
         }
     }
 

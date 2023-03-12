@@ -15,7 +15,7 @@ class LoginClientFactory(
 
     override fun createClient(selector: Selector, socket: SocketChannel): LoginClient {
         val address = socket.remoteAddress as InetSocketAddress
-        val crypt = LoginClientCrypt(blowFishKeys.random(), rsaPairs.random())
+        val crypt = LoginConnectionCrypt(blowFishKeys.random(), rsaPairs.random())
         val selectionKey = socket.register(selector, SelectionKey.OP_READ)
         val parser = LoginClientPacketParser()
         val clientConnection = LoginClientConnection(crypt, parser, socket, selector, selectionKey, address)

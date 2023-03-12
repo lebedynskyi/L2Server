@@ -13,7 +13,7 @@ class GameClientConnection(
     selector: Selector,
     selectionKey: SelectionKey,
     clientAddress: InetSocketAddress,
-    private val crypt: GameClientCrypt,
+    private val crypt: GameConnectionCrypt,
     packetParser: PacketParser,
 ) : ClientConnection(
     socket, selector, selectionKey, clientAddress, crypt, packetParser

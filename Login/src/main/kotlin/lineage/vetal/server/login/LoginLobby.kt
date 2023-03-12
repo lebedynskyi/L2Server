@@ -3,13 +3,14 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
-import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.core.model.RegisteredServer
+
+private const val TAG = "LoginLobby"
 
 class LoginLobby(
     private val lobbyConfig: ConfigLoginLobby,
-    val registeredServers: List<ServerInfo>
+    val registeredServers: List<RegisteredServer>
 ) {
-    private val TAG = "LoginLobby"
     private val connectedClients = mutableMapOf<Int, LoginClient>()
 
     fun acceptNewClient(client: LoginClient): Boolean {
@@ -33,7 +34,7 @@ class LoginLobby(
         return connectedClients.size < lobbyConfig.maxCount
     }
 
-    fun getRegisteredServer(serverId: Int): ServerInfo? {
+    fun getRegisteredServer(serverId: Int): RegisteredServer? {
         return registeredServers.firstOrNull { it.config.id == serverId }
     }
 

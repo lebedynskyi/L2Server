@@ -16,7 +16,7 @@ class LoginClientServer(
     private val TAG = "LoginClientServer"
     private val blowFishKeys: Array<ByteArray>
     private val rsaPairs: Array<KeyPair>
-    private val connectionFactory: LoginClientFactory
+    private val clientFactory: LoginClientFactory
 
     private var selectorThread: SelectorThread<LoginClient>
     private val serverScope = CoroutineScope(Dispatchers.IO + Job())
@@ -30,12 +30,12 @@ class LoginClientServer(
         rsaPairs = Array(32) { CryptUtil.generateRsa128PublicKeyPair() }
         writeInfo(TAG, "Generated ${rsaPairs.size} rsa keys")
 
-        connectionFactory = LoginClientFactory(blowFishKeys, rsaPairs)
+        clientFactory = LoginClientFactory(blowFishKeys, rsaPairs)
 
         selectorThread = SelectorThread(
             context.config.clientServer.hostname,
             context.config.clientServer.port,
-            connectionFactory,
+            clientFactory,
             TAG = "LoginClientSelector"
         )
     }

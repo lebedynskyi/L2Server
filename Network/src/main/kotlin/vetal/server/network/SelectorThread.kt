@@ -101,7 +101,9 @@ class SelectorThread<T : Client>(
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                         writePackets(key)
-                        readPackets(key)
+                        if (key.isValid){
+                            readPackets(key)
+                        }
                     }
                 }
 

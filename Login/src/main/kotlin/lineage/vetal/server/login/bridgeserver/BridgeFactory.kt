@@ -11,7 +11,7 @@ class BridgeFactory : ClientFactory<BridgeClient> {
     override fun createClient(selector: Selector, socket: SocketChannel): BridgeClient {
         val key = socket.register(selector, SelectionKey.OP_READ)
         val address = socket.remoteAddress as InetSocketAddress
-        val crypt = BridgeCrypt()
+        val crypt = BridgeConnectionCrypt()
         val parser = BridgePacketParser()
         val connection = BridgeConnection(crypt, socket, selector, key, address, parser)
         return BridgeClient(connection).apply {

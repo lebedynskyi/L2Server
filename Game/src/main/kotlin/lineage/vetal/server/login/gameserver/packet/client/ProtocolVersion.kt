@@ -17,7 +17,7 @@ class ProtocolVersion : GamePacket() {
             746 -> client.sendInitPacket()
             else -> {
                 writeInfo("PROTOCOL", "Unknown protocol version $version")
-//                client.saveAndClose()
+                client.saveAndClose()
             }
         }
     }

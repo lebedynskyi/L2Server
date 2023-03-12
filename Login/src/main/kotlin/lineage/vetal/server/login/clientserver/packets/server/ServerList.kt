@@ -2,12 +2,12 @@ package lineage.vetal.server.login.clientserver.packets.server
 
 import lineage.vetal.server.core.utils.ext.ifNullOrBlank
 import lineage.vetal.server.core.utils.ext.toByte
-import lineage.vetal.server.core.model.ServerInfo
+import lineage.vetal.server.core.model.RegisteredServer
 import vetal.server.network.SendablePacket
 import java.net.InetAddress
 
 class ServerList(
-    private val servers: List<ServerInfo>
+    private val servers: List<RegisteredServer>
 ) : SendablePacket() {
     override fun write() {
         writeC(0x04)

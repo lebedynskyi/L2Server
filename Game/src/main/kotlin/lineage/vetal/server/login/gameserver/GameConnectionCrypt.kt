@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.gameserver
 
-import vetal.server.network.ClientCrypt
+import vetal.server.network.ConnectionCrypt
 import kotlin.random.Random
 
-class GameClientCrypt private constructor(
+class GameConnectionCrypt private constructor(
     internal val key: ByteArray
-) : ClientCrypt() {
+) : ConnectionCrypt() {
     companion object {
         private const val cachedKeysSize = 20
         private val CRYPT_KEYS = Array(cachedKeysSize) {
@@ -25,8 +25,8 @@ class GameClientCrypt private constructor(
             }
         }
 
-        fun newInstance(): GameClientCrypt {
-            return GameClientCrypt(CRYPT_KEYS.random())
+        fun newInstance(): GameConnectionCrypt {
+            return GameConnectionCrypt(CRYPT_KEYS.random())
         }
     }
 

@@ -5,5 +5,5 @@ plugins {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(Dependencies.kotlinCoroutines)
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
