@@ -3,24 +3,11 @@ package lineage.vetal.server.login.bridgeserver.packets.client
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.core.utils.ext.toBoolean
-import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.LoginContext
-import lineage.vetal.server.login.bridgeserver.packets.BridgePacket
-import lineage.vetal.server.login.bridgeserver.packets.server.UpdateOk
+import lineage.vetal.server.login.bridgeserver.packets.BridgeClientPacket
 
-class RequestUpdate : BridgePacket() {
-    private val TAG = "RequestUpdate"
+class RequestUpdate : BridgeClientPacket() {
     lateinit var serverStatus: ServerStatus
-
-    override fun execute(client: BridgeClient, context: LoginContext) {
-        val result = context.loginLobby.updateServerStatus(serverStatus)
-        if (result) {
-            writeInfo(TAG, "Server status updated $serverStatus")
-            client.sendPacket(UpdateOk())
-        } else {
-            client.saveAndClose()
-        }
-    }
 
     override fun read() {
         serverStatus = ServerStatus(
@@ -29,5 +16,9 @@ class RequestUpdate : BridgePacket() {
             readC().toBoolean(),
             readS()
         )
+    }
+
+    override fun execute(client: BridgeClient, context: LoginContext) {
+        context.bridgeLobby.requestUpdate(client, serverStatus)
     }
 }

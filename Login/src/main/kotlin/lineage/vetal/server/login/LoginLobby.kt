@@ -1,7 +1,6 @@
 package lineage.vetal.server.login
 
 import lineage.vetal.server.core.model.AccountInfo
-import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.login.clientserver.LoginClient
 import lineage.vetal.server.core.model.RegisteredServer
 import lineage.vetal.server.core.model.SessionKey
@@ -125,20 +124,5 @@ class LoginLobby(
 
     private fun removeConnectedClient(client: LoginClient) {
         connectedClients.remove(client.sessionId)
-    }
-
-    /// OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!OLD !!!!!
-    // TODO introduce BridgeLobby ?
-    fun getRegisteredServer(serverId: Int): RegisteredServer? {
-        return registeredServers.firstOrNull { it.config.id == serverId }
-    }
-
-    fun updateServerStatus(serverStatus: ServerStatus): Boolean {
-        registeredServers.firstOrNull { it.config.id == serverStatus.id }?.let {
-            it.status = serverStatus
-            return true
-        }
-
-        return false
     }
 }

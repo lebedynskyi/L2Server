@@ -16,6 +16,7 @@ class LoginContext(
     var loginConfig: ConfigLogin
     val loginDatabase: LoginDatabase
     val loginLobby: LoginLobby
+    val bridgeLobby: BridgeLobby
 
     init {
         writeSection(TAG)
@@ -29,6 +30,8 @@ class LoginContext(
         writeInfo(TAG, "DB initialized successfully")
 
         writeInfo(TAG, "Initializing Login lobby")
-        loginLobby = LoginLobby(loginConfig.lobbyConfig, loginDatabase, loginConfig.registeredServers.map { RegisteredServer(it) })
+        val registeredServers = loginConfig.registeredServers.map { RegisteredServer(it) }
+        loginLobby = LoginLobby(loginConfig.lobbyConfig, loginDatabase, registeredServers)
+        bridgeLobby = BridgeLobby(registeredServers)
     }
 }

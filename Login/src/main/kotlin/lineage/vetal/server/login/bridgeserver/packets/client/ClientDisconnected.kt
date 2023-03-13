@@ -4,14 +4,12 @@ import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.bridgeserver.packets.BridgeClientPacket
 
-class RequestInit : BridgeClientPacket() {
-    var serverId: Int = -1
-
-    override fun read() {
-        serverId = readD()
+class ClientDisconnected : BridgeClientPacket() {
+    override fun execute(client: BridgeClient, context: LoginContext) {
+        context.bridgeLobby.onClientDisconnected(client)
     }
 
-    override fun execute(client: BridgeClient, context: LoginContext) {
-        context.bridgeLobby.requestInit(client, serverId)
+    override fun read() {
+
     }
 }
