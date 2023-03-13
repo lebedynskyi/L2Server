@@ -36,7 +36,7 @@ registeredServers:
 
 dataBaseConfig:  # SQLite
   driver: "org.sqlite.JDBC"
-  url: "jdbc:sqlite:/Users/vetalll/TRASH/l2.db"
+  url: "jdbc:sqlite:/Users/vetalll/TRASH/l2_login.db"
   user: ""
   password: ""
   timeOut: 5000

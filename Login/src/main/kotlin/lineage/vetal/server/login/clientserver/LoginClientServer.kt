@@ -36,6 +36,7 @@ class LoginClientServer(
             context.loginConfig.clientServer.hostname,
             context.loginConfig.clientServer.port,
             clientFactory,
+            isServer = true,
             TAG = "LoginClientSelector"
         )
     }

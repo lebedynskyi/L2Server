@@ -8,15 +8,14 @@ import vetal.server.writeError
 
 class InitOK : BridgeGamePacket() {
     override fun execute(client: BridgeClient, context: GameContext) {
-        val status = client.serverStatus
-
-        if (status == null) {
+        val serverStatus = client.serverInfo?.status
+        if (serverStatus == null) {
             client.saveAndClose()
             writeError("InitOK", "Status is null. Close connection")
             return
         }
 
-        client.sendPacket(RequestAuth(status))
+        client.sendPacket(RequestAuth(serverStatus))
     }
 
     override fun read() {

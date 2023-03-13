@@ -1,6 +1,6 @@
 serverInfo:
   id: 2
-  ip: "192.168.1.4"
+  ip: "127.0.0.1"
   port: 7777
   ageLimit: 18
   isPvp: false
@@ -20,7 +20,7 @@ bridgeServer:
 
 dataBaseConfig:  # SQLite
   driver: "org.sqlite.JDBC"
-  url: "jdbc:sqlite:/Users/vetalll/TRASH/l2.db"
+  url: "jdbc:sqlite:/Users/vetalll/TRASH/l2_game.db"
   user: ""
   password: ""
   timeOut: 5000

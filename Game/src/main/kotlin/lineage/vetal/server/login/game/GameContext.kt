@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.game
 
+import lineage.vetal.server.core.db.HikariDBConnection
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
@@ -49,10 +50,9 @@ class GameContext(
         writeInfo(TAG, "Loaded ${npcsData.size} npcs.")
 
         writeInfo(TAG, "Initialize database")
-        gameDatabase = GameDatabase(config.dataBaseConfig, charStatsData)
+        gameDatabase = GameDatabase(charStatsData, HikariDBConnection(config.dataBaseConfig))
 
         writeInfo(TAG, "Start managers")
-
         val spawnData = gameDatabase.spawnDao.getSpawnList()
         val loadedNpc = npcsData.map {
             Npc(UUID.randomUUID(), it.value, spawnData.find { data -> data.npcTemplateId ==  it.value.idTemplate}).apply {

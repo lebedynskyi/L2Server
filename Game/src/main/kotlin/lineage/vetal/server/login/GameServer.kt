@@ -19,6 +19,7 @@ class GameServer(
             context.config.serverInfo.ip,
             context.config.serverInfo.port,
             GameClientFactory(),
+            isServer = true,
             TAG = "GameServerSelector"
         )
     }

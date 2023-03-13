@@ -18,7 +18,7 @@ class SelectorThread<T : Client>(
     private val hostName: String,
     private val port: Int,
     private val clientFactory: ClientFactory<T>,
-    private val isServer: Boolean = true,
+    private val isServer: Boolean,
     private val TAG: String = "Selector"
 ) : Thread() {
     private val READ_BUFFER_SIZE = 64 * 1024

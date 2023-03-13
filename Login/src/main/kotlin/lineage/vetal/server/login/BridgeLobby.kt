@@ -16,6 +16,7 @@ class BridgeLobby(
     fun requestInit(client: BridgeClient, serverId: Int) {
         val server = findServer(serverId)
         if (server != null) {
+            client.serverInfo = server
             client.connection.crypt.init(server.config.bridgeKey.toByteArray())
             client.sendPacket(InitOK())
         } else {
@@ -41,7 +42,7 @@ class BridgeLobby(
         if (server != null) {
             server.status = serverStatus
             client.sendPacket(UpdateOk())
-            writeInfo(TAG, "Server status updated $serverStatus")
+            writeInfo(TAG, "Server with id ${serverStatus.id} status updated $serverStatus")
         } else {
             writeInfo(TAG, "Unknown server in requestUpdate. Close connection")
             client.saveAndClose()
@@ -49,7 +50,13 @@ class BridgeLobby(
     }
 
     fun onClientDisconnected(client: BridgeClient) {
-        // TODO set server status to null
+        val serverId = client.serverInfo?.config?.id ?: -1
+        val server = findServer(serverId)
+        if (server != null) {
+            writeInfo(TAG, "Server with id $serverId disconnected")
+        } else {
+            writeInfo(TAG, "Unknown server with id $serverId onClientDisconnected. Nothing to do")
+        }
     }
 
     private fun findServer(serverId: Int): RegisteredServer? {
