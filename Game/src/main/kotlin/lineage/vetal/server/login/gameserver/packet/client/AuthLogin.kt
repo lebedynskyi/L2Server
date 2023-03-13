@@ -9,15 +9,16 @@ import lineage.vetal.server.login.gameserver.packet.server.CharSlotList
 
 class AuthLogin : GamePacket() {
     private val TAG = "AuthLogin"
-    lateinit var loginName: String
+    lateinit var account: String
     var playKey1 = 0
     var playKey2 = 0
     var loginKey1 = 0
     var loginKey2 = 0
 
     override fun execute(client: GameClient, context: GameContext) {
-        writeInfo(TAG, "Account connected $loginName")
-        val account = context.gameDatabase.accountDao.findAccount(loginName)
+        // TODO validate it via bridge server communication
+        writeInfo(TAG, "Account connected $account")
+        val account = context.gameDatabase.accountDao.findAccount(account)
         if (account == null) {
             client.saveAndClose()
             return
@@ -33,7 +34,7 @@ class AuthLogin : GamePacket() {
     }
 
     override fun read() {
-        loginName = readS().lowercase()
+        account = readS().lowercase()
         playKey2 = readD()
         playKey1 = readD()
         loginKey1 = readD()

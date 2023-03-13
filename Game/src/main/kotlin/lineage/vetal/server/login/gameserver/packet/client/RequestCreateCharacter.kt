@@ -106,7 +106,6 @@ class RequestCreateCharacter : GamePacket() {
 //            return
 //        }
 
-
         // The class id related to this template is post-newbie.
         val playerTemplate = context.charStatsData[classId]
         if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {

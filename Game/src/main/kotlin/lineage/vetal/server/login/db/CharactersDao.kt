@@ -12,19 +12,16 @@ import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.CharTemplate
 import java.util.*
 
-class CharactersDao(
-    db: DBConnection,
-    private val charTemplates: MutableMap<Int, CharTemplate>
-) : Dao(db) {
-    private val INSERT_CHARACTER_SQL =
-        "INSERT INTO characters (id,account_id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-    private val SELECT_CHARACTER_SLOTS_SQL =
-        "SELECT obj_Id, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, title, accesslevel, lastAccess, base_class, id FROM characters WHERE account_id=?"
-    private val SELECT_CHARACTER_SQL =
-        "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id,hero from characters WHERE id=?"
-    private val UPDATE_lAST_ACCESS_SQL = "UPDATE characters SET lastAccess = ? WHERE id = ?"
-    private val UPDATE_COORDINATES_SQL = "UPDATE characters SET x = ?, y = ?, z = ? WHERE id = ?"
+private const val INSERT_CHARACTER_SQL = "INSERT INTO characters (id,account_id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+private const val SELECT_CHARACTER_SLOTS_SQL = "SELECT obj_Id, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, title, accesslevel, lastAccess, base_class, id FROM characters WHERE account_id=?"
+private const val SELECT_CHARACTER_SQL = "SELECT id,char_name,account_id,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,obj_Id,hero from characters WHERE id=?"
+private const val UPDATE_lAST_ACCESS_SQL = "UPDATE characters SET lastAccess = ? WHERE id = ?"
+private const val UPDATE_COORDINATES_SQL = "UPDATE characters SET x = ?, y = ?, z = ? WHERE id = ?"
 
+class CharactersDao(
+    connection: DBConnection,
+    private val charTemplates: MutableMap<Int, CharTemplate>
+) : Dao(connection) {
     fun insertCharacter(player: Player): Boolean {
         return insertOrUpdate(INSERT_CHARACTER_SQL) {
             it.setString(1, player.id.toString())

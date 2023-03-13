@@ -4,20 +4,19 @@ import kotlinx.coroutines.*
 import lineage.vetal.server.login.game.GameContext
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientFactory
-import lineage.vetal.server.login.gameserver.GamePacketHandler
+import lineage.vetal.server.login.gameserver.packet.GamePacket
 import vetal.server.network.SelectorThread
 
 class GameServer(
-    context: GameContext
+    private val context: GameContext
 ) {
     private val gameSelector: SelectorThread<GameClient>
     private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
-    private val gamePacketHandler = GamePacketHandler(context)
 
     init {
         gameSelector = SelectorThread(
-            context.config.serverInfo.ip,
-            context.config.serverInfo.port,
+            context.gameConfig.serverInfo.ip,
+            context.gameConfig.serverInfo.port,
             GameClientFactory(),
             isServer = true,
             TAG = "GameServerSelector"
@@ -29,7 +28,8 @@ class GameServer(
 
         gameCoroutineScope.launch {
             gameSelector.connectionReadFlow.collect {
-                gamePacketHandler.handle(it.first, it.second)
+                val packet = it.second as GamePacket?
+                packet?.execute(it.first, context)
             }
         }
     }

@@ -1,7 +1,6 @@
 package vetal.server.network
 
 abstract class Client {
-    private val TAG = "Client"
     abstract val connection: ClientConnection
 
     open fun sendPacket(packet: SendablePacket) {
@@ -14,6 +13,6 @@ abstract class Client {
     }
 
     override fun toString(): String {
-        return "Client $connection"
+        return "Client: $connection"
     }
 }

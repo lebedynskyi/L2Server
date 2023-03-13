@@ -8,7 +8,7 @@ import vetal.server.network.ReceivablePacket
 import java.nio.ByteBuffer
 
 class GamePacketParser : PacketParser {
-    private val TAG = "BridgeGamePacketParser"
+    private val TAG = "GamePacketParser"
 
     override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         val opCode = buffer.get().toUByte().toInt()
@@ -24,6 +24,10 @@ class GamePacketParser : PacketParser {
             0x03 -> EnterWorld()
             0x46 -> RequestRestart()
             0x38 -> Say2()
+            0x48 -> {
+                writeDebug(TAG, "Validate position")
+                null
+            }
             0xd0 -> when (buffer.get().toInt()) {
                 0x08 -> RequestManorList()
                 else -> {

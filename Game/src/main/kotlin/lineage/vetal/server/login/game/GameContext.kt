@@ -8,7 +8,6 @@ import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.manager.GameAnnounceManager
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.template.CharTemplate
-import lineage.vetal.server.login.game.model.template.NpcTemplate
 import lineage.vetal.server.login.xml.CharTemplatesXMLReader
 import lineage.vetal.server.login.xml.NpcXMLReader
 import java.io.File
@@ -17,19 +16,18 @@ import java.util.*
 private const val PATH_SERVER_CONFIG = "game/config/Server.yaml"
 private const val PATH_CLASSES_XML = "game/xml/classes"
 private const val NPCS_XML = "game/xml/npcs"
+private const val TAG = "GameContext"
 
 class GameContext(
-    dataFolder: String
+    dataFolder: String,
+
 ) {
-    private val TAG = "GameContext"
-
-    val config: ConfigGame
-    val gameWorld: GameWorld
-    var announcer: GameAnnounceManager
     val gameDatabase: GameDatabase
-
-    val charStatsData: Map<Int, CharTemplate>
-    val npcsData: Map<Int, NpcTemplate>
+    val gameConfig: ConfigGame
+    val gameLobby: GameLobby
+    val gameWorld: GameWorld
+    var gameAnnouncer: GameAnnounceManager
+    val charStatsData: MutableMap<Int, CharTemplate>
 
     init {
         writeSection(TAG)
@@ -37,20 +35,18 @@ class GameContext(
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
 
-        config = ConfigGame.read(serverConfigFile)
+        gameConfig = ConfigGame.read(serverConfigFile)
 
         val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
-        writeInfo(TAG, "Reading classes templates from ${charsXmlFolder.absolutePath}")
         charStatsData = CharTemplatesXMLReader(charsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${charStatsData.size} player classes templates.")
 
         val npcsXmlFolder = File(dataFolder, NPCS_XML)
-        writeInfo(TAG, "Reading npcs from ${npcsXmlFolder.absolutePath}")
-        npcsData = NpcXMLReader(npcsXmlFolder.absolutePath).load()
+        val npcsData = NpcXMLReader(npcsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${npcsData.size} npcs.")
 
         writeInfo(TAG, "Initialize database")
-        gameDatabase = GameDatabase(charStatsData, HikariDBConnection(config.dataBaseConfig))
+        gameDatabase = GameDatabase(charStatsData, HikariDBConnection(gameConfig.dataBaseConfig))
 
         writeInfo(TAG, "Start managers")
         val spawnData = gameDatabase.spawnDao.getSpawnList()
@@ -59,11 +55,9 @@ class GameContext(
                 objectId = it.value.id
             }
         }
-        writeInfo(TAG, "Created ${loadedNpc.size} NPCs")
-
         gameWorld = GameWorld(loadedNpc)
-
-        announcer = GameAnnounceManager(gameWorld).apply {
+        gameLobby = GameLobby(gameConfig, gameWorld)
+        gameAnnouncer = GameAnnounceManager(gameWorld).apply {
             start()
         }
     }
