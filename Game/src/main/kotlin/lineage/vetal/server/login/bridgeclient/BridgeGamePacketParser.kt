@@ -12,7 +12,7 @@ class BridgeGamePacketParser : PacketParser {
     private val TAG = "BridgeGamePacketParser"
 
     override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
-        return when (val opCode = buffer.get().toInt()) {
+        val packet = when (val opCode = buffer.get().toInt()) {
             0x01 -> InitOK()
             0x02 -> AuthOk()
             0x03 -> UpdateOk()
@@ -20,8 +20,12 @@ class BridgeGamePacketParser : PacketParser {
                 writeDebug(TAG, "Unknown packet with opcode $opCode")
                 null
             }
-        }?.apply {
-            readFrom(buffer, sBuffer)
         }
+
+        packet?.also {
+            it.readFromBuffer(buffer, sBuffer)
+        }
+
+        return packet
     }
 }

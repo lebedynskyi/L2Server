@@ -5,13 +5,9 @@ import lineage.vetal.server.login.clientserver.LoginClient
 import lineage.vetal.server.login.clientserver.packets.LoginClientPacket
 
 class ClientDisconnected : LoginClientPacket() {
-    private val TAG = "ClientConnected"
+    override fun read() {}
 
     override fun execute(client: LoginClient, context: LoginContext) {
-        context.loginLobby.removeClient(client)
-    }
-
-    override fun read() {
-
+        context.loginLobby.onClientDisconnected(client)
     }
 }

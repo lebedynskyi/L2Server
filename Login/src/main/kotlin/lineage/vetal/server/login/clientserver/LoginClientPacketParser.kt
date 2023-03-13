@@ -32,7 +32,7 @@ class LoginClientPacketParser : PacketParser {
                 null
             }
         }?.apply {
-            readFrom(buffer, sBuffer)
+            readFromBuffer(buffer, sBuffer)
         }
     }
 }

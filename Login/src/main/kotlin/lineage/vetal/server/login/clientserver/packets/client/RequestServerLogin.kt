@@ -11,19 +11,13 @@ class RequestServerLogin : LoginClientPacket() {
     var sessionKey2: Int = -1
     var serverId = Int.MIN_VALUE
 
-    override fun execute(client: LoginClient, context: LoginContext) {
-        val key = client.sessionKey
-        if (key != null) {
-            client.sendPacket(PlayOk(key.playOkID1, key.playOkID2))
-        } else {
-            // TODO don't remove from login lobby
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
-        }
-    }
-
     override fun read() {
         sessionKey1 = readD()
         sessionKey2 = readD()
         serverId = readH()
+    }
+
+    override fun execute(client: LoginClient, context: LoginContext) {
+       context.loginLobby.requestServerLogin(client, serverId, sessionKey1, sessionKey2)
     }
 }

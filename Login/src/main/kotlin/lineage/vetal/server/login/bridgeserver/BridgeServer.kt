@@ -15,8 +15,8 @@ class BridgeServer(
 
     init {
         selectorThread = SelectorThread(
-            context.config.bridgeServer.hostname,
-            context.config.bridgeServer.port,
+            context.loginConfig.bridgeServer.hostname,
+            context.loginConfig.bridgeServer.port,
             BridgeFactory(),
             TAG = "BridgeServerSelector"
         )

@@ -37,7 +37,7 @@ class GamePacketParser : PacketParser {
                 null
             }
         }?.apply {
-            readFrom(buffer, sBuffer)
+            readFromBuffer(buffer, sBuffer)
         }
     }
 }

@@ -38,7 +38,7 @@ abstract class Dao(
 private fun <T> ResultSet.firstOrNull(transform: (ResultSet) -> T): T? {
     var result: T? = null
     use {
-        if (first()) {
+        if (it.next()) {
             result = transform.invoke(it)
         }
     }

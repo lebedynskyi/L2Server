@@ -13,7 +13,7 @@ private const val TAG = "LoginContext"
 class LoginContext(
     dataFolder: String
 ) {
-    var config: ConfigLogin
+    var loginConfig: ConfigLogin
     val loginDatabase: LoginDatabase
     val loginLobby: LoginLobby
 
@@ -21,13 +21,14 @@ class LoginContext(
         writeSection(TAG)
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading login server configs from ${serverConfigFile.absolutePath}")
-
-        config = ConfigLogin.read(serverConfigFile)
-        loginLobby = LoginLobby(config.lobbyConfig, config.registeredServers.map { RegisteredServer(it) })
+        loginConfig = ConfigLogin.read(serverConfigFile)
 
         writeInfo(TAG, "Initializing database")
-        val dbConnection = HikariDBConnection(config.dataBaseConfig)
+        val dbConnection = HikariDBConnection(loginConfig.dataBaseConfig)
         loginDatabase = LoginDatabase(dbConnection)
         writeInfo(TAG, "DB initialized successfully")
+
+        writeInfo(TAG, "Initializing Login lobby")
+        loginLobby = LoginLobby(loginConfig.lobbyConfig, loginDatabase, loginConfig.registeredServers.map { RegisteredServer(it) })
     }
 }

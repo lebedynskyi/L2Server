@@ -70,7 +70,7 @@ abstract class ReceivablePacket : Packet() {
 
     abstract fun read()
 
-    fun readFrom(buf: ByteBuffer, tempStringBuff: StringBuffer) {
+    fun readFromBuffer(buf: ByteBuffer, tempStringBuff: StringBuffer) {
         buffer = buf
         sBuffer = tempStringBuff
         read()

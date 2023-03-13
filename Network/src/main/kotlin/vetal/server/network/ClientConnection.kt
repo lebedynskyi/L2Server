@@ -75,7 +75,6 @@ open class ClientConnection(
         // TODO check is packet was written to buffer or not.. It could be not enough space in socket
         byteBuffer.flip()
         val sentBytesCount = writeData(byteBuffer)
-        System.err.println("Send $sentBytesCount bytes")
         return packetsQueue.size <= 0
     }
 
@@ -96,9 +95,11 @@ open class ClientConnection(
         val dataSize = header - DATA_HEADER_SIZE
         val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
 
-        return if (decryptedSize > 0) {
-            packetParser.parsePacket(buffer, sBuffer, decryptedSize)
-        } else null
+        if (decryptedSize > 0) {
+            return packetParser.parsePacket(buffer, sBuffer, decryptedSize)
+        }
+
+        return null
     }
 
     private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {

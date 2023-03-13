@@ -22,7 +22,7 @@ class BridgePacketParser : PacketParser {
             }
         }
         return packet?.also {
-            it.readFrom(buffer, sBuffer)
+            it.readFromBuffer(buffer, sBuffer)
         }
     }
 }
