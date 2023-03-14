@@ -13,17 +13,17 @@ class GamePacketParser : PacketParser {
     override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         val opCode = buffer.get().toUByte().toInt()
         return when (opCode) {
-            0x00 -> ProtocolVersion()
+            0x00 -> RequestProtocolVersion()
             0x01 -> RequestMoveToLocation()
-            0x08 -> AuthLogin()
+            0x08 -> RequestAuthLogin()
             0x09 -> RequestQuit()
             0x0e -> RequestCharacterTemplates()
             0x0b -> RequestCreateCharacter()
             0x0d -> RequestSelectCharacter()
             0x63 -> RequestQuestList()
-            0x03 -> EnterWorld()
+            0x03 -> RequestEnterWorld()
             0x46 -> RequestRestart()
-            0x38 -> Say2()
+            0x38 -> RequestSay2()
             0x48 -> {
                 writeDebug(TAG, "Validate position")
                 null

@@ -9,7 +9,7 @@ import lineage.vetal.server.login.gameserver.packet.server.CreatureSay
 import lineage.vetal.server.login.gameserver.packet.server.UserInfo
 import java.util.Calendar
 
-class EnterWorld : GamePacket() {
+class RequestEnterWorld : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
 

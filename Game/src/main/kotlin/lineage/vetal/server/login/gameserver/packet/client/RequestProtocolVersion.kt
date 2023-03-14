@@ -6,7 +6,7 @@ import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.packet.GamePacket
 
 
-class ProtocolVersion : GamePacket() {
+class RequestProtocolVersion : GamePacket() {
     var version: Int = -1
 
     override fun execute(client: GameClient, context: GameContext) {

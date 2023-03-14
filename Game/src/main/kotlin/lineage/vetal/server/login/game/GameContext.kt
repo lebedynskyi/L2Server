@@ -6,8 +6,9 @@ import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.manager.GameAnnounceManager
+import lineage.vetal.server.login.game.manager.GameLobbyManager
+import lineage.vetal.server.login.game.manager.ManorManager
 import lineage.vetal.server.login.game.model.npc.Npc
-import lineage.vetal.server.login.game.model.template.CharTemplate
 import lineage.vetal.server.login.xml.CharTemplatesXMLReader
 import lineage.vetal.server.login.xml.NpcXMLReader
 import java.io.File
@@ -22,12 +23,12 @@ class GameContext(
     dataFolder: String,
 
 ) {
+    var gameAnnouncer: GameAnnounceManager
+    val gameLobby: GameLobbyManager
     val gameDatabase: GameDatabase
     val gameConfig: ConfigGame
-    val gameLobby: GameLobby
     val gameWorld: GameWorld
-    var gameAnnouncer: GameAnnounceManager
-    val charStatsData: MutableMap<Int, CharTemplate>
+    val gameManor: ManorManager
 
     init {
         writeSection(TAG)
@@ -37,8 +38,8 @@ class GameContext(
 
         gameConfig = ConfigGame.read(serverConfigFile)
 
-        val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
-        charStatsData = CharTemplatesXMLReader(charsXmlFolder.absolutePath).load()
+        val charStatsXmlFile = File(dataFolder, PATH_CLASSES_XML)
+        val charStatsData = CharTemplatesXMLReader(charStatsXmlFile.absolutePath).load()
         writeInfo(TAG, "Loaded ${charStatsData.size} player classes templates.")
 
         val npcsXmlFolder = File(dataFolder, NPCS_XML)
@@ -56,7 +57,8 @@ class GameContext(
             }
         }
         gameWorld = GameWorld(loadedNpc)
-        gameLobby = GameLobby(gameConfig, gameWorld)
+        gameLobby = GameLobbyManager(gameConfig, gameWorld, gameDatabase, charStatsData)
+        gameManor = ManorManager()
         gameAnnouncer = GameAnnounceManager(gameWorld).apply {
             start()
         }

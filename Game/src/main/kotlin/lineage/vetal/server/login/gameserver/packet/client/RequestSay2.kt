@@ -5,7 +5,7 @@ import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.packet.GamePacket
 
-class Say2 : GamePacket() {
+class RequestSay2 : GamePacket() {
     private val TAG = "Say2"
     lateinit var text: String
     var typeId: Int = -1
