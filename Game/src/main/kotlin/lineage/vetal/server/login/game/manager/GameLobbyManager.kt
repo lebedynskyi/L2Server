@@ -11,7 +11,7 @@ import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.GameWorld
+import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Appearance

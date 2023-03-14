@@ -3,7 +3,7 @@ package lineage.vetal.server.login.game.manager
 import kotlinx.coroutines.*
 
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.login.game.GameWorld
+import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameserver.packet.server.CreatureSay
 import java.util.concurrent.TimeUnit

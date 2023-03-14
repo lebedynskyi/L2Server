@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.game
+package lineage.vetal.server.login.game.model
 
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Creature

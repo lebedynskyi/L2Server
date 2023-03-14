@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.game
+package lineage.vetal.server.login.game.model
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo

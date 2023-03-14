@@ -1,11 +1,11 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.GameObject
+import lineage.vetal.server.login.game.model.GameObject
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class DeleteObject(
-    val obj: GameObject,
-    val isSeated: Boolean = false
+    private val obj: GameObject,
+    private val isSeated: Boolean = false
 ) : GameServerPacket() {
 
     override fun write() {

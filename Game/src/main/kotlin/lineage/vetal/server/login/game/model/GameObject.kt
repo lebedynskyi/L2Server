@@ -1,4 +1,4 @@
-package lineage.vetal.server.login.game
+package lineage.vetal.server.login.game.model
 
 import lineage.vetal.server.login.game.model.location.SpawnLocation
 import java.util.UUID

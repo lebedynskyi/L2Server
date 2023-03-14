@@ -5,9 +5,11 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.db.GameDatabase
+import lineage.vetal.server.login.game.manager.ChatManager
 import lineage.vetal.server.login.game.manager.GameAnnounceManager
 import lineage.vetal.server.login.game.manager.GameLobbyManager
 import lineage.vetal.server.login.game.manager.ManorManager
+import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.xml.CharTemplatesXMLReader
 import lineage.vetal.server.login.xml.NpcXMLReader
@@ -29,6 +31,7 @@ class GameContext(
     val gameConfig: ConfigGame
     val gameWorld: GameWorld
     val gameManor: ManorManager
+    val chatManager: ChatManager
 
     init {
         writeSection(TAG)
@@ -59,6 +62,7 @@ class GameContext(
         gameWorld = GameWorld(loadedNpc)
         gameLobby = GameLobbyManager(gameConfig, gameWorld, gameDatabase, charStatsData)
         gameManor = ManorManager()
+        chatManager = ChatManager()
         gameAnnouncer = GameAnnounceManager(gameWorld).apply {
             start()
         }
