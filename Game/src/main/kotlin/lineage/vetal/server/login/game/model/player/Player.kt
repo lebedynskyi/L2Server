@@ -16,6 +16,7 @@ class Player(
     val appearance: Appearance,
     position: SpawnLocation
 ) : Playable(id, name, position) {
+    var lastAccessTime: Long = 0
     var client: GameClient? = null
 
     override var status: PlayerStatus = PlayerStatus(charTemplate)

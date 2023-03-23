@@ -5,11 +5,8 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.manager.ChatManager
-import lineage.vetal.server.login.game.manager.GameAnnounceManager
-import lineage.vetal.server.login.game.manager.GameLobbyManager
-import lineage.vetal.server.login.game.manager.ManorManager
-import lineage.vetal.server.login.game.model.GameWorld
+import lineage.vetal.server.login.game.manager.*
+//import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.xml.CharTemplatesXMLReader
 import lineage.vetal.server.login.xml.NpcXMLReader
@@ -23,14 +20,15 @@ private const val TAG = "GameContext"
 
 class GameContext(
     dataFolder: String,
-
 ) {
-    var gameAnnouncer: GameAnnounceManager
+    val worldManager: WorldManager
+    val movementManager:MovementManager
+    val gameAnnouncer: GameAnnounceManager
     val gameLobby: GameLobbyManager
     val gameDatabase: GameDatabase
     val gameConfig: ConfigGame
-    val gameWorld: GameWorld
-    val gameManor: ManorManager
+//    val gameWorld: GameWorld
+    val manorManager: ManorManager
     val chatManager: ChatManager
 
     init {
@@ -59,11 +57,13 @@ class GameContext(
                 objectId = it.value.id
             }
         }
-        gameWorld = GameWorld(loadedNpc)
-        gameLobby = GameLobbyManager(gameConfig, gameWorld, gameDatabase, charStatsData)
-        gameManor = ManorManager()
-        chatManager = ChatManager()
-        gameAnnouncer = GameAnnounceManager(gameWorld).apply {
+
+        worldManager = WorldManager(loadedNpc)
+        manorManager = ManorManager()
+        movementManager = MovementManager()
+        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, charStatsData)
+        chatManager = ChatManager(worldManager)
+        gameAnnouncer = GameAnnounceManager(chatManager).apply {
             start()
         }
     }

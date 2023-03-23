@@ -3,7 +3,7 @@ package lineage.vetal.server.login
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.game.GameContext
 
-const val TAG = "Game"
+private const val TAG = "Game"
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {

@@ -12,6 +12,6 @@ class RequestManorList : GamePacket() {
 
     override fun execute(client: GameClient, context: GameContext) {
         client.player ?: return
-        client.sendPacket(ManorList(context.gameManor.manorList))
+        client.sendPacket(ManorList(context.manorManager.manorList))
     }
 }

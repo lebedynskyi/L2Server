@@ -9,7 +9,7 @@ open class GameObject(
     var name: String,
     var position: SpawnLocation
 ) {
+    lateinit var region: WorldRegion
     var objectId: Int = 0
     var isVisible = false
-    var region: WorldRegion? = null
 }

@@ -62,13 +62,6 @@ class CharactersDao(
         }
     }
 
-    fun updateLastAccess(playerId: UUID, value: Long): Boolean {
-        return insertOrUpdate(UPDATE_lAST_ACCESS_SQL) {
-            it.setLong(1, value)
-            it.setString(2, playerId.toString())
-        }
-    }
-
     fun updateCoordinates(playerId: UUID, location: SpawnLocation): Boolean {
         return insertOrUpdate(UPDATE_COORDINATES_SQL) {
             it.setInt(1, location.x)

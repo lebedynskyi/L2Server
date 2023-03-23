@@ -12,7 +12,7 @@ class GamePacketParser : PacketParser {
 
     override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         val opCode = buffer.get().toUByte().toInt()
-        return when (opCode) {
+        val packet =  when (opCode) {
             0x00 -> RequestProtocolVersion()
             0x01 -> RequestMoveToLocation()
             0x08 -> RequestAuthLogin()
@@ -24,8 +24,9 @@ class GamePacketParser : PacketParser {
             0x03 -> RequestEnterWorld()
             0x46 -> RequestRestart()
             0x38 -> RequestSay2()
-            0x48 -> {
-                writeDebug(TAG, "Validate position")
+            0x48 -> ValidatePosition()
+            0x04 -> {
+                writeDebug(TAG, "Select target")
                 null
             }
             0xd0 -> when (buffer.get().toInt()) {
@@ -40,8 +41,9 @@ class GamePacketParser : PacketParser {
                 writeDebug(TAG, "Unknown packet with opcode ${Integer.toHexString(opCode)}")
                 null
             }
-        }?.apply {
-            readFromBuffer(buffer, sBuffer)
         }
+
+        packet?.readFromBuffer(buffer, sBuffer)
+        return packet
     }
 }

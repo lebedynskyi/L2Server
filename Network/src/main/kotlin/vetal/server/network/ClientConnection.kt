@@ -66,6 +66,7 @@ open class ClientConnection(
 
             // TODO check is packet was written to buffer or not.. It could be not enough space
             // temp buffer is needed to check is enough capacity in byte buffer
+            // todo in genreal this checking does not work. tried to send 6k packets
             writePacketToBuffer(packet, tempBuffer)
             tempBuffer.flip()
             byteBuffer.put(tempBuffer)

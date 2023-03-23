@@ -11,7 +11,6 @@ import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.items.Inventory
 import lineage.vetal.server.login.game.model.location.SpawnLocation
 import lineage.vetal.server.login.game.model.player.Appearance
@@ -28,7 +27,7 @@ private const val TAG = "GameLobby"
 
 class GameLobbyManager(
     private val gameConfig: ConfigGame,
-    private val gameWorld: GameWorld,
+    private val gameWorld: WorldManager,
     private val gameDatabase: GameDatabase,
     private val charStatsData: MutableMap<Int, CharTemplate>,
 ) {
@@ -39,7 +38,7 @@ class GameLobbyManager(
         val blowFishKey = serverConfig.bridgeKey
         val serverStatus = ServerStatus(
             gameConfig.serverInfo.id,
-            gameWorld.currentOnline,
+            gameWorld.players.size,
             true,
             gameConfig.serverInfo.ip
         )

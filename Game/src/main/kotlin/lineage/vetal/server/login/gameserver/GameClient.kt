@@ -14,9 +14,9 @@ class GameClient(
 
     lateinit var account: AccountInfo
     lateinit var sessionKey: SessionKey
-    var clientState = GameClientState.LOBBY
+    lateinit var characterSlots: List<CharSelectionSlot>
 
-    var characterSlots: List<CharSelectionSlot>? = null
+    var clientState = GameClientState.LOBBY
     var player: Player? = null
 
     fun sendInitPacket() {
