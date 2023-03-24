@@ -70,10 +70,10 @@ class WorldManager(
         writeDebug(TAG, "World finish Init")
     }
 
-    private fun isRegionExist(x: Int, y: Int) = x in 0 until REGIONS_X && y in 0 until REGIONS_Y
-    private fun getRegion(loc: Location): WorldRegion? = getRegion(loc.x, loc.y)
+    fun isRegionExist(x: Int, y: Int) = x in 0 until REGIONS_X && y in 0 until REGIONS_Y
+    fun getRegion(loc: Location): WorldRegion? = getRegion(loc.x, loc.y)
 
-    private fun getRegion(x: Int, y: Int): WorldRegion? {
+    fun getRegion(x: Int, y: Int): WorldRegion? {
         val regX = (x - WORLD_X_MIN) / REGION_SIZE
         val regY = (y - WORLD_Y_MIN) / REGION_SIZE
         return if (isRegionExist(regX, regY)) regions[regX][regY] else null
@@ -100,12 +100,25 @@ class WorldManager(
         client.sendPacket(CharSlotList(client, client.characterSlots))
         client.clientState = GameClientState.LOBBY
         decay(player)
+        player.region.removePlayer(player)
     }
 
     fun onPlayerQuitWorld(client: GameClient, player: Player) {
         // TODO save player
         client.saveAndClose(LeaveWorld())
         decay(player)
+        player.region.removePlayer(player)
+    }
+
+    fun onPlayerMoved(player: Player, loc: Location) {
+        val currentRegion = player.region
+        val newRegion = getRegion(loc)
+        if (currentRegion != newRegion && newRegion != null) {
+            player.region = newRegion
+            newRegion.addPlayer(player)
+            currentRegion.removePlayer(player)
+            //TODO Сheck it with Adrenaline. surrounding regions does not see this player anymore. need to remove it ? Client handle it ?
+        }
     }
 
     fun spawn(player: Player) {
@@ -116,12 +129,7 @@ class WorldManager(
             return
         }
         player.region = region
-        region.npc.values.forEach {
-            player.sendPacket(NpcInfo(it))
-        }
-
         region.addPlayer(player)
-        region.broadCast(CharInfo(player))
     }
 
     fun spawn(npc: Npc) {
@@ -132,10 +140,10 @@ class WorldManager(
         }
         npc.region = region
         region.addNpc(npc)
-        region.broadCast(NpcInfo(npc))
     }
 
     fun decay(creature: Creature) {
+        // TODO remove from here ?
         creature.region.broadCast(DeleteObject(creature))
     }
 }

@@ -68,7 +68,7 @@ abstract class CreatureStatus(
     abstract fun getBaseSwimSpeed(): Int
 
     fun getMovementSpeedMultiplier(): Double {
-        return (getMoveSpeed() / getBaseMoveSpeed()).toDouble()
+        return ((getMoveSpeed() / getBaseMoveSpeed()).toDouble()) * 4
     }
 
     fun getAttackSpeedMultiplier(): Double {

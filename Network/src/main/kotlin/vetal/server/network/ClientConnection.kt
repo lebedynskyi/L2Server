@@ -29,7 +29,7 @@ open class ClientConnection(
             selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
             selector.wakeup()
         } else {
-            writeError(TAG, "Selection key is not active. Probably closed")
+            writeError(TAG, "Selection key is not valid. Probably closed")
         }
     }
 

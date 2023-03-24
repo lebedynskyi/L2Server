@@ -2,10 +2,12 @@ package lineage.vetal.server.login.game.model
 
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.gameserver.packet.server.CharInfo
+import lineage.vetal.server.login.gameserver.packet.server.NpcInfo
 import vetal.server.network.SendablePacket
 import java.util.concurrent.ConcurrentHashMap
 
-class WorldRegion(
+data class WorldRegion(
     val tileX: Int,
     val tileY: Int
 ) {
@@ -18,6 +20,11 @@ class WorldRegion(
 
     fun addPlayer(player: Player) {
         _players[player.objectId] = player
+
+        player.sendPacket(players.values.map { CharInfo(it) })
+        player.sendPacket(npc.values.map { NpcInfo(it) })
+
+        broadCast(CharInfo(player))
     }
 
     fun removePlayer(player: Player) {
@@ -26,6 +33,8 @@ class WorldRegion(
 
     fun addNpc(npc: Npc) {
         _npc[npc.objectId] = npc
+
+        broadCast(NpcInfo(npc))
     }
 
     fun removeNpc(npc: Npc) {
@@ -33,8 +42,12 @@ class WorldRegion(
     }
 
     fun broadCast(packet: SendablePacket) {
-        surroundingRegions.map { it.players.values }.flatten().plus(players.values).forEach {
+        players.values.plus(surroundingRegions.map { it.players.values }.flatten()).forEach {
             it.sendPacket(packet)
         }
+    }
+
+    override fun toString(): String {
+        return "Region ($tileX,$tileY). Players=${players.count()}, NPCs=${npc.count()}"
     }
 }

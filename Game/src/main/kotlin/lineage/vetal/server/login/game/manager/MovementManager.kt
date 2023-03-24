@@ -9,7 +9,9 @@ import vetal.server.writeDebug
 
 private const val TAG = "MovementManager"
 
-class MovementManager {
+class MovementManager(
+    private val worldManager: WorldManager
+) {
     fun startMovement(player: Player, start: Location, finish: Location) {
         // TODO start task. Introduce map with move object ? wtf to do ? Geo engine and etc
         player.position = SpawnLocation(finish.x, finish.y, finish.z, 0)
@@ -21,7 +23,7 @@ class MovementManager {
     }
 
     fun onPlayerValidatePosition(player: Player, loc: Location) {
+        worldManager.onPlayerMoved(player, loc)
         player.position = SpawnLocation(loc)
-        writeDebug(TAG, "Validate ${player.name} position $loc")
     }
 }

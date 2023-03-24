@@ -81,4 +81,10 @@ class Player(
     fun sendPacket(packet: SendablePacket) {
         client?.sendPacket(packet)
     }
+
+    fun sendPacket(packets: List<SendablePacket>) {
+        packets.forEach {
+            client?.sendPacket(it)
+        }
+    }
 }

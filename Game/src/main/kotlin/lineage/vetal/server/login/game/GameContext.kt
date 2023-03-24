@@ -60,7 +60,7 @@ class GameContext(
 
         worldManager = WorldManager(loadedNpc)
         manorManager = ManorManager()
-        movementManager = MovementManager()
+        movementManager = MovementManager(worldManager)
         gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, charStatsData)
         chatManager = ChatManager(worldManager)
         gameAnnouncer = GameAnnounceManager(chatManager).apply {
