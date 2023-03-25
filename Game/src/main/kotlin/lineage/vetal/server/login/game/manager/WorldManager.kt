@@ -1,5 +1,6 @@
 package lineage.vetal.server.login.game.manager
 
+import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.model.WorldRegion
 import lineage.vetal.server.login.game.model.location.Location
 import lineage.vetal.server.login.game.model.npc.Npc
@@ -36,7 +37,8 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 private const val TAG = "WorldManager"
 
 class WorldManager(
-    private val npc: List<Npc>
+    private val npc: List<Npc>,
+    private val gameDatabase: GameDatabase
 ) {
     val players: List<Player> get() = regions.flatten().map { it.players.values }.flatten()
     val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x -> Array(REGIONS_Y) { y -> WorldRegion(x, y) } }
@@ -84,30 +86,37 @@ class WorldManager(
     }
 
     fun onPlayerEnteredWorld(client: GameClient, player: Player) {
-        client.clientState = GameClientState.WORLD
-        player.client = client
-        client.player = player
         player.lastAccessTime = Calendar.getInstance().timeInMillis
+        player.client = client
+        player.isActive = true
+        client.clientState = GameClientState.WORLD
+        client.player = player
         player.sendPacket(UserInfo(player))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Hello on Mega server"))
         spawn(player)
     }
 
     fun onPlayerRestart(client: GameClient, player: Player) {
-        // TODO save player
         client.player = null
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
         client.sendPacket(CharSlotList(client, client.characterSlots))
         client.clientState = GameClientState.LOBBY
-        decay(player)
         player.region.removePlayer(player)
+
+        if (player.isActive) {
+            player.isActive = false
+            gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
+        }
     }
 
     fun onPlayerQuitWorld(client: GameClient, player: Player) {
-        // TODO save player
-        client.saveAndClose(LeaveWorld())
-        decay(player)
         player.region.removePlayer(player)
+        if (player.isActive) {
+            // TODO save fully
+            client.saveAndClose(LeaveWorld())
+            gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
+        }
+        player.isActive = false
     }
 
     fun onPlayerMoved(player: Player, loc: Location) {
@@ -117,7 +126,7 @@ class WorldManager(
             player.region = newRegion
             newRegion.addPlayer(player)
             currentRegion.removePlayer(player)
-            //TODO Сheck it with Adrenaline. surrounding regions does not see this player anymore. need to remove it ? Client handle it ?
+            //TODO Check it with Adrenaline. surrounding regions does not see this player anymore. need to remove it ? Client handle it ?
         }
     }
 
@@ -140,10 +149,5 @@ class WorldManager(
         }
         npc.region = region
         region.addNpc(npc)
-    }
-
-    fun decay(creature: Creature) {
-        // TODO remove from here ?
-        creature.region.broadCast(DeleteObject(creature))
     }
 }

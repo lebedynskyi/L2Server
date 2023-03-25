@@ -31,6 +31,14 @@ class GameServer(
                 val packet = it.second as GamePacket?
                 packet?.execute(it.first, context)
             }
+
+            gameCoroutineScope.launch {
+                gameSelector.connectionCloseFlow.collect { client ->
+                    client.player?.let {
+                        context.worldManager.onPlayerQuitWorld(client, it)
+                    }
+                }
+            }
         }
     }
 }

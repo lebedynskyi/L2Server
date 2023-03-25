@@ -13,13 +13,6 @@ class RequestMoveToLocation : GamePacket() {
     private var startY = 0
     private var startZ = 0
 
-    override fun execute(client: GameClient, context: GameContext) {
-        val player = client.player ?: return
-        val startLocation = Location(startX, startY, startZ)
-        val finishLocation = Location(targetX, targetY, targetZ)
-        context.movementManager.startMovement(player, startLocation, finishLocation)
-    }
-
     override fun read() {
         targetX = readD()
         targetY = readD()
@@ -27,5 +20,12 @@ class RequestMoveToLocation : GamePacket() {
         startX = readD()
         startY = readD()
         startZ = readD()
+    }
+
+    override fun execute(client: GameClient, context: GameContext) {
+        val player = client.player ?: return
+        val startLocation = Location(startX, startY, startZ)
+        val finishLocation = Location(targetX, targetY, targetZ)
+        context.movementManager.startMovement(player, startLocation, finishLocation)
     }
 }

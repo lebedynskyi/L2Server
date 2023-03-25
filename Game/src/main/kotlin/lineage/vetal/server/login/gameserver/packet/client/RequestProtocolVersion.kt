@@ -9,6 +9,10 @@ import lineage.vetal.server.login.gameserver.packet.GamePacket
 class RequestProtocolVersion : GamePacket() {
     var version: Int = -1
 
+    override fun read() {
+        version = readD()
+    }
+
     override fun execute(client: GameClient, context: GameContext) {
         when (version) {
             737 -> client.sendInitPacket()
@@ -20,9 +24,5 @@ class RequestProtocolVersion : GamePacket() {
                 client.saveAndClose()
             }
         }
-    }
-
-    override fun read() {
-        version = readD()
     }
 }

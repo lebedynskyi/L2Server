@@ -3,6 +3,7 @@ package lineage.vetal.server.login.game.model
 import lineage.vetal.server.login.game.model.npc.Npc
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameserver.packet.server.CharInfo
+import lineage.vetal.server.login.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.login.gameserver.packet.server.NpcInfo
 import vetal.server.network.SendablePacket
 import java.util.concurrent.ConcurrentHashMap
@@ -29,6 +30,7 @@ data class WorldRegion(
 
     fun removePlayer(player: Player) {
         _players.remove(player.objectId)
+        broadCast(DeleteObject(player))
     }
 
     fun addNpc(npc: Npc) {

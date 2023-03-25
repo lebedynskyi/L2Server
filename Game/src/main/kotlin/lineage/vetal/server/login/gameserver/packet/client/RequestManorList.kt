@@ -6,10 +6,6 @@ import lineage.vetal.server.login.gameserver.packet.GamePacket
 import lineage.vetal.server.login.gameserver.packet.server.ManorList
 
 class RequestManorList : GamePacket() {
-    override fun read() {
-
-    }
-
     override fun execute(client: GameClient, context: GameContext) {
         client.player ?: return
         client.sendPacket(ManorList(context.manorManager.manorList))

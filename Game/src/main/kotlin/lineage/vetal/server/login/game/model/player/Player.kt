@@ -18,6 +18,7 @@ class Player(
 ) : Playable(id, name, position) {
     var lastAccessTime: Long = 0
     var client: GameClient? = null
+    var isActive = false
 
     override var status: PlayerStatus = PlayerStatus(charTemplate)
     lateinit var inventory: Inventory

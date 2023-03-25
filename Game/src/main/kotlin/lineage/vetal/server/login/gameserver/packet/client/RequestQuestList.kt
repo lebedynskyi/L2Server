@@ -10,8 +10,4 @@ class RequestQuestList : GamePacket() {
         client.player ?: return
         client.sendPacket(QuestList())
     }
-
-    override fun read() {
-
-    }
 }
