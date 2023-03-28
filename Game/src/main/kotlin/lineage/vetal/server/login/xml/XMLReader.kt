@@ -1,8 +1,8 @@
 package lineage.vetal.server.login.xml
 
 import lineage.vetal.server.core.utils.logs.writeError
-import lineage.vetal.server.login.game.model.location.Location
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.position.Position
+import lineage.vetal.server.login.game.model.position.SpawnPosition
 import org.w3c.dom.Document
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
@@ -212,21 +212,21 @@ interface XmlReader {
         }
     }
 
-    fun parseLocation(n: Node): Location {
+    fun parseLocation(n: Node): Position {
         val attrs = n.attributes
         val x = parseInteger(attrs, "x") ?: 0
         val y = parseInteger(attrs, "y") ?: 0
         val z = parseInteger(attrs, "z") ?: 0
-        return Location(x, y, z)
+        return Position(x, y, z)
     }
 
-    fun parseSpawnLocation(n: Node): SpawnLocation {
+    fun parseSpawnLocation(n: Node): SpawnPosition {
         val attrs = n.attributes
         val x = parseInteger(attrs, "x") ?: 0
         val y = parseInteger(attrs, "y") ?: 0
         val z = parseInteger(attrs, "z") ?: 0
         val heading = parseInteger(attrs, "heading") ?: 0
-        return SpawnLocation(x, y, z, heading)
+        return SpawnPosition(x, y, z, heading)
     }
 
     fun forEach(node: Node, action: Consumer<Node>) {

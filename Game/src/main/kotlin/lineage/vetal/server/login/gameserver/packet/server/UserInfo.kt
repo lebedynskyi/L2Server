@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.Paperdoll
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
@@ -182,7 +182,7 @@ class UserInfo(
         writeH(player.recomLeft)
         writeH(player.recomHave)
         writeD(if (player.mountNpcId > 0) player.mountNpcId + 1000000 else 0)
-        writeH(player.inventory.getInventoryLimit())
+        writeH(player.inventory.inventoryLimit)
         writeD(player.classId)
         writeD(0x00)
         writeD(player.status.maxCp)
@@ -195,7 +195,7 @@ class UserInfo(
         writeC(if (player.isNoble) 1 else 0)
         writeC(if (player.isHero) 1 else 0)
         writeC(if (player.isFishing) 1 else 0)
-        writeLoc(Location(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
+        writeLoc(Position(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
         writeC(if (player.status.isRunning) 0x01 else 0x00)
         writeD(player.pledgeClass)

@@ -1,9 +1,6 @@
 package lineage.vetal.server.login
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.bridgeclient.BridgeGameClientFactory
 import lineage.vetal.server.login.bridgeclient.packets.BridgeGamePacket
@@ -15,7 +12,7 @@ class BridgeClient(
     private val context: GameContext
 ) {
     private val bridgeSelector: SelectorThread<BridgeClient>
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
+    private val coroutineScope = CoroutineScope(newSingleThreadContext("GameBridgeClient") + Job())
 
     init {
         bridgeSelector = SelectorThread(

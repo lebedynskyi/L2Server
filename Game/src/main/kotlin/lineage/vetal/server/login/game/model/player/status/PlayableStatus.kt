@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.player.status
 
-import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 
 abstract class PlayableStatus(
     private val template: CharTemplate

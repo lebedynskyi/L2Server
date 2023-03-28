@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class MoveToLocation(
     creature: Creature,
-    destination: Location
+    destination: Position
 ) : GameServerPacket() {
     private val _objectId: Int
 

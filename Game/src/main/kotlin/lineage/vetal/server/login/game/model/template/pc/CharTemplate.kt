@@ -1,8 +1,9 @@
-package lineage.vetal.server.login.game.model.template
+package lineage.vetal.server.login.game.model.template.pc
 
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.ClassId
 import lineage.vetal.server.login.game.model.player.Sex
+import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 import lineage.vetal.server.login.xml.StatSet
 
 class CharTemplate(set: StatSet) : CreatureTemplate(set) {
@@ -13,18 +14,18 @@ class CharTemplate(set: StatSet) : CreatureTemplate(set) {
     val fists: Int = set.getInteger("fists")
 
     val items: List<ItemTemplate> get() = _items
-    val skills: List<SkillTemplate> get() = _skills
+    val skills: List<CharSkillTemplate> get() = _skills
 
     private val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
-    private val _skills: MutableList<SkillTemplate> = set.getList<SkillTemplate>("skills").toMutableList()
+    private val _skills: MutableList<CharSkillTemplate> = set.getList<CharSkillTemplate>("skills").toMutableList()
     private val _collisionRadiusFemale: Double = set.getDouble("radiusFemale")
     private val _collisionHeightFemale: Double = set.getDouble("heightFemale")
-    private val _spawnLocations: List<Location> = set.getList("spawnLocations")
+    private val _spawnLocations: List<Position> = set.getList("spawnLocations")
     private val _hpTable: DoubleArray = set.getDoubleArray("hpTable")
     private val _mpTable: DoubleArray = set.getDoubleArray("mpTable")
     private val _cpTable: DoubleArray = set.getDoubleArray("cpTable")
 
-    val randomSpawn: Location get() = _spawnLocations.random()
+    val randomSpawn: Position get() = _spawnLocations.random()
 
     fun getCollisionRadiusBySex(sex: Sex): Double {
         return if (sex === Sex.MALE) collisionRadius else _collisionRadiusFemale
@@ -46,13 +47,13 @@ class CharTemplate(set: StatSet) : CreatureTemplate(set) {
         return _cpTable[level - 1]
     }
 
-    fun findSkill(id: Int, level: Int): SkillTemplate? {
+    fun findSkill(id: Int, level: Int): CharSkillTemplate? {
         return skills.asSequence()
-            .filter { s: SkillTemplate -> s.id == id && s.lvl == level }
+            .filter { s: CharSkillTemplate -> s.id == id && s.lvl == level }
             .firstOrNull()
     }
 
-    fun addSkillsFromParent(parentSkills: List<SkillTemplate>) {
+    fun addSkillsFromParent(parentSkills: List<CharSkillTemplate>) {
         _skills.addAll(skills)
     }
 

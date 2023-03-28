@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class NewCharacterSuccess(

@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.gameserver.packet.client
 
 import lineage.vetal.server.login.game.GameContext
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.packet.GamePacket
 
@@ -24,8 +24,8 @@ class RequestMoveToLocation : GamePacket() {
 
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        val startLocation = Location(startX, startY, startZ)
-        val finishLocation = Location(targetX, targetY, targetZ)
+        val startLocation = Position(startX, startY, startZ)
+        val finishLocation = Position(targetX, targetY, targetZ)
         context.movementManager.startMovement(player, startLocation, finishLocation)
     }
 }

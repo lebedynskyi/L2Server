@@ -6,14 +6,15 @@ enum class Paperdoll(val id: Int) {
     LEGS(11), FEET(12), CLOAK(13), FACE(14), HAIR(15), HAIRALL(16);
 
     companion object {
-        fun getByName(name: String?): Paperdoll {
+        fun fromName(name: String?): Paperdoll {
             for (paperdoll in values()) {
-                if (paperdoll.toString().equals(name, ignoreCase = true)) return paperdoll
+                if (paperdoll.toString().equals(name, ignoreCase = true))
+                    return paperdoll
             }
             return NULL
         }
 
-        fun getById(id: Int): Paperdoll {
+        fun fromId(id: Int): Paperdoll {
             for (paperdoll in values()) {
                 if (paperdoll.id == id) return paperdoll
             }

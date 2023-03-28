@@ -1,5 +1,6 @@
-package lineage.vetal.server.login.game.model.template
+package lineage.vetal.server.login.game.model.template.pc
 
+import lineage.vetal.server.login.game.model.template.Template
 import lineage.vetal.server.login.xml.StatSet
 
 open class CreatureTemplate(set: StatSet) : Template(set){

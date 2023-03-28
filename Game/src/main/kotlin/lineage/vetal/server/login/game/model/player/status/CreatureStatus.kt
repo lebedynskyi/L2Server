@@ -2,7 +2,7 @@ package lineage.vetal.server.login.game.model.player.status
 
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
-import lineage.vetal.server.login.game.model.template.CreatureTemplate
+import lineage.vetal.server.login.game.model.template.pc.CreatureTemplate
 
 abstract class CreatureStatus(
     private val template: CreatureTemplate

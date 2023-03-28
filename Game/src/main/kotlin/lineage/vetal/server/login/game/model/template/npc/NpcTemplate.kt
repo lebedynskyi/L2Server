@@ -1,5 +1,6 @@
-package lineage.vetal.server.login.game.model.template
+package lineage.vetal.server.login.game.model.template.npc
 
+import lineage.vetal.server.login.game.model.template.pc.CreatureTemplate
 import lineage.vetal.server.login.xml.StatSet
 
 open class NpcTemplate(

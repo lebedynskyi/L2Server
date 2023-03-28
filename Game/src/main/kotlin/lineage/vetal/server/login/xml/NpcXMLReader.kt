@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.xml
 
-import lineage.vetal.server.login.game.model.template.NpcTemplate
-import lineage.vetal.server.login.game.model.template.PetTemplate
+import lineage.vetal.server.login.game.model.template.npc.NpcTemplate
+import lineage.vetal.server.login.game.model.template.pc.PetTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 

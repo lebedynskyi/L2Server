@@ -11,12 +11,12 @@ import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.model.items.Inventory
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.inventory.WearableInventory
+import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.Sex
-import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
 import lineage.vetal.server.login.gameserver.packet.server.*
@@ -173,7 +173,7 @@ class GameLobbyManager(
             client.account.id,
             playerTemplate,
             Appearance(hairStyle, hairColor, face, Sex.values()[sex.toInt()]),
-            SpawnLocation(playerTemplate.randomSpawn)
+            SpawnPosition(playerTemplate.randomSpawn)
         )
 
         gameDatabase.charactersDao.insertCharacter(newPlayer)
@@ -201,7 +201,8 @@ class GameLobbyManager(
         }
 
         val player = gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
-            inventory = Inventory()
+            // TODO database query
+            inventory = WearableInventory()
         }
 
         if (player == null) {

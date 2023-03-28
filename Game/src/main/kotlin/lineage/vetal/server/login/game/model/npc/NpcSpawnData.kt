@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.game.model.npc
 
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.position.SpawnPosition
 
-data class SpawnData(
+data class NpcSpawnData(
     val npcTemplateId: Int,
-    val spawnLocation: SpawnLocation,
+    val spawnPosition: SpawnPosition,
     val respawnDelay: Int,
     val respawnRandom: Int,
     val periodOfDay: Int

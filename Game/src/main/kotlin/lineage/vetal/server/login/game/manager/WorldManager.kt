@@ -2,9 +2,8 @@ package lineage.vetal.server.login.game.manager
 
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.model.WorldRegion
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.npc.Npc
-import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameserver.GameClient
@@ -73,7 +72,7 @@ class WorldManager(
     }
 
     fun isRegionExist(x: Int, y: Int) = x in 0 until REGIONS_X && y in 0 until REGIONS_Y
-    fun getRegion(loc: Location): WorldRegion? = getRegion(loc.x, loc.y)
+    fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
 
     fun getRegion(x: Int, y: Int): WorldRegion? {
         val regX = (x - WORLD_X_MIN) / REGION_SIZE
@@ -105,6 +104,7 @@ class WorldManager(
 
         if (player.isActive) {
             player.isActive = false
+            // TODO save fully
             gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
         }
     }
@@ -119,7 +119,7 @@ class WorldManager(
         player.isActive = false
     }
 
-    fun onPlayerMoved(player: Player, loc: Location) {
+    fun onPlayerMoved(player: Player, loc: Position) {
         val currentRegion = player.region
         val newRegion = getRegion(loc)
         if (currentRegion != newRegion && newRegion != null) {

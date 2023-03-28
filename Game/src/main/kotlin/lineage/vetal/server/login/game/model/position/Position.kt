@@ -1,9 +1,9 @@
-package lineage.vetal.server.login.game.model.location
+package lineage.vetal.server.login.game.model.position
 
 import lineage.vetal.server.login.xml.StatSet
 
 
-open class Location {
+open class Position {
     @Volatile
     var x: Int
 
@@ -19,7 +19,7 @@ open class Location {
         this.z = z
     }
 
-    constructor(loc: Location) {
+    constructor(loc: Position) {
         x = loc.x
         y = loc.y
         z = loc.z
@@ -32,7 +32,7 @@ open class Location {
     }
 
     override fun toString(): String {
-        return "LOC: $x, $y, $z"
+        return "Pos: $x, $y, $z"
     }
 
     override fun hashCode(): Int {
@@ -40,7 +40,7 @@ open class Location {
     }
 
     override fun equals(o: Any?): Boolean {
-        if (o is Location) {
+        if (o is Position) {
             val loc = o
             return loc.x == x && loc.y == y && loc.z == z
         }
@@ -53,7 +53,7 @@ open class Location {
         this.z = z
     }
 
-    fun set(loc: Location) {
+    fun set(loc: Position) {
         x = loc.x
         y = loc.y
         z = loc.z
@@ -66,6 +66,6 @@ open class Location {
     }
 
     companion object {
-        val ZERO_LOC = Location(0, 0, 0)
+        val ZERO_LOC = Position(0, 0, 0)
     }
 }

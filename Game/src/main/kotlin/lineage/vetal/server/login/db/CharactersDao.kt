@@ -4,12 +4,12 @@ import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.Dao
 import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.login.game.model.CharSelectionSlot
-import lineage.vetal.server.login.game.model.location.SpawnLocation
+import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
-import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import java.util.*
 
 private const val INSERT_CHARACTER_SQL = "INSERT INTO characters (id,account_id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
@@ -62,7 +62,7 @@ class CharactersDao(
         }
     }
 
-    fun updateCoordinates(playerId: UUID, location: SpawnLocation): Boolean {
+    fun updateCoordinates(playerId: UUID, location: SpawnPosition): Boolean {
         return insertOrUpdate(UPDATE_COORDINATES_SQL) {
             it.setInt(1, location.x)
             it.setInt(2, location.y)
@@ -118,7 +118,7 @@ class CharactersDao(
             transform = {
                 val classId = it.getInt(21)
                 val template = charTemplates.getValue(classId)
-                val location = SpawnLocation(it.getInt(32), it.getInt(33), it.getInt(34), 0)
+                val location = SpawnPosition(it.getInt(32), it.getInt(33), it.getInt(34), 0)
                 val appearance = Appearance(it.getInt(13), it.getInt(14), it.getInt(15), Sex.values()[it.getInt(16)])
                 Player(
                     UUID.fromString(it.getString(1)),

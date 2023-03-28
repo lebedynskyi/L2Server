@@ -1,9 +1,9 @@
 package lineage.vetal.server.login.game.model.player
 
-import lineage.vetal.server.login.game.model.location.SpawnLocation
-import lineage.vetal.server.login.game.model.items.Inventory
+import lineage.vetal.server.login.game.model.inventory.WearableInventory
+import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
-import lineage.vetal.server.login.game.model.template.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import vetal.server.network.SendablePacket
 import java.util.*
@@ -14,14 +14,14 @@ class Player(
     val accountId: UUID,
     val charTemplate: CharTemplate,
     val appearance: Appearance,
-    position: SpawnLocation
+    position: SpawnPosition
 ) : Playable(id, name, position) {
     var lastAccessTime: Long = 0
     var client: GameClient? = null
     var isActive = false
 
     override var status: PlayerStatus = PlayerStatus(charTemplate)
-    lateinit var inventory: Inventory
+    lateinit var inventory: WearableInventory
 
     var summon: Summon? = null
     var team: TeamType = TeamType.NONE

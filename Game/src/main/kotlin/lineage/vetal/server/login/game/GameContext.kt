@@ -6,9 +6,8 @@ import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.manager.*
-//import lineage.vetal.server.login.game.model.GameWorld
 import lineage.vetal.server.login.game.model.npc.Npc
-import lineage.vetal.server.login.xml.CharTemplatesXMLReader
+import lineage.vetal.server.login.xml.CharXMLReader
 import lineage.vetal.server.login.xml.NpcXMLReader
 import java.io.File
 import java.util.*
@@ -40,7 +39,7 @@ class GameContext(
         gameConfig = ConfigGame.read(serverConfigFile)
 
         val charStatsXmlFile = File(dataFolder, PATH_CLASSES_XML)
-        val charStatsData = CharTemplatesXMLReader(charStatsXmlFile.absolutePath).load()
+        val charStatsData = CharXMLReader(charStatsXmlFile.absolutePath).load()
         writeInfo(TAG, "Loaded ${charStatsData.size} player classes templates.")
 
         val npcsXmlFolder = File(dataFolder, NPCS_XML)
@@ -58,7 +57,7 @@ class GameContext(
             }
         }
 
-        worldManager = WorldManager(loadedNpc)
+        worldManager = WorldManager(loadedNpc, gameDatabase)
         manorManager = ManorManager()
         movementManager = MovementManager(worldManager)
         gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, charStatsData)

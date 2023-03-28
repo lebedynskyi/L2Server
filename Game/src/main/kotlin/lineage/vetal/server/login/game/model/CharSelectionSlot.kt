@@ -34,20 +34,4 @@ data class CharSelectionSlot(
     var y: Int,
     var z: Int,
     var accessLevel: Int
-) {
-
-
-    private val _paperdoll: Array<IntArray> = emptyArray()
-
-    fun getPaperdollObjectId(slot: Int): Int {
-        return _paperdoll[slot][0]
-    }
-
-    fun getPaperdollItemId(slot: Int): Int {
-        return _paperdoll[slot][1]
-    }
-
-//    val enchantEffect: Int
-//        get() = _paperdoll[Inventory.PAPERDOLL_RHAND][2]
-
-}
+)

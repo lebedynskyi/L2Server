@@ -1,13 +1,13 @@
 package lineage.vetal.server.login.xml
 
-import lineage.vetal.server.login.game.model.location.Location
-import lineage.vetal.server.login.game.model.template.ItemTemplate
-import lineage.vetal.server.login.game.model.template.CharTemplate
-import lineage.vetal.server.login.game.model.template.SkillTemplate
+import lineage.vetal.server.login.game.model.position.Position
+import lineage.vetal.server.login.game.model.template.items.ItemTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharTemplate
+import lineage.vetal.server.login.game.model.template.pc.CharSkillTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 
-class CharTemplatesXMLReader(
+class CharXMLReader(
     val path: String
 ) : XmlReader {
     private val TAG = "CharTemplatesXMLReader"
@@ -41,16 +41,16 @@ class CharTemplatesXMLReader(
                     set["items"] = items
                 }
                 forEach(classNode, "skills") { skillsNode ->
-                    val skills: MutableList<SkillTemplate> = ArrayList()
+                    val skills: MutableList<CharSkillTemplate> = ArrayList()
                     forEach(
                         skillsNode,
                         "skill"
-                    ) { skillNode -> skills.add(SkillTemplate(parseAttributes(skillNode))) }
+                    ) { skillNode -> skills.add(CharSkillTemplate(parseAttributes(skillNode))) }
                     set["skills"] = skills
                 }
                 forEach(classNode, "spawns") { spawnsNode ->
-                    val locs: MutableList<Location> = ArrayList()
-                    forEach(spawnsNode, "spawn") { spawnNode -> locs.add(Location(parseAttributes(spawnNode))) }
+                    val locs: MutableList<Position> = ArrayList()
+                    forEach(spawnsNode, "spawn") { spawnNode -> locs.add(Position(parseAttributes(spawnNode))) }
                     set["spawnLocations"] = locs
                 }
                 templates[set.getInteger("id")] = CharTemplate(set)

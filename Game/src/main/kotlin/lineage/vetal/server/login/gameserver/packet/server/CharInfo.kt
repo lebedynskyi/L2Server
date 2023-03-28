@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.location.Location
+import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.Paperdoll
 import lineage.vetal.server.login.game.model.player.Player
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
@@ -128,7 +128,7 @@ class CharInfo(
         writeC(if (player.isNoble) 1 else 0)
         writeC(if (player.isHero) 1 else 0)
         writeC(if (player.isFishing) 1 else 0)
-        writeLoc(Location(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
+        writeLoc(Position(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
         writeD(player.position.heading)
         writeD(player.pledgeClass)
