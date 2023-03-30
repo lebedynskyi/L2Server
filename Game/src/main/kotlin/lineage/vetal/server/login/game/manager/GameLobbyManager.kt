@@ -11,11 +11,8 @@ import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
+import lineage.vetal.server.login.game.ObjectFactory
 import lineage.vetal.server.login.game.model.inventory.WearableInventory
-import lineage.vetal.server.login.game.model.position.SpawnPosition
-import lineage.vetal.server.login.game.model.player.Appearance
-import lineage.vetal.server.login.game.model.player.Player
-import lineage.vetal.server.login.game.model.player.Sex
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
@@ -29,7 +26,8 @@ class GameLobbyManager(
     private val gameConfig: ConfigGame,
     private val gameWorld: WorldManager,
     private val gameDatabase: GameDatabase,
-    private val charStatsData: MutableMap<Int, CharTemplate>,
+    private val objectFactory: ObjectFactory,
+    private val charStatsData: Map<Int, CharTemplate>,
 ) {
     // TODO pending auth clients should be stored here.. And cleared after timer
 
@@ -118,47 +116,48 @@ class GameLobbyManager(
             client.sendPacket(CreateCharFail.REASON_INCORRECT_NAME)
             return
         }
+        /*
+        // Your name is already taken by a NPC.
+        if (NpcData.getInstance().getTemplateByName(_name) != null) {
+            sendPacket(CharCreateFail.REASON_INCORRECT_NAME)
+            return
+        }
 
-//        // Your name is already taken by a NPC.
-//        if (NpcData.getInstance().getTemplateByName(_name) != null) {
-//            sendPacket(CharCreateFail.REASON_INCORRECT_NAME)
-//            return
-//        }
-//
-//        // You already have the maximum amount of characters for this account.
-//        if (PlayerInfoTable.getInstance().getCharactersInAcc(getClient().getAccountName()) >= 7) {
-//            sendPacket(CharCreateFail.REASON_TOO_MANY_CHARACTERS)
-//            return
-//        }
-//
-//        // The name already exists.
-//        if (PlayerInfoTable.getInstance().getPlayerObjectId(_name) > 0) {
-//            sendPacket(CharCreateFail.REASON_NAME_ALREADY_EXISTS)
-//            return
-//        }
-//
-//        // The class id related to this template is post-newbie.
-//        val template: PlayerTemplate = PlayerData.getInstance().getTemplate(_classId)
-//        if (template == null || template.getClassBaseLevel() > 1) {
-//            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
-//            return
-//        }
-//
-//        // Create the player Object.
-//        val player: Player = Player.create(
-//            IdFactory.getInstance().getNextId(),
-//            template,
-//            getClient().getAccountName(),
-//            _name,
-//            _hairStyle,
-//            _hairColor,
-//            _face,
-//            Sex.VALUES.get(_sex.toInt())
-//        )
-//        if (player == null) {
-//            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
-//            return
-//        }
+        // You already have the maximum amount of characters for this account.
+        if (PlayerInfoTable.getInstance().getCharactersInAcc(getClient().getAccountName()) >= 7) {
+            sendPacket(CharCreateFail.REASON_TOO_MANY_CHARACTERS)
+            return
+        }
+
+        // The name already exists.
+        if (PlayerInfoTable.getInstance().getPlayerObjectId(_name) > 0) {
+            sendPacket(CharCreateFail.REASON_NAME_ALREADY_EXISTS)
+            return
+        }
+
+        // The class id related to this template is post-newbie.
+        val template: PlayerTemplate = PlayerData.getInstance().getTemplate(_classId)
+        if (template == null || template.getClassBaseLevel() > 1) {
+            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
+            return
+        }
+
+        // Create the player Object.
+        val player: Player = Player.create(
+            IdFactory.getInstance().getNextId(),
+            template,
+            getClient().getAccountName(),
+            _name,
+            _hairStyle,
+            _hairColor,
+            _face,
+            Sex.VALUES.get(_sex.toInt())
+        )
+        if (player == null) {
+            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
+            return
+        }
+*/
 
         // The class id related to this template is post-newbie.
         val playerTemplate = charStatsData[classId]
@@ -167,15 +166,7 @@ class GameLobbyManager(
             return
         }
 
-        val newPlayer = Player(
-            UUID.randomUUID(),
-            name,
-            client.account.id,
-            playerTemplate,
-            Appearance(hairStyle, hairColor, face, Sex.values()[sex.toInt()]),
-            SpawnPosition(playerTemplate.randomSpawn)
-        )
-
+        val newPlayer = objectFactory.createPlayer(name, client.account, playerTemplate, hairStyle, hairColor, face, sex)
         gameDatabase.charactersDao.insertCharacter(newPlayer)
 
         val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)

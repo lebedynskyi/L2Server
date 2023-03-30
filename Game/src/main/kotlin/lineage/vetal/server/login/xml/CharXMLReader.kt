@@ -10,17 +10,11 @@ import java.nio.file.Path
 class CharXMLReader(
     val path: String
 ) : XmlReader {
-    private val TAG = "CharTemplatesXMLReader"
+    private val TAG = "CharXMLReader"
     private val templates: MutableMap<Int, CharTemplate> = mutableMapOf()
 
-    fun load(): MutableMap<Int, CharTemplate> {
-        loadXml()
-        return templates
-    }
-
-    private fun loadXml() {
+    fun load(): Map<Int, CharTemplate> {
         parse(path)
-
         // We add parent skills, if existing.
         for (template in templates.values) {
             val parentClassId = template.charClass.parent
@@ -28,6 +22,7 @@ class CharXMLReader(
                 template.addSkillsFromParent(templates[parentClassId.id]?.skills.orEmpty())
             }
         }
+        return templates
     }
 
     override fun parseDocument(doc: Document, path: Path) {

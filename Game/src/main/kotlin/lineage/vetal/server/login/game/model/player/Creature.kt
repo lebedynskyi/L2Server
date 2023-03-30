@@ -6,10 +6,10 @@ import lineage.vetal.server.login.game.model.player.status.CreatureStatus
 import java.util.*
 
 abstract class Creature(
-    id: UUID,
+    objectId: Int,
     name: String,
     position: SpawnPosition
-) : GameObject(id, name, position) {
+) : GameObject(objectId, name, position) {
     private val TAG = "Creature"
 
     var title: String? = null

@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model
 
-import lineage.vetal.server.login.game.model.player.Sex
+import lineage.vetal.server.login.game.model.player.CharacterSex
 import java.util.UUID
 
 data class CharSelectionSlot(
@@ -20,7 +20,7 @@ data class CharSelectionSlot(
     var face: Int,
     var hairStyle: Int,
     var hairColor: Int,
-    var sex: Sex,
+    var sex: CharacterSex,
     var level: Int,
     var maxHp: Double,
     var currentHp: Double,

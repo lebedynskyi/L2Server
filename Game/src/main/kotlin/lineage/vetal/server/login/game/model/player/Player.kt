@@ -9,13 +9,13 @@ import vetal.server.network.SendablePacket
 import java.util.*
 
 class Player(
-    id: UUID,
+    objectId: Int,
     name: String,
     val accountId: UUID,
     val charTemplate: CharTemplate,
     val appearance: Appearance,
     position: SpawnPosition
-) : Playable(id, name, position) {
+) : Playable(objectId, name, position) {
     var lastAccessTime: Long = 0
     var client: GameClient? = null
     var isActive = false

@@ -21,8 +21,7 @@ class NpcXMLReader(
             forEach(listNode, "npc") { npcNode ->
                 val attrs = npcNode.attributes
                 val npcId = parseInteger(attrs, "id")
-                val templateId =
-                    if (attrs.getNamedItem("idTemplate") == null) npcId else parseInteger(attrs, "idTemplate")
+                val templateId = if (attrs.getNamedItem("idTemplate") == null) npcId else parseInteger(attrs, "idTemplate")
                 val set = StatSet()
                 set["id"] = npcId
                 set["idTemplate"] = templateId

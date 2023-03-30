@@ -4,7 +4,7 @@ class Appearance(
     var face: Int,
     var hairColor: Int,
     var hairStyle: Int,
-    var sex: Sex
+    var sex: CharacterSex
     ) {
     var isVisible = Boolean
     var nameColor = 0xFFFFFF

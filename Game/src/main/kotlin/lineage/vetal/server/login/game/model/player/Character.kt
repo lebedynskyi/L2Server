@@ -2,7 +2,7 @@ package lineage.vetal.server.login.game.model.player
 
 import java.util.*
 
-enum class Sex {
+enum class CharacterSex {
     MALE, FEMALE, ETC;
 
     val id get() = ordinal

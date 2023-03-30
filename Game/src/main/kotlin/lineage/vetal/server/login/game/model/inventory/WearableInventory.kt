@@ -2,7 +2,7 @@ package lineage.vetal.server.login.game.model.inventory
 
 import lineage.vetal.server.login.game.model.player.Paperdoll
 
-class WearableInventory: WeightInventory() {
+class WearableInventory: CreatureInventory() {
     @Deprecated("Should be different. Why wee need to use find method? Equiped field  for char invenotry ?")
     fun getItemIdFrom(paperdoll: Paperdoll): Int {
         return 0

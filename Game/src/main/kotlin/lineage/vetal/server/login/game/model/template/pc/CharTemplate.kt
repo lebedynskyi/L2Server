@@ -2,7 +2,7 @@ package lineage.vetal.server.login.game.model.template.pc
 
 import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.ClassId
-import lineage.vetal.server.login.game.model.player.Sex
+import lineage.vetal.server.login.game.model.player.CharacterSex
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 import lineage.vetal.server.login.xml.StatSet
 
@@ -15,24 +15,22 @@ class CharTemplate(set: StatSet) : CreatureTemplate(set) {
 
     val items: List<ItemTemplate> get() = _items
     val skills: List<CharSkillTemplate> get() = _skills
+    val spawnLocations: List<Position> = set.getList("spawnLocations")
 
     private val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
     private val _skills: MutableList<CharSkillTemplate> = set.getList<CharSkillTemplate>("skills").toMutableList()
     private val _collisionRadiusFemale: Double = set.getDouble("radiusFemale")
     private val _collisionHeightFemale: Double = set.getDouble("heightFemale")
-    private val _spawnLocations: List<Position> = set.getList("spawnLocations")
     private val _hpTable: DoubleArray = set.getDoubleArray("hpTable")
     private val _mpTable: DoubleArray = set.getDoubleArray("mpTable")
     private val _cpTable: DoubleArray = set.getDoubleArray("cpTable")
 
-    val randomSpawn: Position get() = _spawnLocations.random()
-
-    fun getCollisionRadiusBySex(sex: Sex): Double {
-        return if (sex === Sex.MALE) collisionRadius else _collisionRadiusFemale
+    fun getCollisionRadiusBySex(sex: CharacterSex): Double {
+        return if (sex === CharacterSex.MALE) collisionRadius else _collisionRadiusFemale
     }
 
-    fun getCollisionHeightBySex(sex: Sex): Double {
-        return if (sex === Sex.MALE) collisionHeight else _collisionHeightFemale
+    fun getCollisionHeightBySex(sex: CharacterSex): Double {
+        return if (sex === CharacterSex.MALE) collisionHeight else _collisionHeightFemale
     }
 
     override fun getBaseHpMax(level: Int): Double {

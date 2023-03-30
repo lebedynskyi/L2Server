@@ -7,7 +7,7 @@ import lineage.vetal.server.login.game.model.CharSelectionSlot
 import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.Player
-import lineage.vetal.server.login.game.model.player.Sex
+import lineage.vetal.server.login.game.model.player.CharacterSex
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import java.util.*
@@ -20,11 +20,11 @@ private const val UPDATE_COORDINATES_SQL = "UPDATE characters SET x = ?, y = ?, 
 
 class CharactersDao(
     connection: DBConnection,
-    private val charTemplates: MutableMap<Int, CharTemplate>
+    private val charTemplates: Map<Int, CharTemplate>
 ) : Dao(connection) {
     fun insertCharacter(player: Player): Boolean {
         return insertOrUpdate(INSERT_CHARACTER_SQL) {
-            it.setString(1, player.id.toString())
+            it.setString(1, player.objectId.toString())
             it.setString(2, player.accountId.toString())
             it.setString(3, player.name)
             it.setInt(4, player.status.level)
@@ -62,12 +62,12 @@ class CharactersDao(
         }
     }
 
-    fun updateCoordinates(playerId: UUID, location: SpawnPosition): Boolean {
+    fun updateCoordinates(playerObjId: Int, location: SpawnPosition): Boolean {
         return insertOrUpdate(UPDATE_COORDINATES_SQL) {
             it.setInt(1, location.x)
             it.setInt(2, location.y)
             it.setInt(3, location.z)
-            it.setString(4, playerId.toString())
+            it.setString(4, playerObjId.toString())
         }
     }
 
@@ -88,7 +88,7 @@ class CharactersDao(
                     face = it.getInt(8),
                     hairStyle = it.getInt(9),
                     hairColor = it.getInt(10),
-                    sex = Sex.values()[it.getInt(11)],
+                    sex = CharacterSex.values()[it.getInt(11)],
                     x = it.getInt(12),
                     y = it.getInt(13),
                     z = it.getInt(14),
@@ -119,9 +119,9 @@ class CharactersDao(
                 val classId = it.getInt(21)
                 val template = charTemplates.getValue(classId)
                 val location = SpawnPosition(it.getInt(32), it.getInt(33), it.getInt(34), 0)
-                val appearance = Appearance(it.getInt(13), it.getInt(14), it.getInt(15), Sex.values()[it.getInt(16)])
+                val appearance = Appearance(it.getInt(13), it.getInt(14), it.getInt(15), CharacterSex.values()[it.getInt(16)])
                 Player(
-                    UUID.fromString(it.getString(1)),
+                    it.getString(1).toInt(),
                     it.getString(2),
                     UUID.fromString(it.getString(3)),
                     template,

@@ -4,7 +4,7 @@ import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 
 class GameDatabase(
-    characterTemplates: MutableMap<Int, CharTemplate>,
+    characterTemplates: Map<Int, CharTemplate>,
     dbConnection: DBConnection
 ) {
     val accountDao: AccountDao

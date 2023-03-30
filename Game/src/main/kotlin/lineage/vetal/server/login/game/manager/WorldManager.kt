@@ -36,7 +36,7 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 private const val TAG = "WorldManager"
 
 class WorldManager(
-    private val npc: List<Npc>,
+    npc: List<Npc>,
     private val gameDatabase: GameDatabase
 ) {
     val players: List<Player> get() = regions.flatten().map { it.players.values }.flatten()
@@ -64,6 +64,7 @@ class WorldManager(
             }
         }
 
+        // todo remove it to spawn manager
         npc.forEach {
             getRegion(it.position)?.addNpc(it)
         }
@@ -105,7 +106,7 @@ class WorldManager(
         if (player.isActive) {
             player.isActive = false
             // TODO save fully
-            gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
+            gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
         }
     }
 
@@ -114,7 +115,7 @@ class WorldManager(
         if (player.isActive) {
             // TODO save fully
             client.saveAndClose(LeaveWorld())
-            gameDatabase.charactersDao.updateCoordinates(player.id, player.position)
+            gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
         }
         player.isActive = false
     }

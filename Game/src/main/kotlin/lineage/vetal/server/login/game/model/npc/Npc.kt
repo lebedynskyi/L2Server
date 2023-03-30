@@ -3,12 +3,12 @@ package lineage.vetal.server.login.game.model.npc
 import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.Creature
 import lineage.vetal.server.login.game.model.template.npc.NpcTemplate
-import java.util.*
 
 class Npc(
-    id: UUID,
+    objectId: Int,
     val template: NpcTemplate,
-    val spawnData: NpcSpawnData?
-) : Creature(id, template.name, spawnData?.spawnPosition ?: SpawnPosition(0, 0, 0, 0)) {
+    spawnData: NpcSpawnData?
+) : Creature(objectId, template.name, spawnData?.spawnPosition ?: SpawnPosition.zero) {
+
     override val status: NpcStatus = NpcStatus(template)
 }

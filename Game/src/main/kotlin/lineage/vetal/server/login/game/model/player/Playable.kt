@@ -5,7 +5,7 @@ import java.util.UUID
 
 // Base class for all objects that can be controled by player. Summon /  servitor.
 abstract class Playable(
-    id: UUID,
+    objectId: Int,
     name: String,
     position: SpawnPosition
-) : Creature(id, name, position)
+) : Creature(objectId, name, position)
