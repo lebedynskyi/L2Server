@@ -13,10 +13,10 @@ class AccountDao(
 
     fun findAccount(account: String): AccountInfo? {
         return querySingle(FIND_ACCOUNT_SQL,
-            prepare = { it.setString(1, account) },
-            transform = {
+            onPrepare = { it.setString(1, account) },
+            onTransform = {
                 AccountInfo(
-                    UUID.fromString(it.getString(1)),
+                    it.getString(1),
                     it.getString(2),
                     it.getString(3)
                 )

@@ -1,9 +1,8 @@
 package lineage.vetal.server.core.model
 
-import java.util.UUID
 
 data class AccountInfo(
-    val id: UUID,
+    val id: String,
     val account: String,
     val password: String? = null
 )

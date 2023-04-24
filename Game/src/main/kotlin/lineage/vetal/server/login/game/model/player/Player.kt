@@ -6,12 +6,12 @@ import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import vetal.server.network.SendablePacket
-import java.util.*
 
 class Player(
+    val id: String,
+    val accountId: String,
     objectId: Int,
     name: String,
-    val accountId: UUID,
     val charTemplate: CharTemplate,
     val appearance: Appearance,
     position: SpawnPosition

@@ -9,6 +9,7 @@ import lineage.vetal.server.login.game.model.player.CharacterSex
 import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.template.npc.NpcTemplate
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
+import java.util.UUID
 
 class ObjectFactory(
     private val idFactory: ObjectIdFactory,
@@ -25,8 +26,8 @@ class ObjectFactory(
     ): Player {
         val appearance = Appearance(hairStyle, hairColor, face, CharacterSex.values()[sex.toInt()])
         val position = SpawnPosition(charTemplate.spawnLocations.random())
-        val playerId = idFactory.createId()
-        return Player(playerId, name, account.id, charTemplate, appearance, position)
+        val objectId = idFactory.createId()
+        return Player(UUID.randomUUID().toString(), account.id, objectId, name, charTemplate, appearance, position)
     }
 
     fun createItem() {

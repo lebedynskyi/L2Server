@@ -64,7 +64,7 @@ class SelectorThread<T : Client>(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening clients on ${hostName}:${port}")
+        writeInfo(TAG, "Listening game clients on ${hostName}:${port}")
         loopSelector()
         closeSelector()
     }

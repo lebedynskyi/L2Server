@@ -14,43 +14,43 @@ abstract class Dao(
         } > 0
     }
 
-    fun <T> querySingle(sql: String, prepare: ((PreparedStatement) -> Unit)? = null, transform: (ResultSet) -> T): T? {
+    fun <T> querySingle(sql: String, onPrepare: ((PreparedStatement) -> Unit)? = null, onTransform: (ResultSet) -> T): T? {
         return dataBase.connection.use { connection ->
             connection.prepareStatement(sql).apply {
-                prepare?.invoke(this)
+                onPrepare?.invoke(this)
             }.executeQuery().use {
-                it.firstOrNull(transform)
+                it.firstOrNull(onTransform)
             }
         }
     }
 
-    fun <T> queryList(sql: String, prepare: ((PreparedStatement) -> Unit)? = null, transform: (ResultSet) -> T): List<T> {
+    fun <T> queryList(sql: String, onPrepare: ((PreparedStatement) -> Unit)? = null, onTransform: (ResultSet) -> T): List<T> {
         return dataBase.connection.use { connection ->
             connection.prepareStatement(sql).apply {
-                prepare?.invoke(this)
+                onPrepare?.invoke(this)
             }.executeQuery().use {
-                it.listOrEmpty(transform)
+                it.listOrEmpty(onTransform)
             }
         }
     }
 }
 
-private fun <T> ResultSet.firstOrNull(transform: (ResultSet) -> T): T? {
+private fun <T> ResultSet.firstOrNull(onTransform: (ResultSet) -> T): T? {
     var result: T? = null
     use {
         if (it.next()) {
-            result = transform.invoke(it)
+            result = onTransform.invoke(it)
         }
     }
 
     return result
 }
 
-private fun <T> ResultSet.listOrEmpty(transform: (ResultSet) -> T): List<T> {
+private fun <T> ResultSet.listOrEmpty(onTransform: (ResultSet) -> T): List<T> {
     val resultList = mutableListOf<T>()
     use {
         while (it.next()) {
-            resultList.add(transform.invoke(it))
+            resultList.add(onTransform.invoke(it))
         }
     }
 

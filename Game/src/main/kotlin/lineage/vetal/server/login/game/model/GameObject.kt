@@ -8,5 +8,4 @@ open class GameObject(
     var position: SpawnPosition
 ) {
     lateinit var region: WorldRegion
-    var isVisible = false
 }

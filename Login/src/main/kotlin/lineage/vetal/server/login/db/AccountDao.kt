@@ -3,7 +3,6 @@ package lineage.vetal.server.login.db
 import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.Dao
 import lineage.vetal.server.core.model.AccountInfo
-import java.util.*
 
 private const val FIND_ACCOUNT_SQL = "SELECT * FROM `accounts` WHERE login=?"
 private const val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (id, login, password) VALUES (?,?,?)"
@@ -13,10 +12,10 @@ class AccountDao(
 ) : Dao(db) {
     fun findAccount(account: String): AccountInfo? {
         return querySingle(FIND_ACCOUNT_SQL,
-            prepare = { it.setString(1, account) },
-            transform = {
+            onPrepare = { it.setString(1, account) },
+            onTransform = {
                 AccountInfo(
-                    UUID.fromString(it.getString(1)),
+                    it.getString(1),
                     it.getString(2),
                     it.getString(3)
                 )

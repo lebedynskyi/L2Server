@@ -121,7 +121,7 @@ class CharInfo(
         writeH(player.recomHave)
         writeD(player.classId)
         writeD(player.status.maxCp)
-        writeD(player.status.cp.toInt())
+        writeD(player.status.curCp.toInt())
         writeC(if (player.isMounted) 0 else player.enchantEffect)
         writeC(player.team.id)
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff

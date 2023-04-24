@@ -4,7 +4,7 @@ import lineage.vetal.server.login.game.model.player.CharacterSex
 import java.util.UUID
 
 data class CharSelectionSlot(
-    val id: UUID,
+    val id: String,
     val objectId: Int,
     val name: String,
     val title: String?,
