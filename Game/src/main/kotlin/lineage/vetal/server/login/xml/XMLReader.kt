@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 private const val TAG = "XmlReader"
 
+// TODO redesign parser. Make it return data without holding it inside.
 interface XmlReader {
     fun parseDocument(doc: Document, path: Path)
     fun parse(path: String) {

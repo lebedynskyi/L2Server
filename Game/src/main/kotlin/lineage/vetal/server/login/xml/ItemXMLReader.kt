@@ -1,14 +1,18 @@
 package lineage.vetal.server.login.xml
 
+import lineage.vetal.server.login.game.model.template.items.ArmorItemTemplate
+import lineage.vetal.server.login.game.model.template.items.EtcItemTemplate
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
+import lineage.vetal.server.login.game.model.template.items.WeaponItemTemplate
 import org.w3c.dom.Document
 import vetal.server.writeError
 import java.nio.file.Path
 
+private const val TAG = "ItemXMLReader"
+
 class ItemXMLReader(
     val path: String
-) : XmlReader{
-    private val TAG = "ItemXMLReader"
+) : XmlReader {
     private val templates: MutableMap<Int, ItemTemplate> = mutableMapOf()
 
     fun load(): Map<Int, ItemTemplate> {
@@ -22,21 +26,26 @@ class ItemXMLReader(
                 val set = StatSet()
                 val attrs = itemNode.attributes
                 val itemId = parseInteger(attrs, "id")
-                set["id"] = itemId
-                set["name"] = parseString(attrs, "name")
-                set["type"] = parseString(attrs, "type")
-                set["title"] = parseString(attrs, "title")
-
-                forEach(itemNode, "set") { setNode ->
-                    val setAttrs = setNode.attributes
-                    val key = parseString(setAttrs, "name")
-                    if (key != null) {
-                        set[key] = parseString(setAttrs, "val")
-                    }
-                }
+                val itemType = parseString(attrs, "type")
 
                 if (itemId != null) {
-                    templates[itemId] = ItemTemplate(set)
+                    set["id"] = itemId
+                    set["name"] = parseString(attrs, "name")
+                    set["title"] = parseString(attrs, "title")
+
+                    forEach(itemNode, "set") { setNode ->
+                        val setAttrs = setNode.attributes
+                        val key = parseString(setAttrs, "name")
+                        if (key != null) {
+                            set[key] = parseString(setAttrs, "val")
+                        }
+                    }
+
+                    templates[itemId] = when (itemType) {
+                        "Weapon" -> WeaponItemTemplate(set)
+                        "Armor" -> ArmorItemTemplate(set)
+                        else -> EtcItemTemplate(set)
+                    }
                 } else {
                     writeError(TAG, "Unable to parse item. No id found. Name ${set.getString("name")}")
                 }

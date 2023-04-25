@@ -11,15 +11,17 @@ import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.player.CharacterSex
 import lineage.vetal.server.login.game.model.position.SpawnPosition
+import lineage.vetal.server.login.game.model.template.items.ArmorItemTemplate
+import lineage.vetal.server.login.game.model.template.items.EtcItemTemplate
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
-import lineage.vetal.server.login.game.model.template.items.ItemType
+import lineage.vetal.server.login.game.model.template.items.WeaponItemTemplate
 import lineage.vetal.server.login.game.model.template.npc.NpcTemplate
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
-import java.lang.IllegalArgumentException
 import java.util.UUID
+import kotlin.IllegalArgumentException
 
 class GameObjectFactory(
-    private val idFactory: ObjectIdFactory,
+    private val idFactory: GameObjectIdFactory,
     private val npcSpawnData: List<NpcSpawnData>,
     private val itemData: Map<Int, ItemTemplate>,
     private val npcData: Map<Int, NpcTemplate>
@@ -46,10 +48,11 @@ class GameObjectFactory(
         val objectId = idFactory.createId()
         val template = itemData[id] ?: throw IllegalArgumentException("Cannot find item template for id $id")
 
-        return when (template.itemType) {
-            ItemType.Armor -> ArmorObject(objectId, template)
-            ItemType.EtcItem -> EtcItemObject(objectId, template)
-            ItemType.Weapon -> WeaponObject(objectId, template)
+        return when (template) {
+            is ArmorItemTemplate -> ArmorObject(objectId, template)
+            is EtcItemTemplate -> EtcItemObject(objectId, template)
+            is WeaponItemTemplate -> WeaponObject(objectId, template)
+            else -> throw IllegalArgumentException("Cannot fund item template of type $template")
         }
     }
 

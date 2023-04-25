@@ -178,7 +178,7 @@ class GameLobbyManager(
     }
 
     fun requestSelectChar(client: GameClient, slotIndex: Int) {
-        val slot = client.characterSlots?.getOrNull(slotIndex)
+        val slot = client.characterSlots.getOrNull(slotIndex)
         if (slot == null) {
             writeDebug(TAG, "Unable to select character for account ${client.account.account}")
             client.saveAndClose()

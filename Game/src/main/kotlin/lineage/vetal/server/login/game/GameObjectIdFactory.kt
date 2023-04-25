@@ -8,15 +8,20 @@ private const val OID_OFFSET = 0x10000000
 private const val OID_FINISH = 0x7FFFFFFF
 private const val TAG = "ObjectIdFactory"
 
-class ObjectIdFactory {
+class GameObjectIdFactory {
 
     private val bitSet = BitSet(100000)
     private var lastTakenBit = 0
     private var loaded = false
 
     fun load(gameDatabase: GameDatabase) {
-        // TODO load all DB to check free id
+        val charIds = gameDatabase.charactersDao.getAllObjectIds()
+        charIds.forEach {
+            val bit = it - OID_OFFSET
+            bitSet.set(bit)
+        }
         loaded = true
+        lastTakenBit = bitSet.nextClearBit(0)
     }
 
     fun createId(): Int {

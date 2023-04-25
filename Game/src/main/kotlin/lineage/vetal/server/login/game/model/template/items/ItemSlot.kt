@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.template.items
 
-class CharacterSlot {
+class ItemSlot {
     companion object {
         val Slots: MutableMap<String, Int> = mutableMapOf<String, Int>().apply {
             put("chest",  SLOT_CHEST)
@@ -58,6 +58,6 @@ class CharacterSlot {
         const val SLOT_STRIDER = -102
         const val SLOT_BABYPET = -103
 
-        const val SLOT_ALLWEAPON = SLOT_LR_HAND or SLOT_R_HAND
+        const val SLOT_ALL_WEAPON = SLOT_LR_HAND or SLOT_R_HAND
     }
 }

@@ -55,7 +55,7 @@ class GameContext(
         gameDatabase = GameDatabase(playersData, HikariDBConnection(gameConfig.dataBaseConfig))
         val npcsSpawnData = gameDatabase.spawnDao.getSpawnList()
 
-        val idFactory = ObjectIdFactory()
+        val idFactory = GameObjectIdFactory()
         idFactory.load(gameDatabase)
         objectFactory = GameObjectFactory(idFactory, npcsSpawnData, itemsData, npcsData)
 

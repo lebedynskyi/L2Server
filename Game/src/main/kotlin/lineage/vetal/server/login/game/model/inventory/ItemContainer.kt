@@ -5,11 +5,12 @@ import java.util.concurrent.ConcurrentSkipListSet
 
 // Base class for Inventory. Any inventory. private WH, clan WH, Pet, Char
 abstract class ItemContainer {
-    private val items: ConcurrentSkipListSet<ItemObject> = ConcurrentSkipListSet()
+    val items: Set<ItemObject> get() = _items
+    private val _items: ConcurrentSkipListSet<ItemObject> = ConcurrentSkipListSet()
 
-    open val inventoryLimit : Int get() = 80
+    open val inventoryLimit: Int get() = 80
 
     fun addItem(item: ItemObject) {
-        items.add(item)
+        _items.add(item)
     }
 }

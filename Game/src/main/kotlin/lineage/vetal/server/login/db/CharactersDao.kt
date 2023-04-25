@@ -144,4 +144,10 @@ class CharactersDao(
             }
         }
     }
+
+    fun getAllObjectIds(): List<Int> {
+        return queryList(CharactersSQL.SELECT_CHARACTERS_IDS_SQL, onPrepare = {}) {
+            it.getInt(1)
+        }
+    }
 }

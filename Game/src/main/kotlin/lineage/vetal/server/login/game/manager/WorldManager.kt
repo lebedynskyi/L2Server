@@ -92,6 +92,7 @@ class WorldManager(
         client.clientState = GameClientState.WORLD
         client.player = player
         player.sendPacket(UserInfo(player))
+        player.sendPacket(InventoryList(player.inventory.items, true))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Hello on Mega server"))
         spawn(player)
     }

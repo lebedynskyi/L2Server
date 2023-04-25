@@ -17,7 +17,7 @@ class PlayerObject(
     position: SpawnPosition
 ) : Playable(objectId, name, position) {
     override var status: PlayerStatus = PlayerStatus(charTemplate)
-    lateinit var inventory: WearableInventory
+    var inventory: WearableInventory = WearableInventory()
 
     var lastAccessTime: Long = 0
     var client: GameClient? = null
