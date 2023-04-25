@@ -12,7 +12,6 @@ import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.GameObjectFactory
-import lineage.vetal.server.login.game.model.inventory.WearableInventory
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
@@ -29,7 +28,6 @@ class GameLobbyManager(
     private val charStatsData: Map<Int, CharTemplate>,
 ) {
     // TODO pending auth clients should be stored here.. And cleared after timer
-
     fun onConnectedToBridge(client: BridgeClient) {
         val serverConfig = gameConfig.serverInfo
         val blowFishKey = serverConfig.bridgeKey
@@ -167,6 +165,7 @@ class GameLobbyManager(
 
         val newPlayer = objectFactory.createPlayerObject(name, client.account, playerTemplate, hairStyle, hairColor, face, sex)
         gameDatabase.charactersDao.insertCharacter(newPlayer)
+        gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
 
         val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
@@ -190,9 +189,9 @@ class GameLobbyManager(
             return
         }
 
+        val playerItems = gameDatabase.itemsDao.getInventoryForPlayer(slot.id)
         val player = gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
-            // TODO database query
-            inventory = WearableInventory()
+            inventory.addAll(playerItems)
         }
 
         if (player == null) {

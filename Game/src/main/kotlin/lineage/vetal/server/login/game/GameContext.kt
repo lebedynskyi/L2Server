@@ -52,7 +52,8 @@ class GameContext(
         writeInfo(TAG, "Loaded ${npcsData.size} npcs.")
 
         writeInfo(TAG, "Initialize database")
-        gameDatabase = GameDatabase(playersData, HikariDBConnection(gameConfig.dataBaseConfig))
+        val dbConnection = HikariDBConnection(gameConfig.dataBaseConfig)
+        gameDatabase = GameDatabase(playersData, itemsData, dbConnection)
         val npcsSpawnData = gameDatabase.spawnDao.getSpawnList()
 
         val idFactory = GameObjectIdFactory()

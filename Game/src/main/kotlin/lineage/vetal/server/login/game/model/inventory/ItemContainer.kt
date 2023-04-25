@@ -13,4 +13,8 @@ abstract class ItemContainer {
     fun addItem(item: ItemObject) {
         _items.add(item)
     }
+
+    fun addAll(items: Iterable<ItemObject>) {
+        _items.addAll(items)
+    }
 }
