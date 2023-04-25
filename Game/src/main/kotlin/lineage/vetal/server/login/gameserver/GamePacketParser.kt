@@ -25,6 +25,7 @@ class GamePacketParser : PacketParser {
             0x46 -> RequestRestart()
             0x38 -> RequestSay2()
             0x48 -> ValidatePosition()
+            0x12 -> RequestDropItem()
             0x04 -> {
                 writeDebug(TAG, "Select target")
                 null

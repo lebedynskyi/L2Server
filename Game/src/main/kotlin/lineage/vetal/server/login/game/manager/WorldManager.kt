@@ -85,7 +85,7 @@ class WorldManager(
         players.forEach { it.sendPacket(packet) }
     }
 
-    fun onPlayerEnteredWorld(client: GameClient, player: PlayerObject) {
+    fun onPlayerDropItem(client: GameClient, player: PlayerObject) {
         player.lastAccessTime = Calendar.getInstance().timeInMillis
         player.client = client
         player.isActive = true
@@ -94,7 +94,7 @@ class WorldManager(
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Hello on Mega server"))
-        spawn(player)
+        addPlayerToWorld(player)
     }
 
     fun onPlayerRestart(client: GameClient, player: PlayerObject) {
@@ -121,7 +121,7 @@ class WorldManager(
         player.isActive = false
     }
 
-    fun onPlayerMoved(player: PlayerObject, loc: Position) {
+    fun onPlayerPositionChanged(player: PlayerObject, loc: Position) {
         val currentRegion = player.region
         val newRegion = getRegion(loc)
         if (currentRegion != newRegion && newRegion != null) {
@@ -132,7 +132,7 @@ class WorldManager(
         }
     }
 
-    fun spawn(player: PlayerObject) {
+    private fun addPlayerToWorld(player: PlayerObject) {
         val region = getRegion(player.position.x, player.position.y)
         if (region == null) {
             writeError(TAG, " No region found for player ${player.name} and position ${player.position}")
@@ -141,15 +141,5 @@ class WorldManager(
         }
         player.region = region
         region.addPlayer(player)
-    }
-
-    fun spawn(npc: NpcObject) {
-        val region = getRegion(npc.position.x, npc.position.y)
-        if (region == null) {
-            writeError(TAG, " No region found for npc ${npc.name} and position ${npc.position}")
-            return
-        }
-        npc.region = region
-        region.addNpc(npc)
     }
 }

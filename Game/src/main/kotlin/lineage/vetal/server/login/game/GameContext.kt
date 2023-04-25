@@ -1,7 +1,6 @@
 package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.db.HikariDBConnection
-import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
@@ -22,7 +21,8 @@ class GameContext(
     dataFolder: String,
 ) {
     val worldManager: WorldManager
-    val movementManager:MovementManager
+    val movementManager: MovementManager
+    val itemManager: ItemManager
     val gameAnnouncer: GameAnnounceManager
     val gameLobby: GameLobbyManager
     val gameDatabase: GameDatabase
@@ -68,6 +68,7 @@ class GameContext(
         writeInfo(TAG, "Start managers")
         worldManager = WorldManager(loadedNpc, gameDatabase)
         manorManager = ManorManager()
+        itemManager = ItemManager(worldManager)
         movementManager = MovementManager(worldManager)
         gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, playersData)
         chatManager = ChatManager(worldManager)

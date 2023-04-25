@@ -22,7 +22,7 @@ class MovementManager(
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {
-        worldManager.onPlayerMoved(player, loc)
+        worldManager.onPlayerPositionChanged(player, loc)
         player.position = SpawnPosition(loc)
     }
 }

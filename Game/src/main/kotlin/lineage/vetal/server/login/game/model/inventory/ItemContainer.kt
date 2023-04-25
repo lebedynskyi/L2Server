@@ -17,4 +17,12 @@ abstract class ItemContainer {
     fun addAll(items: Iterable<ItemObject>) {
         _items.addAll(items)
     }
+
+    fun getItem(objectId: Int): ItemObject? {
+        return _items.firstOrNull { it.objectId == objectId }
+    }
+
+    fun removeItem(item: ItemObject) {
+        _items.remove(item)
+    }
 }
