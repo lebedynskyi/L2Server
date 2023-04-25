@@ -7,7 +7,7 @@ import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import vetal.server.network.SendablePacket
 
-class Player(
+class PlayerObject(
     val id: String,
     val accountId: String,
     objectId: Int,
@@ -16,13 +16,12 @@ class Player(
     val appearance: Appearance,
     position: SpawnPosition
 ) : Playable(objectId, name, position) {
-    var lastAccessTime: Long = 0
-    var client: GameClient? = null
-    var isActive = false
-
     override var status: PlayerStatus = PlayerStatus(charTemplate)
     lateinit var inventory: WearableInventory
 
+    var lastAccessTime: Long = 0
+    var client: GameClient? = null
+    var isActive = false
     var summon: Summon? = null
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
@@ -58,6 +57,7 @@ class Player(
 
     var recomLeft: Int = 0
     var recomHave: Int = 0
+
     var mountNpcId: Int = 0
     var hasDwarvenCraft = false
     var wantsPeace = false

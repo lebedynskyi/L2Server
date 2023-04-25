@@ -2,11 +2,11 @@ package lineage.vetal.server.login.gameserver.packet.server
 
 import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.Paperdoll
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class CharInfo(
-    private val player: Player
+    private val player: PlayerObject
 ) : GameServerPacket() {
 
     override fun write() {

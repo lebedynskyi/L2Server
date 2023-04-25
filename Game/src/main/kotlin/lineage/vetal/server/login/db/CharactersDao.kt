@@ -6,18 +6,17 @@ import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.login.game.model.CharSelectionSlot
 import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.player.Appearance
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.player.CharacterSex
 import lineage.vetal.server.login.game.model.player.status.PlayerStatus
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
-import java.util.*
 import lineage.vetal.server.login.db.sql.CharactersSQL
 
 class CharactersDao(
     connection: DBConnection,
     private val charTemplates: Map<Int, CharTemplate>
 ) : Dao(connection) {
-    fun insertCharacter(player: Player): Boolean {
+    fun insertCharacter(player: PlayerObject): Boolean {
         return insertOrUpdate(CharactersSQL.INSERT_CHARACTER_SQL) {
             it.setString(1, player.id)
             it.setInt(2, player.objectId)
@@ -104,10 +103,10 @@ class CharactersDao(
         }
     }
 
-    fun getCharacter(charId: String): Player? {
+    fun getCharacter(charId: String): PlayerObject? {
         return querySingle(CharactersSQL.SELECT_CHARACTER_SQL,
             onPrepare = { it.setString(1, charId) }) {
-            Player(
+            PlayerObject(
                 it.getString(1),
                 it.getString(2),
                 it.getInt(3),

@@ -4,6 +4,7 @@ import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.game.model.template.pc.CharSkillTemplate
+import lineage.vetal.server.login.game.model.template.pc.ChatItemTemplate
 import org.w3c.dom.Document
 import java.nio.file.Path
 
@@ -31,8 +32,8 @@ class CharXMLReader(
                 val set = StatSet()
                 forEach(classNode, "set") { setNode -> set.putAll(parseAttributes(setNode)) }
                 forEach(classNode, "items") { itemsNode ->
-                    val items: MutableList<ItemTemplate> = ArrayList()
-                    forEach(itemsNode, "item") { itemNode -> items.add(ItemTemplate(parseAttributes(itemNode))) }
+                    val items: MutableList<ChatItemTemplate> = ArrayList()
+                    forEach(itemsNode, "item") { itemNode -> items.add(ChatItemTemplate(parseAttributes(itemNode))) }
                     set["items"] = items
                 }
                 forEach(classNode, "skills") { skillsNode ->

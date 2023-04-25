@@ -11,14 +11,13 @@ import lineage.vetal.server.login.ConfigGame
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.login.db.GameDatabase
-import lineage.vetal.server.login.game.ObjectFactory
+import lineage.vetal.server.login.game.GameObjectFactory
 import lineage.vetal.server.login.game.model.inventory.WearableInventory
 import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
 import lineage.vetal.server.login.gameserver.packet.server.*
 import vetal.server.writeError
-import java.util.*
 
 private const val TAG = "GameLobby"
 
@@ -26,7 +25,7 @@ class GameLobbyManager(
     private val gameConfig: ConfigGame,
     private val gameWorld: WorldManager,
     private val gameDatabase: GameDatabase,
-    private val objectFactory: ObjectFactory,
+    private val objectFactory: GameObjectFactory,
     private val charStatsData: Map<Int, CharTemplate>,
 ) {
     // TODO pending auth clients should be stored here.. And cleared after timer
@@ -166,7 +165,7 @@ class GameLobbyManager(
             return
         }
 
-        val newPlayer = objectFactory.createPlayer(name, client.account, playerTemplate, hairStyle, hairColor, face, sex)
+        val newPlayer = objectFactory.createPlayerObject(name, client.account, playerTemplate, hairStyle, hairColor, face, sex)
         gameDatabase.charactersDao.insertCharacter(newPlayer)
 
         val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)

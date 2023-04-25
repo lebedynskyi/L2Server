@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.player.Creature
+import lineage.vetal.server.login.game.model.player.CreatureObject
 import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 import kotlin.Int
@@ -14,7 +14,7 @@ class CreatureSay : GameServerPacket {
     private var sysStringId = 0// from sysstring-e.dat
     private var sysMsgId = 0 // from systemmsg-e.dat
 
-    constructor(creature: Creature, sayType: SayType, content: String) :
+    constructor(creature: CreatureObject, sayType: SayType, content: String) :
             this(creature.objectId, sayType, creature.name, content)
 
     constructor(objectId: Int, sayType: SayType, name: String?, content: String) {

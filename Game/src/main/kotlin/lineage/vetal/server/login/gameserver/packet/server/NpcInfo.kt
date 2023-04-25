@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
-import lineage.vetal.server.login.game.model.npc.Npc
+import lineage.vetal.server.login.game.model.npc.NpcObject
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class NpcInfo(
-    private val npc: Npc
+    private val npc: NpcObject
 ) : GameServerPacket() {
     override fun write() {
         writeC(0x16)

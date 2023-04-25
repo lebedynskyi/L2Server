@@ -22,8 +22,9 @@ class ItemXMLReader(
                 val set = StatSet()
                 val attrs = itemNode.attributes
                 val itemId = parseInteger(attrs, "id")
-                set["id"] =  itemId
+                set["id"] = itemId
                 set["name"] = parseString(attrs, "name")
+                set["type"] = parseString(attrs, "type")
                 set["title"] = parseString(attrs, "title")
 
                 forEach(itemNode, "set") { setNode ->

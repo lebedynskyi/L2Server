@@ -32,9 +32,6 @@ class ObjectIdFactory {
         }
 
         val newId = freeBit + OID_OFFSET
-        if (newId > OID_FINISH) {
-            throw IllegalStateException("Out of capacity of ids ?")
-        }
 
         lastTakenBit = freeBit
         bitSet.set(lastTakenBit)

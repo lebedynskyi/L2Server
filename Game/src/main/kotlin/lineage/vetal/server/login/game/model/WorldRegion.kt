@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.game.model
 
-import lineage.vetal.server.login.game.model.npc.Npc
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.npc.NpcObject
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.gameserver.packet.server.CharInfo
 import lineage.vetal.server.login.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.login.gameserver.packet.server.NpcInfo
@@ -13,13 +13,13 @@ data class WorldRegion(
     val tileY: Int
 ) {
     lateinit var surroundingRegions: Array<WorldRegion>
-    val players: Map<Int, Player> get() = _players
-    val npc: Map<Int, Npc> get() = _npc
+    val players: Map<Int, PlayerObject> get() = _players
+    val npc: Map<Int, NpcObject> get() = _npc
 
-    private val _players = ConcurrentHashMap<Int, Player>()
-    private val _npc = ConcurrentHashMap<Int, Npc>()
+    private val _players = ConcurrentHashMap<Int, PlayerObject>()
+    private val _npc = ConcurrentHashMap<Int, NpcObject>()
 
-    fun addPlayer(player: Player) {
+    fun addPlayer(player: PlayerObject) {
         _players[player.objectId] = player
 
         player.sendPacket(players.values.map { CharInfo(it) })
@@ -28,18 +28,18 @@ data class WorldRegion(
         broadCast(CharInfo(player))
     }
 
-    fun removePlayer(player: Player) {
+    fun removePlayer(player: PlayerObject) {
         _players.remove(player.objectId)
         broadCast(DeleteObject(player))
     }
 
-    fun addNpc(npc: Npc) {
+    fun addNpc(npc: NpcObject) {
         _npc[npc.objectId] = npc
 
         broadCast(NpcInfo(npc))
     }
 
-    fun removeNpc(npc: Npc) {
+    fun removeNpc(npc: NpcObject) {
         _npc.remove(npc.objectId)
     }
 

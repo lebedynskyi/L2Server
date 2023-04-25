@@ -2,7 +2,7 @@ package lineage.vetal.server.login.game.model.item
 
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 
-abstract class Equipment(
+class EtcItemObject(
     objectId: Int,
-    itemTemplate: ItemTemplate,
+    itemTemplate: ItemTemplate
 ) : ItemObject(objectId, itemTemplate)

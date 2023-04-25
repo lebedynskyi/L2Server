@@ -1,12 +1,12 @@
 package lineage.vetal.server.login.gameserver.packet.server
 
 import lineage.vetal.server.login.game.model.position.Position
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.player.Paperdoll
 import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 
 class UserInfo(
-    private val player: Player
+    private val player: PlayerObject
 ) : GameServerPacket() {
     // Siege status. I think it will show flag or something similar
     val relation = 0

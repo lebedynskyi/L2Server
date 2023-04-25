@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.game.model.player.status
 
-import lineage.vetal.server.login.game.model.player.Creature
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.player.CreatureObject
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.template.pc.CreatureTemplate
 
 abstract class CreatureStatus(
@@ -33,23 +33,23 @@ abstract class CreatureStatus(
         return template.baseWIT
     }
 
-    open fun getPAtk(target: Creature?): Int {
+    open fun getPAtk(target: CreatureObject?): Int {
         return template.basePAtk.toInt()
     }
 
-    open fun getPDef(target: Player?): Int {
+    open fun getPDef(target: PlayerObject?): Int {
         return template.basePDef.toInt()
     }
 
-    open fun getCriticalHit(target: Player?, skill: Any?): Int {
+    open fun getCriticalHit(target: PlayerObject?, skill: Any?): Int {
         return template.baseCritRate
     }
 
-    open fun getMAtk(target: Player?, skill: Any?): Int {
+    open fun getMAtk(target: PlayerObject?, skill: Any?): Int {
         return template.baseMAtk.toInt()
     }
 
-    open fun getMDef(target: Player?, skill: Any?): Int {
+    open fun getMDef(target: PlayerObject?, skill: Any?): Int {
         return template.baseMDef.toInt()
     }
 
@@ -81,7 +81,7 @@ abstract class CreatureStatus(
         return 42
     }
 
-    open fun getEvasionRate(target: Player?): Int {
+    open fun getEvasionRate(target: PlayerObject?): Int {
         return 42
     }
 

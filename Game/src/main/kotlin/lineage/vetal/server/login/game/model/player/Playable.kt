@@ -7,4 +7,4 @@ abstract class Playable(
     objectId: Int,
     name: String,
     position: SpawnPosition
-) : Creature(objectId, name, position)
+) : CreatureObject(objectId, name, position)

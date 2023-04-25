@@ -231,15 +231,15 @@ enum class ClassId(
         val VALUES: Array<ClassId> = values()
 
         /**
-         * Returns set of subclasses available for given [Player].<br></br>
+         * Returns set of subclasses available for given [PlayerObject].<br></br>
          * 1) If the race of your main class is Elf or Dark Elf, you may not select each class as a subclass to the other class.<br></br>
          * 2) You may not select Overlord and Warsmith class as a subclass.<br></br>
          * 3) You may not select a similar class as the subclass. The occupations classified as similar classes are as follows:<br></br>
          * Paladin, Dark Avenger, Temple Knight and Shillien Knight Treasure Hunter, Plainswalker and Abyss Walker Hawkeye, Silver Ranger and Phantom Ranger Warlock, Elemental Summoner and Phantom Summoner Sorcerer, Spellsinger and Spellhowler
-         * @param player : The [Player] to make checks on.
+         * @param player : The [PlayerObject] to make checks on.
          * @return EnumSet<ClassId> : Available subclasses for given player.
         </ClassId> */
-        fun getAvailableSubclasses(player: Player): EnumSet<ClassId>? {
+        fun getAvailableSubclasses(player: PlayerObject): EnumSet<ClassId>? {
             var classId: ClassId? = VALUES[player.baseClassId]
             if (classId!!.level < 2) return null
 

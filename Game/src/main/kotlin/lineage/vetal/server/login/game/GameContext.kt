@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.game
 
 import lineage.vetal.server.core.db.HikariDBConnection
+import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.login.ConfigGame
@@ -28,7 +29,7 @@ class GameContext(
     val gameConfig: ConfigGame
     val manorManager: ManorManager
     val chatManager: ChatManager
-    val objectFactory: ObjectFactory
+    val objectFactory: GameObjectFactory
 
     init {
         writeSection(TAG)
@@ -43,33 +44,40 @@ class GameContext(
         writeInfo(TAG, "Loaded ${itemsData.size} items.")
 
         val charStatsXmlFile = File(dataFolder, PATH_CLASSES_XML)
-        val charStatsData = CharXMLReader(charStatsXmlFile.absolutePath).load()
-        writeInfo(TAG, "Loaded ${charStatsData.size} player classes templates.")
+        val playersData = CharXMLReader(charStatsXmlFile.absolutePath).load()
+        writeInfo(TAG, "Loaded ${playersData.size} player classes templates.")
 
         val npcsXmlFolder = File(dataFolder, NPCS_XML)
         val npcsData = NpcXMLReader(npcsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${npcsData.size} npcs.")
 
         writeInfo(TAG, "Initialize database")
-        gameDatabase = GameDatabase(charStatsData, HikariDBConnection(gameConfig.dataBaseConfig))
+        gameDatabase = GameDatabase(playersData, HikariDBConnection(gameConfig.dataBaseConfig))
         val npcsSpawnData = gameDatabase.spawnDao.getSpawnList()
+
         val idFactory = ObjectIdFactory()
         idFactory.load(gameDatabase)
-        objectFactory = ObjectFactory(idFactory, npcsSpawnData)
+        objectFactory = GameObjectFactory(idFactory, npcsSpawnData, itemsData, npcsData)
 
         // TODO move it to spawn manager
         val loadedNpc = npcsData.map {
-            objectFactory.createNpc(it.value.id, it.value)
+            objectFactory.createNpcObject(it.value.id, it.value)
         }
 
         writeInfo(TAG, "Start managers")
         worldManager = WorldManager(loadedNpc, gameDatabase)
         manorManager = ManorManager()
         movementManager = MovementManager(worldManager)
-        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, charStatsData)
+        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, playersData)
         chatManager = ChatManager(worldManager)
         gameAnnouncer = GameAnnounceManager(chatManager).apply {
             start()
+        }
+
+        Thread.sleep(2000)
+        playersData[31]?.let {
+            objectFactory.createPlayerObject("Player", AccountInfo("", "", ""), it,
+                0,0,0,0)
         }
     }
 }

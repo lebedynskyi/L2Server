@@ -1,9 +1,7 @@
 package lineage.vetal.server.login.xml
 
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.stream.Stream
-import kotlin.collections.HashMap
 
 /**
  * This class is used in order to have a set of couples (key,value).<BR></BR>
@@ -53,7 +51,7 @@ class StatSet : HashMap<String, Any?> {
     fun getBool(key: String): Boolean {
         val value = get(key)
         if (value is Boolean) return value
-        if (value is String) return java.lang.Boolean.parseBoolean(value as String?)
+        if (value is String) return value.toString().toBoolean()
         if (value is Number) return value.toInt() != 0
         throw IllegalArgumentException("StatsSet : Boolean value required, but found: $value for key: $key.")
     }
@@ -96,9 +94,7 @@ class StatSet : HashMap<String, Any?> {
     fun getDoubleArray(key: String): DoubleArray {
         val value = get(key)
         if (value is DoubleArray) return value
-        if (value is Number) return doubleArrayOf(
-            value.toDouble()
-        )
+        if (value is Number) return doubleArrayOf(value.toDouble())
         if (value is String)
             return Stream.of(*value.split(";".toRegex()).toTypedArray())
                 .mapToDouble { s: String -> s.toDouble() }
@@ -136,7 +132,7 @@ class StatSet : HashMap<String, Any?> {
         return if (value is Boolean) if (value) 1 else 0 else defaultValue
     }
 
-    fun getIntegerArray(key: String): IntArray {
+    fun getIntArray(key: String): IntArray {
         val value = get(key)
         if (value is IntArray) return value
         if (value is Number) return intArrayOf(
@@ -148,9 +144,9 @@ class StatSet : HashMap<String, Any?> {
         throw IllegalArgumentException("StatsSet : Integer array required, but found: $value for key: $key.")
     }
 
-    fun getIntegerArray(key: String, defaultArray: IntArray): IntArray {
+    fun getIntArray(key: String, defaultArray: IntArray): IntArray {
         return try {
-            getIntegerArray(key)
+            getIntArray(key)
         } catch (e: IllegalArgumentException) {
             defaultArray
         }
@@ -196,7 +192,7 @@ class StatSet : HashMap<String, Any?> {
     fun getString(key: String): String {
         val value = get(key)
         if (value != null) return value.toString()
-        throw IllegalArgumentException("StatsSet : String value required, but unspecified for key: $key.")
+        throw IllegalArgumentException("StatsSet : String value required, but unspecified for key: $key. Map = ${map { it.key + "=" + it.value}}")
     }
 
     fun getString(key: String?, defaultValue: String): String {
@@ -211,7 +207,7 @@ class StatSet : HashMap<String, Any?> {
         throw IllegalArgumentException("StatsSet : String array required, but found: $value for key: $key.")
     }
 
-    fun getIntIntHolder(key: String): Pair<Int, Int> {
+    fun getIntPairs(key: String): Pair<Int, Int> {
         val value = get(key)
         if (value is Array<*>) {
             val toSplit = value as Array<String>
@@ -221,10 +217,10 @@ class StatSet : HashMap<String, Any?> {
             val toSplit = value.split("-".toRegex()).toTypedArray()
             return Pair(toSplit[0].toInt(), toSplit[1].toInt())
         }
-        throw IllegalArgumentException("StatsSet : int-int (IntIntHolder) required, but found: $value for key: $key.")
+        throw IllegalArgumentException("StatsSet : int-int (IntPairs) required, but found: $value for key: $key.")
     }
 
-    fun getIntIntHolderList(key: String): List<Pair<Int, Int>> {
+    fun getIntPairsList(key: String): List<Pair<Int, Int>> {
         val value = get(key)
         if (value is String) {
             // String exists, but it empty : return a generic empty List.
@@ -247,12 +243,49 @@ class StatSet : HashMap<String, Any?> {
             }
             return list
         }
-        throw IllegalArgumentException("StatsSet : int-int;int-int (List<IntIntHolder>) required, but found: $value for key: $key.")
+        throw IllegalArgumentException("StatsSet : int-int;int-int (List<IntPairs>) required, but found: $value for key: $key.")
     }
 
-    fun getIntIntHolderList(key: String, defaultHolder: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
+    fun getIntPairsArray(key: String): Array<Pair<Int, Int>?>? {
+        val value: Any? = get(key)
+        if (value is Array<*>) {
+            val toSplit = value
+            val tempArray: Array<Pair<Int, Int>?> = arrayOfNulls(toSplit.size)
+            var index = 0
+            for (splitted in toSplit) {
+                val splittedHolder = splitted.toString().split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                tempArray[index++] = Pair(splittedHolder[0].toInt(), splittedHolder[1].toInt())
+            }
+            return tempArray
+        }
+        if (value is String) {
+            // String exists, but it empty : return null.
+            val string = value
+            if (string.isEmpty()) return null
+
+            // Single entry ; return the entry under array form.
+            if (!string.contains(";")) {
+                val toSplit = string.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val tempArray: Array<Pair<Int, Int>?> = arrayOfNulls<Pair<Int, Int>>(1)
+                tempArray[0] = Pair(toSplit[0].toInt(), toSplit[1].toInt())
+                return tempArray
+            }
+            val toSplit = string.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val tempArray: Array<Pair<Int, Int>?> = arrayOfNulls<Pair<Int, Int>>(toSplit.size)
+            var index = 0
+            for (splitted in toSplit) {
+                val splittedHolder = splitted.split("-".toRegex()).dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+                tempArray[index++] = Pair<Int, Int>(splittedHolder[0].toInt(), splittedHolder[1].toInt())
+            }
+            return tempArray
+        }
+        throw IllegalArgumentException("StatSet : int-int;int-int (int[] IntPairs) required, but found: $value for key: $key.")
+    }
+
+    fun getIntPairsList(key: String, defaultHolder: List<Pair<Int, Int>>): List<Pair<Int, Int>> {
         return try {
-            getIntIntHolderList(key)
+            getIntPairsList(key)
         } catch (e: IllegalArgumentException) {
             defaultHolder
         }

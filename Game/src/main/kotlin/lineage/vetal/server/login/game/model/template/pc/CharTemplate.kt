@@ -3,7 +3,6 @@ package lineage.vetal.server.login.game.model.template.pc
 import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.player.ClassId
 import lineage.vetal.server.login.game.model.player.CharacterSex
-import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 import lineage.vetal.server.login.xml.StatSet
 
 class CharTemplate(set: StatSet) : CreatureTemplate(set) {
@@ -12,12 +11,11 @@ class CharTemplate(set: StatSet) : CreatureTemplate(set) {
     val baseSwimSpeed: Int = set.getInteger("swimSpd", 1)
     val classBaseLevel: Int = set.getInteger("baseLvl")
     val fists: Int = set.getInteger("fists")
-
-    val items: List<ItemTemplate> get() = _items
+    val startItems: List<ChatItemTemplate> get() = _items
     val skills: List<CharSkillTemplate> get() = _skills
     val spawnLocations: List<Position> = set.getList("spawnLocations")
 
-    private val _items: MutableList<ItemTemplate> = set.getList<ItemTemplate>("items").toMutableList()
+    private val _items: MutableList<ChatItemTemplate> = set.getList<ChatItemTemplate>("items").toMutableList()
     private val _skills: MutableList<CharSkillTemplate> = set.getList<CharSkillTemplate>("skills").toMutableList()
     private val _collisionRadiusFemale: Double = set.getDouble("radiusFemale")
     private val _collisionHeightFemale: Double = set.getDouble("heightFemale")

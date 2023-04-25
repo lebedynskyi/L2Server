@@ -3,8 +3,8 @@ package lineage.vetal.server.login.game.manager
 import lineage.vetal.server.login.db.GameDatabase
 import lineage.vetal.server.login.game.model.WorldRegion
 import lineage.vetal.server.login.game.model.position.Position
-import lineage.vetal.server.login.game.model.npc.Npc
-import lineage.vetal.server.login.game.model.player.Player
+import lineage.vetal.server.login.game.model.npc.NpcObject
+import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.player.SayType
 import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
@@ -36,10 +36,10 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 private const val TAG = "WorldManager"
 
 class WorldManager(
-    npc: List<Npc>,
+    npc: List<NpcObject>,
     private val gameDatabase: GameDatabase
 ) {
-    val players: List<Player> get() = regions.flatten().map { it.players.values }.flatten()
+    val players: List<PlayerObject> get() = regions.flatten().map { it.players.values }.flatten()
     val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x -> Array(REGIONS_Y) { y -> WorldRegion(x, y) } }
 
     init {
@@ -85,7 +85,7 @@ class WorldManager(
         players.forEach { it.sendPacket(packet) }
     }
 
-    fun onPlayerEnteredWorld(client: GameClient, player: Player) {
+    fun onPlayerEnteredWorld(client: GameClient, player: PlayerObject) {
         player.lastAccessTime = Calendar.getInstance().timeInMillis
         player.client = client
         player.isActive = true
@@ -96,7 +96,7 @@ class WorldManager(
         spawn(player)
     }
 
-    fun onPlayerRestart(client: GameClient, player: Player) {
+    fun onPlayerRestart(client: GameClient, player: PlayerObject) {
         client.player = null
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
         client.sendPacket(CharSlotList(client, client.characterSlots))
@@ -110,7 +110,7 @@ class WorldManager(
         }
     }
 
-    fun onPlayerQuitWorld(client: GameClient, player: Player) {
+    fun onPlayerQuitWorld(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
         if (player.isActive) {
             // TODO save fully
@@ -120,7 +120,7 @@ class WorldManager(
         player.isActive = false
     }
 
-    fun onPlayerMoved(player: Player, loc: Position) {
+    fun onPlayerMoved(player: PlayerObject, loc: Position) {
         val currentRegion = player.region
         val newRegion = getRegion(loc)
         if (currentRegion != newRegion && newRegion != null) {
@@ -131,7 +131,7 @@ class WorldManager(
         }
     }
 
-    fun spawn(player: Player) {
+    fun spawn(player: PlayerObject) {
         val region = getRegion(player.position.x, player.position.y)
         if (region == null) {
             writeError(TAG, " No region found for player ${player.name} and position ${player.position}")
@@ -142,7 +142,7 @@ class WorldManager(
         region.addPlayer(player)
     }
 
-    fun spawn(npc: Npc) {
+    fun spawn(npc: NpcObject) {
         val region = getRegion(npc.position.x, npc.position.y)
         if (region == null) {
             writeError(TAG, " No region found for npc ${npc.name} and position ${npc.position}")
