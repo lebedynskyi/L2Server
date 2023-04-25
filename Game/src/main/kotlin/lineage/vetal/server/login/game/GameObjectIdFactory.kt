@@ -16,7 +16,8 @@ class GameObjectIdFactory {
 
     fun load(gameDatabase: GameDatabase) {
         val charIds = gameDatabase.charactersDao.getAllObjectIds()
-        charIds.forEach {
+        val itemIds = gameDatabase.itemsDao.getAllObjectIds()
+        charIds.plus(itemIds).forEach {
             val bit = it - OID_OFFSET
             bitSet.set(bit)
         }

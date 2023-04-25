@@ -74,11 +74,5 @@ class GameContext(
         gameAnnouncer = GameAnnounceManager(chatManager).apply {
             start()
         }
-
-        Thread.sleep(2000)
-        playersData[31]?.let {
-            objectFactory.createPlayerObject("Player", AccountInfo("", "", ""), it,
-                0,0,0,0)
-        }
     }
 }

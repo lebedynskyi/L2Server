@@ -5,11 +5,12 @@ import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 
 enum class ItemLocation {
-    VOID, INVENTORY, PAPERDOLL, WAREHOUSE, CLANWH, PET, PET_EQUIP, LEASE, FREIGHT
+    NONE, INVENTORY, PAPERDOLL, WAREHOUSE, CLANWH, PET, PET_EQUIP, LEASE, FREIGHT
 }
 
 abstract class ItemObject(
     objectId: Int,
+    val ownerId: String,
     override val template: ItemTemplate,
     spawnPosition: SpawnPosition = SpawnPosition.zero
 ) : TemplatableObject<ItemTemplate>(objectId, template.name, spawnPosition), Comparable<ItemObject> {
@@ -19,6 +20,8 @@ abstract class ItemObject(
     var customType2 = template.type2
     var enchantLevel: Int = 0
     var durationLeft: Int = 0
+    var itemLocation: ItemLocation = ItemLocation.NONE
+    var itemLocationData: Int = 0
     var createTime: Long = System.currentTimeMillis()
 
     override fun compareTo(other: ItemObject): Int {

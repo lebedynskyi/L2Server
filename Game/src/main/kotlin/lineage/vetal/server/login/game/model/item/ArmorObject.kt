@@ -4,5 +4,6 @@ import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 
 class ArmorObject(
     objectId: Int,
+    ownerId: String,
     itemTemplate: ItemTemplate,
-): EquipmentObject(objectId, itemTemplate)
+) : EquipmentObject(objectId, ownerId, itemTemplate)

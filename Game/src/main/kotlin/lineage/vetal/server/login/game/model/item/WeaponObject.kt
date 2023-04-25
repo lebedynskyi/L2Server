@@ -4,8 +4,9 @@ import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 
 class WeaponObject(
     objectId: Int,
+    ownerId: String,
     itemTemplate: ItemTemplate
-) : EquipmentObject(objectId, itemTemplate) {
+) : EquipmentObject(objectId, ownerId, itemTemplate) {
     val isAugmented: Boolean = false
     val augmentationId: Int = 0
 }

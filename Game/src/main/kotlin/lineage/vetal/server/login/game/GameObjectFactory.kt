@@ -38,21 +38,23 @@ class GameObjectFactory(
         val player = PlayerObject(playerId, account.id, objectId, name, charTemplate, appearance, position)
 
         charTemplate.startItems.forEach {
-            player.inventory.addItem(createItemObject(it.id, it.count))
+            player.inventory.addItem(createItemObject(it.id, playerId, it.count))
         }
 
         return player
     }
 
-    fun createItemObject(id: Int, count: Int = 1): ItemObject {
+    fun createItemObject(id: Int, playerId: String, count: Int = 1): ItemObject {
         val objectId = idFactory.createId()
         val template = itemData[id] ?: throw IllegalArgumentException("Cannot find item template for id $id")
 
         return when (template) {
-            is ArmorItemTemplate -> ArmorObject(objectId, template)
-            is EtcItemTemplate -> EtcItemObject(objectId, template)
-            is WeaponItemTemplate -> WeaponObject(objectId, template)
+            is ArmorItemTemplate -> ArmorObject(objectId, playerId, template)
+            is EtcItemTemplate -> EtcItemObject(objectId, playerId, template)
+            is WeaponItemTemplate -> WeaponObject(objectId, playerId, template)
             else -> throw IllegalArgumentException("Cannot fund item template of type $template")
+        }.apply {
+            this.count = count
         }
     }
 
