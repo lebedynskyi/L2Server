@@ -11,16 +11,16 @@ bridgeServer:
   hostname: "127.0.0.1"
   port: 2100
 
-#dataBaseConfig:  # MariaDB
-#  driver: "org.mariadb.jdbc.Driver"
-#  url: "jdbc:mariadb://172.16.168.5/l2db"
-#  user: "root"
-#  password: "l2db"
-#  timeOut: 5000
-
-dataBaseConfig:  # SQLite
-  driver: "org.sqlite.JDBC"
-  url: "jdbc:sqlite:/Users/Vitalii_Lebedynskyi/TRASH/l2.db"
-  user: ""
-  password: ""
+dataBaseConfig:  # MariaDB
+  driver: "org.mariadb.jdbc.Driver"
+  url: "jdbc:mariadb://127.0.0.1/l2db"
+  user: "l2db"
+  password: "l2dbpass"
   timeOut: 5000
+#
+#dataBaseConfig:  # SQLite
+#  driver: "org.sqlite.JDBC"
+#  url: "jdbc:sqlite:/Users/Vitalii_Lebedynskyi/TRASH/l2.db"
+#  user: ""
+#  password: ""
+#  timeOut: 5000

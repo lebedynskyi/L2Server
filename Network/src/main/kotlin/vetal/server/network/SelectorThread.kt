@@ -89,6 +89,8 @@ class SelectorThread<T : Client>(
     private fun loopSelector() {
         while (isRunning) {
             val readyChannels = selector.select()
+            // TODO BridgeClientSelector does not sleep. Something wrong here with selector
+//            writeDebug(TAG, "Ready channels Number $readyChannels")
             if (readyChannels == 0) continue
 
             val keyIterator = selector.selectedKeys().iterator()
