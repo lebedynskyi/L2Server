@@ -55,7 +55,7 @@ class LoginLobby(
 
         val accountsDao = loginDatabase.accountsDao
         var accountInfo = accountsDao.findAccount(login)
-        if (accountInfo == null && lobbyConfig.autoRegistration)  {
+        if (accountInfo == null && lobbyConfig.autoRegistration) {
             accountInfo = AccountInfo(UUID.randomUUID().toString(), login, password)
             accountsDao.insertAccount(accountInfo)
         }

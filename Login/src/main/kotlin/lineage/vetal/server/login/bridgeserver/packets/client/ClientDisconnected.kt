@@ -6,7 +6,6 @@ import lineage.vetal.server.login.bridgeserver.packets.BridgeClientPacket
 
 class ClientDisconnected : BridgeClientPacket() {
     override fun read() {
-
     }
 
     override fun execute(client: BridgeClient, context: LoginContext) {

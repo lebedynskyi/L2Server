@@ -7,6 +7,6 @@ import lineage.vetal.server.login.gameserver.packet.GamePacket
 class RequestEnterWorld : GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        context.worldManager.onPlayerDropItem(client, player)
+        context.worldManager.onPlayerEnterWorld(client, player)
     }
 }

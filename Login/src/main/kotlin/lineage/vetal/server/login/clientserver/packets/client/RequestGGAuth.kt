@@ -20,6 +20,6 @@ class RequestGGAuth : LoginClientPacket() {
     }
 
     override fun execute(client: LoginClient, context: LoginContext) {
-       context.loginLobby.requestGGAuth(client, sessionId)
+        context.loginLobby.requestGGAuth(client, sessionId)
     }
 }

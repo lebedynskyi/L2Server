@@ -3,8 +3,6 @@ package lineage.vetal.server.login.clientserver.packets.client
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.clientserver.LoginClient
 import lineage.vetal.server.login.clientserver.packets.LoginClientPacket
-import lineage.vetal.server.login.clientserver.packets.server.LoginFail
-import lineage.vetal.server.login.clientserver.packets.server.PlayOk
 
 class RequestServerLogin : LoginClientPacket() {
     var sessionKey1: Int = -1
@@ -18,6 +16,6 @@ class RequestServerLogin : LoginClientPacket() {
     }
 
     override fun execute(client: LoginClient, context: LoginContext) {
-       context.loginLobby.requestServerLogin(client, serverId, sessionKey1, sessionKey2)
+        context.loginLobby.requestServerLogin(client, serverId, sessionKey1, sessionKey2)
     }
 }

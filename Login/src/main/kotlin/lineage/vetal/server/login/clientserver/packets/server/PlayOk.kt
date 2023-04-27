@@ -2,7 +2,6 @@ package lineage.vetal.server.login.clientserver.packets.server
 
 import vetal.server.network.SendablePacket
 
-
 class PlayOk(
     val loginOk1: Int,
     val loginOk2: Int

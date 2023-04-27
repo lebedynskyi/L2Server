@@ -54,8 +54,8 @@ class WorldManager(
                         val sorX = regX + srX
                         val sorY = regY + srY
                         if (isRegionExist(sorX, sorY) && sorX != regX && sorY != regY) {
-                            val surround = regions[sorX][sorY]
-                            surrounding.add(surround)
+                            val surroundRegion = regions[sorX][sorY]
+                            surrounding.add(surroundRegion)
                         }
                     }
                 }
@@ -64,7 +64,7 @@ class WorldManager(
             }
         }
 
-        // todo remove it to spawn manager
+        // TODO remove it to spawn manager ?
         npc.forEach {
             getRegion(it.position)?.addNpc(it)
         }
@@ -85,7 +85,7 @@ class WorldManager(
         players.forEach { it.sendPacket(packet) }
     }
 
-    fun onPlayerDropItem(client: GameClient, player: PlayerObject) {
+    fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
         player.lastAccessTime = Calendar.getInstance().timeInMillis
         player.client = client
         player.isActive = true
@@ -93,7 +93,7 @@ class WorldManager(
         client.player = player
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
-        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Hello on Mega server"))
+        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
         addPlayerToWorld(player)
     }
 

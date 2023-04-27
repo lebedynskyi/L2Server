@@ -10,10 +10,8 @@ group = "org.example"
 version = "1.0"
 val appMainClassName = "lineage.vetal.server.login.MainKt"
 
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = appMainClassName
-    }
+application {
+    mainClass.set(appMainClassName)
 }
 
 dependencies {
