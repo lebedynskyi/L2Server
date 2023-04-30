@@ -2,7 +2,6 @@ package lineage.vetal.server.login.db
 
 import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.Dao
-import lineage.vetal.server.login.db.sql.CharactersSQL
 import lineage.vetal.server.login.db.sql.ItemsSQL
 import lineage.vetal.server.login.game.model.item.*
 import lineage.vetal.server.login.game.model.template.items.ArmorItemTemplate
@@ -16,18 +15,18 @@ class ItemsDao(
 ) : Dao(dbConnection) {
     fun saveInventory(items: Set<ItemObject>) {
         items.forEach {item ->
-            insertOrUpdate(ItemsSQL.INSERT_OR_UPDATE_ITEM_SQL) {
-                it.setString(1, item.ownerId)
-                it.setInt(2, item.objectId)
-                it.setInt(3, item.template.id)
-                it.setInt(4, item.count)
-                it.setInt(5, item.enchantLevel)
-                it.setString(6, item.itemLocation.name)
-                it.setInt(7, item.itemLocationData)
-                it.setInt(8, item.customType1)
-                it.setInt(9, item.customType2)
-                it.setInt(10, item.durationLeft)
-                it.setLong(11, item.createTime)
+            insertOrUpdate(ItemsSQL.UPDATE_ITEM_OWNER_SQL) { statement ->
+                statement.setString(1, item.ownerId)
+                statement.setInt(2, item.objectId)
+                statement.setInt(3, item.template.id)
+                statement.setInt(4, item.count)
+                statement.setInt(5, item.enchantLevel)
+                statement.setString(6, item.itemLocation.name)
+                statement.setInt(7, item.itemLocationData)
+                statement.setInt(8, item.customType1)
+                statement.setInt(9, item.customType2)
+                statement.setInt(10, item.durationLeft)
+                statement.setLong(11, item.createTime)
             }
         }
     }

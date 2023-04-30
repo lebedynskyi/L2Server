@@ -6,7 +6,6 @@ import lineage.vetal.server.login.game.model.item.EtcItemObject
 import lineage.vetal.server.login.game.model.item.ItemObject
 import lineage.vetal.server.login.game.model.item.WeaponObject
 import lineage.vetal.server.login.game.model.npc.NpcObject
-import lineage.vetal.server.login.game.model.npc.NpcSpawnData
 import lineage.vetal.server.login.game.model.player.Appearance
 import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.player.CharacterSex
@@ -22,10 +21,10 @@ import kotlin.IllegalArgumentException
 
 class GameObjectFactory(
     private val idFactory: GameObjectIdFactory,
-    private val npcSpawnData: List<NpcSpawnData>,
-    private val itemData: Map<Int, ItemTemplate>,
-    private val npcData: Map<Int, NpcTemplate>
+    private val itemTemplates: Map<Int, ItemTemplate>,
+    private val npcTemplates: Map<Int, NpcTemplate>
 ) {
+    @Deprecated("Template should be removed from here!!!")
     fun createPlayerObject(
         name: String, account: AccountInfo, charTemplate: CharTemplate,
         hairStyle: Int, hairColor: Int, face: Int, sex: Byte
@@ -44,9 +43,9 @@ class GameObjectFactory(
         return player
     }
 
-    fun createItemObject(id: Int, playerId: String, count: Int = 1): ItemObject {
+    fun createItemObject(templateId: Int, playerId: String, count: Int = 1): ItemObject {
         val objectId = idFactory.createId()
-        val template = itemData[id] ?: throw IllegalArgumentException("Cannot find item template for id $id")
+        val template = itemTemplates[templateId] ?: throw IllegalArgumentException("Cannot find item template for id $templateId")
 
         return when (template) {
             is ArmorItemTemplate -> ArmorObject(objectId, playerId, template)
@@ -58,8 +57,9 @@ class GameObjectFactory(
         }
     }
 
-    fun createNpcObject(id: Int, template: NpcTemplate): NpcObject {
-        val spawnPoint = npcSpawnData.find { data -> data.npcTemplateId == template.idTemplate }
-        return NpcObject(id, template, spawnPoint)
+    fun createNpcObject(templateId: Int, position: SpawnPosition): NpcObject {
+        val objectId = idFactory.createId()
+        val template = npcTemplates[templateId]?: throw IllegalArgumentException("Cannot find NPC template for id $templateId")
+        return NpcObject(objectId, template, position)
     }
 }

@@ -12,6 +12,7 @@ import lineage.vetal.server.login.gameserver.packet.server.*
 import vetal.server.network.SendablePacket
 import vetal.server.writeDebug
 import vetal.server.writeError
+import vetal.server.writeInfo
 import java.util.*
 
 // Geodata min/max tiles
@@ -36,14 +37,13 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 private const val TAG = "WorldManager"
 
 class WorldManager(
-    npc: List<NpcObject>,
     private val gameDatabase: GameDatabase
 ) {
     val players: List<PlayerObject> get() = regions.flatten().map { it.players.values }.flatten()
     val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x -> Array(REGIONS_Y) { y -> WorldRegion(x, y) } }
 
     init {
-        writeDebug(TAG, "World start Init")
+        writeInfo(TAG, "Init regions")
 
         for (regX in 0 until REGIONS_X) {
             for (regY in 0 until REGIONS_Y) {
@@ -63,13 +63,7 @@ class WorldManager(
                 region.surroundingRegions = surrounding.toTypedArray()
             }
         }
-
-        // TODO remove it to spawn manager ?
-        npc.forEach {
-            getRegion(it.position)?.addNpc(it)
-        }
-
-        writeDebug(TAG, "World finish Init")
+        writeInfo(TAG, "Regions size=${regions.flatten().size}")
     }
 
     fun isRegionExist(x: Int, y: Int) = x in 0 until REGIONS_X && y in 0 until REGIONS_Y
@@ -83,6 +77,10 @@ class WorldManager(
 
     fun broadCast(packet: SendablePacket) {
         players.forEach { it.sendPacket(packet) }
+    }
+
+    fun onNpcAdded(npc: NpcObject) {
+        getRegion(npc.position)?.addNpc(npc)
     }
 
     fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
@@ -99,23 +97,17 @@ class WorldManager(
 
     fun onPlayerRestart(client: GameClient, player: PlayerObject) {
         client.player = null
+        client.clientState = GameClientState.LOBBY
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
         client.sendPacket(CharSlotList(client, client.characterSlots))
-        client.clientState = GameClientState.LOBBY
-        player.region.removePlayer(player)
-
-        if (player.isActive) {
-            player.isActive = false
-            // TODO save fully
-            gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
-        }
+        onPlayerQuit(client, player)
     }
 
-    fun onPlayerQuitWorld(client: GameClient, player: PlayerObject) {
+    fun onPlayerQuit(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
         if (player.isActive) {
-            // TODO save fully
             client.saveAndClose(LeaveWorld())
+            gameDatabase.itemsDao.saveInventory(player.inventory.items)
             gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
         }
         player.isActive = false

@@ -13,7 +13,7 @@ class RequestDropItem : GamePacket() {
 
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        context.itemManager.onPlayerDropItem(client, player, objectId, count, x, y, z)
+        context.itemManager.onPlayerDropItem(player, objectId, count, x, y, z)
     }
 
     override fun read() {

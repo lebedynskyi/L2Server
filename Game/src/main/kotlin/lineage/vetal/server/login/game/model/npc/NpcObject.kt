@@ -7,8 +7,8 @@ import lineage.vetal.server.login.game.model.template.npc.NpcTemplate
 class NpcObject(
     objectId: Int,
     val template: NpcTemplate,
-    spawnData: NpcSpawnData?
-) : CreatureObject(objectId, template.name, spawnData?.spawnPosition ?: SpawnPosition.zero) {
+    spawnPosition: SpawnPosition
+) : CreatureObject(objectId, template.name, spawnPosition) {
 
     override val status: NpcStatus = NpcStatus(template)
 }

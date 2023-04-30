@@ -1,9 +1,9 @@
 package lineage.vetal.server.login
 
-import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.login.game.GameContext
 
-private const val TAG = "Game"
+private const val TAG = "MainKt"
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -16,5 +16,5 @@ fun main(args: Array<String>) {
     GameServer(gameContext).startServer()
     BridgeClient(gameContext).startClient()
 
-    writeDebug(TAG, "Finished Game initialization")
+    writeInfo(TAG, "Finished Game initialization")
 }

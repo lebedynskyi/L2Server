@@ -36,7 +36,7 @@ class GameServer(
         gameCoroutineScope.launch {
             gameSelector.connectionCloseFlow.collect { client ->
                 client.player?.let {
-                    context.worldManager.onPlayerQuitWorld(client, it)
+                    context.worldManager.onPlayerQuit(client, it)
                 }
             }
         }

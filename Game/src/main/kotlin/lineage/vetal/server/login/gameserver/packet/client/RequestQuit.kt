@@ -7,6 +7,6 @@ import lineage.vetal.server.login.gameserver.packet.GamePacket
 class RequestQuit: GamePacket() {
     override fun execute(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        context.worldManager.onPlayerQuitWorld(client, player)
+        context.worldManager.onPlayerQuit(client, player)
     }
 }

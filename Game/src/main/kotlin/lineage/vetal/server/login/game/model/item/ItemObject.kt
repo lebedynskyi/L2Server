@@ -10,7 +10,7 @@ enum class ItemLocation {
 
 abstract class ItemObject(
     objectId: Int,
-    val ownerId: String,
+    var ownerId: String?,
     override val template: ItemTemplate,
     spawnPosition: SpawnPosition = SpawnPosition.zero
 ) : TemplatableObject<ItemTemplate>(objectId, template.name, spawnPosition), Comparable<ItemObject> {

@@ -2,14 +2,13 @@ package lineage.vetal.server.login.game.manager
 
 import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.position.SpawnPosition
-import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.packet.server.DropItem
 import lineage.vetal.server.login.gameserver.packet.server.InventoryUpdate
 
 class ItemManager(
     private val worldManager: WorldManager
 ) {
-    fun onPlayerDropItem(client: GameClient, player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
+    fun onPlayerDropItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
         // TODO a lot of conditions here
         // Check delay for action. Introduce some timer ? Protector?
         // TODO store item in the world ?
@@ -20,17 +19,34 @@ class ItemManager(
 
         val item = player.inventory.getItem(objectId) ?: return
 
-        // check is quest ?
+        // Check is quest and etc?
         if (item.count < count) {
             return
         }
 
-        player.inventory.removeItem(item)
         item.position = SpawnPosition(x, y, z, 0)
-        item.ownerId
-
-        val inventoryUpdate = InventoryUpdate().apply { this.onItemRemoved(item) }
-        player.sendPacket(inventoryUpdate)
+        item.ownerId = null
+        // TODO save item ? Save owner ID ?
+        player.inventory.removeItem(item)
+        player.region.addItem(item)
         player.region.broadCast(DropItem(item, player.objectId))
+
+        val inventoryUpdate = InventoryUpdate()
+        inventoryUpdate.onItemRemoved(item)
+        player.sendPacket(inventoryUpdate)
+    }
+
+    // TODO maybe it is ActionManager ?
+    fun onPlayerPickUpItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
+        // TODO validation of position, owner and etc etc
+
+        // remove from world / region
+        // add to inventory
+        // Get fresh from inventory with appropriate data
+        // send packet
+    }
+
+    fun onNpcDropItem() {
+
     }
 }

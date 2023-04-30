@@ -21,6 +21,7 @@ class GameContext(
     dataFolder: String,
 ) {
     val worldManager: WorldManager
+    val spawnManager: SpawnManager
     val movementManager: MovementManager
     val itemManager: ItemManager
     val gameAnnouncer: GameAnnounceManager
@@ -40,40 +41,36 @@ class GameContext(
         gameConfig = ConfigGame.read(serverConfigFile)
 
         val itemsXmlFolder = File(dataFolder, ITEMS_XML)
-        val itemsData = ItemXMLReader(itemsXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${itemsData.size} items.")
+        val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()
+        writeInfo(TAG, "Loaded ${itemTemplates.size} items.")
 
-        val charStatsXmlFile = File(dataFolder, PATH_CLASSES_XML)
-        val playersData = CharXMLReader(charStatsXmlFile.absolutePath).load()
-        writeInfo(TAG, "Loaded ${playersData.size} player classes templates.")
+        val playersXmlFolder = File(dataFolder, PATH_CLASSES_XML)
+        val playerTemplates = CharXMLReader(playersXmlFolder.absolutePath).load()
+        writeInfo(TAG, "Loaded ${playerTemplates.size} player classes templates.")
 
-        val npcsXmlFolder = File(dataFolder, NPCS_XML)
-        val npcsData = NpcXMLReader(npcsXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${npcsData.size} npcs.")
+        val npcXmlFolder = File(dataFolder, NPCS_XML)
+        val npcTemplates = NpcXMLReader(npcXmlFolder.absolutePath).load()
+        writeInfo(TAG, "Loaded ${npcTemplates.size} npcs.")
 
         writeInfo(TAG, "Initialize database")
         val dbConnection = HikariDBConnection(gameConfig.dataBaseConfig)
-        gameDatabase = GameDatabase(playersData, itemsData, dbConnection)
-        val npcsSpawnData = gameDatabase.spawnDao.getSpawnList()
+        gameDatabase = GameDatabase(playerTemplates, itemTemplates, dbConnection)
 
         val idFactory = GameObjectIdFactory()
         idFactory.load(gameDatabase)
-        objectFactory = GameObjectFactory(idFactory, npcsSpawnData, itemsData, npcsData)
-
-        // TODO move it to spawn manager
-        val loadedNpc = npcsData.map {
-            objectFactory.createNpcObject(it.value.id, it.value)
-        }
+        objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates)
 
         writeInfo(TAG, "Start managers")
-        worldManager = WorldManager(loadedNpc, gameDatabase)
+        worldManager = WorldManager(gameDatabase)
         manorManager = ManorManager()
         itemManager = ItemManager(worldManager)
         movementManager = MovementManager(worldManager)
-        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, playersData)
+        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, playerTemplates)
         chatManager = ChatManager(worldManager)
+        spawnManager = SpawnManager(worldManager, gameDatabase, objectFactory)
         gameAnnouncer = GameAnnounceManager(chatManager).apply {
             start()
         }
+        writeInfo(TAG,"Managers started")
     }
 }
