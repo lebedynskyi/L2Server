@@ -57,12 +57,19 @@ class CharactersDao(
         }
     }
 
-    fun updateCoordinates(playerObjId: Int, location: SpawnPosition): Boolean {
+    fun updateCoordinates(objId: Int, location: SpawnPosition): Boolean {
         return insertOrUpdate(CharactersSQL.UPDATE_COORDINATES_SQL) {
             it.setInt(1, location.x)
             it.setInt(2, location.y)
             it.setInt(3, location.z)
-            it.setString(4, playerObjId.toString())
+            it.setInt(4, objId)
+        }
+    }
+
+    fun updateLastAccess(objId: Int, lastAccess: Int): Boolean {
+        return insertOrUpdate(CharactersSQL.UPDATE_lAST_ACCESS_SQL) {
+            it.setInt(1, lastAccess)
+            it.setInt(2, objId)
         }
     }
 

@@ -33,7 +33,7 @@ class LoginLobby(
     }
 
     fun onClientDisconnected(client: LoginClient) {
-        // TODO check if client in gameServer pass it. else remove and cleanup
+        removeConnectedClient(client)
     }
 
     fun requestGGAuth(client: LoginClient, sessionId: Int) {

@@ -62,7 +62,7 @@ class GameContext(
         objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
         writeInfo(TAG, "Start managers")
-        worldManager = WorldManager(gameDatabase)
+        worldManager = WorldManager(this)
         manorManager = ManorManager()
         itemManager = ItemManager(worldManager)
         movementManager = MovementManager(worldManager)

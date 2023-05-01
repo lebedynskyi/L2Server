@@ -17,8 +17,8 @@ class MovementManager(
         player.region.broadCast(MoveToLocation(player, finish))
     }
 
-    fun startMovement(npc: NpcObject) {
-
+    fun startMovement(npc: NpcObject, finish: Position) {
+        npc.region.broadCast(MoveToLocation(npc, finish))
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {

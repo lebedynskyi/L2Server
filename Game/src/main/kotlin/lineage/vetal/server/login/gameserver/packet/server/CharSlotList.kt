@@ -7,19 +7,9 @@ import lineage.vetal.server.login.gameserver.packet.GameServerPacket
 class CharSlotList(
     private val gameClient: GameClient,
     private val slots: List<CharSelectionSlot>,
-    var lastActiveIndex: Int = -1
+    private val lastActiveIndex: Int,
 ) : GameServerPacket() {
     override fun write() {
-        if (lastActiveIndex <= -1) {
-            var lastAccess = 0L
-            slots.forEachIndexed { index, slot ->
-                if (slot.lastAccess > lastAccess) {
-                    lastAccess = slot.lastAccess
-                    lastActiveIndex = index
-                }
-            }
-        }
-
         writeC(0x13)
         writeD(slots.size)
 
@@ -61,10 +51,10 @@ class CharSlotList(
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_HEAD))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_LHAND))
-            writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_GLOVES))
-            writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_CHEST))
+            writeD(5767)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_GLOVES))
+            writeD(2407)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_CHEST))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_LEGS))
-            writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_FEET))
+            writeD(5779)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_FEET))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_BACK))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND))
             writeD(0)//writeD(it.getPaperdollObjectId(Inventory.PAPERDOLL_HAIR))
@@ -78,10 +68,10 @@ class CharSlotList(
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_HEAD))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_RHAND))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_LHAND))
-            writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_GLOVES))
-            writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_CHEST))
+            writeD(5767)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_GLOVES))
+            writeD(2407)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_CHEST))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_LEGS))
-            writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_FEET))
+            writeD(5779)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_FEET))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_BACK))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_RHAND))
             writeD(0)//writeD(it.getPaperdollItemId(Inventory.PAPERDOLL_HAIR))
@@ -91,6 +81,7 @@ class CharSlotList(
             writeD(it.face)
             writeF(it.maxHp)
             writeF(it.maxMp)
+            // TODO move out from here
             writeD(
                 if (it.accessLevel > -1)
                     if (it.deleteTimer > 0)

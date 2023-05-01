@@ -1,6 +1,7 @@
 package lineage.vetal.server.login.game.manager
 
 import lineage.vetal.server.login.db.GameDatabase
+import lineage.vetal.server.login.game.GameContext
 import lineage.vetal.server.login.game.model.WorldRegion
 import lineage.vetal.server.login.game.model.position.Position
 import lineage.vetal.server.login.game.model.npc.NpcObject
@@ -10,7 +11,6 @@ import lineage.vetal.server.login.gameserver.GameClient
 import lineage.vetal.server.login.gameserver.GameClientState
 import lineage.vetal.server.login.gameserver.packet.server.*
 import vetal.server.network.SendablePacket
-import vetal.server.writeDebug
 import vetal.server.writeError
 import vetal.server.writeInfo
 import java.util.*
@@ -37,42 +37,18 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 private const val TAG = "WorldManager"
 
 class WorldManager(
-    private val gameDatabase: GameDatabase
+    private val context: GameContext
 ) {
     val players: List<PlayerObject> get() = regions.flatten().map { it.players.values }.flatten()
-    val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x -> Array(REGIONS_Y) { y -> WorldRegion(x, y) } }
 
-    init {
-        writeInfo(TAG, "Init regions")
-
-        for (regX in 0 until REGIONS_X) {
-            for (regY in 0 until REGIONS_Y) {
-                val region = regions[regX][regY]
-                val surrounding = mutableListOf<WorldRegion>()
-                for (srX in -1..1) {
-                    for (srY in -1..1) {
-                        val sorX = regX + srX
-                        val sorY = regY + srY
-                        if (isRegionExist(sorX, sorY) && sorX != regX && sorY != regY) {
-                            val surroundRegion = regions[sorX][sorY]
-                            surrounding.add(surroundRegion)
-                        }
-                    }
-                }
-
-                region.surroundingRegions = surrounding.toTypedArray()
-            }
+    private val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x ->
+        Array(REGIONS_Y) { y ->
+            WorldRegion(x, y)
         }
-        writeInfo(TAG, "Regions size=${regions.flatten().size}")
     }
 
-    fun isRegionExist(x: Int, y: Int) = x in 0 until REGIONS_X && y in 0 until REGIONS_Y
-    fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
-
-    fun getRegion(x: Int, y: Int): WorldRegion? {
-        val regX = (x - WORLD_X_MIN) / REGION_SIZE
-        val regY = (y - WORLD_Y_MIN) / REGION_SIZE
-        return if (isRegionExist(regX, regY)) regions[regX][regY] else null
+    init {
+        initializeSurroundingRegions()
     }
 
     fun broadCast(packet: SendablePacket) {
@@ -86,29 +62,30 @@ class WorldManager(
     fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
         player.lastAccessTime = Calendar.getInstance().timeInMillis
         player.client = client
-        player.isActive = true
         client.clientState = GameClientState.WORLD
         client.player = player
+        player.isActive = true
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
+        context.gameDatabase.charactersDao.updateLastAccess(player.objectId, (Calendar.getInstance().time.time / 1000).toInt())
         addPlayerToWorld(player)
     }
 
     fun onPlayerRestart(client: GameClient, player: PlayerObject) {
         client.player = null
         client.clientState = GameClientState.LOBBY
-        client.sendPacket(RestartResponse.STATIC_PACKET_OK)
-        client.sendPacket(CharSlotList(client, client.characterSlots))
         onPlayerQuit(client, player)
+        client.sendPacket(RestartResponse.STATIC_PACKET_OK)
+        context.gameLobby.onCharSlotSelection(client)
     }
 
     fun onPlayerQuit(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
         if (player.isActive) {
             client.saveAndClose(LeaveWorld())
-            gameDatabase.itemsDao.saveInventory(player.inventory.items)
-            gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
+            context.gameDatabase.itemsDao.saveInventory(player.inventory.items)
+            context.gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
         }
         player.isActive = false
     }
@@ -133,5 +110,40 @@ class WorldManager(
         }
         player.region = region
         region.addPlayer(player)
+    }
+
+    private fun isRegionExist(x: Int, y: Int): Boolean {
+        return x in 0 until REGIONS_X && y in 0 until REGIONS_Y
+    }
+
+    private fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
+    private fun getRegion(x: Int, y: Int): WorldRegion? {
+        val regX = (x - WORLD_X_MIN) / REGION_SIZE
+        val regY = (y - WORLD_Y_MIN) / REGION_SIZE
+        return if (isRegionExist(regX, regY)) regions[regX][regY] else null
+    }
+
+    private fun initializeSurroundingRegions() {
+        writeInfo(TAG, "Regions size=${regions.flatten().size}")
+        writeInfo(TAG, "Init surrounded regions")
+        for (regX in 0 until REGIONS_X) {
+            for (regY in 0 until REGIONS_Y) {
+                val region = regions[regX][regY]
+                val surrounding = mutableListOf<WorldRegion>()
+                for (srX in -1..1) {
+                    for (srY in -1..1) {
+                        val sorX = regX + srX
+                        val sorY = regY + srY
+                        if (isRegionExist(sorX, sorY) && sorX != regX && sorY != regY) {
+                            val surroundRegion = regions[sorX][sorY]
+                            surrounding.add(surroundRegion)
+                        }
+                    }
+                }
+
+                region.surroundingRegions = surrounding.toTypedArray()
+            }
+        }
+        writeInfo(TAG, "Init surrounded regions complete")
     }
 }

@@ -66,10 +66,21 @@ class GameLobbyManager(
         val sessionKey = SessionKey(playKey1, playKey2, loginKey1, loginKey1)
         client.sessionKey = sessionKey
         client.account = accountInfo
+        onCharSlotSelection(client)
+    }
 
+    fun onCharSlotSelection(client: GameClient) {
         val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)
+        var temp = 0L
+        var lastActiveIndex = -1
+        slots.forEachIndexed{ index, slot ->
+            if (slot.lastAccess >= temp) {
+                lastActiveIndex = index
+                temp = slot.lastAccess
+            }
+        }
         client.characterSlots = slots
-        client.sendPacket(CharSlotList(client, slots))
+        client.sendPacket(CharSlotList(client, slots, lastActiveIndex))
     }
 
     fun requestCreateChar(
@@ -149,14 +160,8 @@ class GameLobbyManager(
         val newPlayer = objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex)
         gameDatabase.charactersDao.insertCharacter(newPlayer)
         gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
-
-        val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
-
-        val charSelectInfo = CharSlotList(client, slots)
-        client.sendPacket(charSelectInfo)
-
-        client.characterSlots = slots
+        onCharSlotSelection(client)
     }
 
     fun requestSelectChar(client: GameClient, slotIndex: Int) {

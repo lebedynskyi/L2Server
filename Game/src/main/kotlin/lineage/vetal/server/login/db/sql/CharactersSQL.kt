@@ -19,10 +19,10 @@ class CharactersSQL {
                 "FROM characters "
         const val UPDATE_lAST_ACCESS_SQL = "" +
                 "UPDATE characters SET lastAccess = ? " +
-                "WHERE id = ?"
+                "WHERE obj_Id = ?"
         const val UPDATE_COORDINATES_SQL = "" +
                 "UPDATE characters SET x = ?, y = ?, z = ? " +
-                "WHERE id = ?"
+                "WHERE obj_Id = ?"
 
     }
 }
