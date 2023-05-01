@@ -45,13 +45,13 @@ class SelectorThread<T : Client>(
         isRunning = true
 
         if (isServer) {
-            openServer()
+            startServer()
         } else {
-            openClient()
+            startClient()
         }
     }
 
-    private fun openServer() {
+    private fun startServer() {
         val address = if (hostName.isBlank() || hostName == "*") {
             InetSocketAddress(port)
         } else {
@@ -69,7 +69,7 @@ class SelectorThread<T : Client>(
         closeSelector()
     }
 
-    private fun openClient() {
+    private fun startClient() {
         if (!isServer && (hostName.isBlank() || hostName == "*")) {
             throw IllegalArgumentException("ip/host should be direct address for clients")
         }
@@ -89,9 +89,10 @@ class SelectorThread<T : Client>(
     private fun loopSelector() {
         while (isRunning) {
             val readyChannels = selector.select()
-            // TODO BridgeClientSelector does not sleep. Something wrong here with selector
-//            writeDebug(TAG, "Ready channels Number $readyChannels")
-            if (readyChannels == 0) continue
+            if (readyChannels == 0) {
+                writeError(TAG, "Something wrong.. Selector woke up without ready keys")
+                continue
+            }
 
             val keyIterator = selector.selectedKeys().iterator()
             while (keyIterator.hasNext()) {
@@ -120,6 +121,7 @@ class SelectorThread<T : Client>(
         writeInfo(TAG, "Selector closed")
     }
 
+    // Called on the server side to finish established connection
     private fun acceptConnection(key: SelectionKey) {
         val serverSocket = key.channel() as ServerSocketChannel
         val socket = serverSocket.accept().apply { configureBlocking(false) }
@@ -128,6 +130,7 @@ class SelectorThread<T : Client>(
         _selectionAcceptFlow.tryEmit(client)
     }
 
+    // Called on the client side to finish established connection
     private fun finishConnection(key: SelectionKey) {
         try {
             val socket = (key.channel() as SocketChannel)
@@ -146,7 +149,7 @@ class SelectorThread<T : Client>(
         } catch (e: Exception) {
             writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in 5 second")
             sleep(5000)
-            openClient()
+            startClient()
         }
     }
 
@@ -193,7 +196,7 @@ class SelectorThread<T : Client>(
         _selectionCloseFlow.tryEmit(client)
 
         if (!isServer) {
-            openClient()
+            startClient()
         }
     }
 }

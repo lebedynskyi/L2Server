@@ -11,6 +11,6 @@ fun main(args: Array<String>) {
     val dataFolder = args[0]
     val context = LoginContext(dataFolder)
 
-    LoginClientServer(context).startServer()
+//    LoginClientServer(context).startServer()
     BridgeServer(context).startServer()
 }
