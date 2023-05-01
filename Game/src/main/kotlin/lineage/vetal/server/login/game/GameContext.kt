@@ -44,9 +44,9 @@ class GameContext(
         val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${itemTemplates.size} items.")
 
-        val playersXmlFolder = File(dataFolder, PATH_CLASSES_XML)
-        val playerTemplates = CharXMLReader(playersXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${playerTemplates.size} player classes templates.")
+        val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
+        val charTemplates = CharXMLReader(charsXmlFolder.absolutePath).load()
+        writeInfo(TAG, "Loaded ${charTemplates.size} player classes templates.")
 
         val npcXmlFolder = File(dataFolder, NPCS_XML)
         val npcTemplates = NpcXMLReader(npcXmlFolder.absolutePath).load()
@@ -54,18 +54,19 @@ class GameContext(
 
         writeInfo(TAG, "Initialize database")
         val dbConnection = HikariDBConnection(gameConfig.dataBaseConfig)
-        gameDatabase = GameDatabase(playerTemplates, itemTemplates, dbConnection)
+        gameDatabase = GameDatabase(charTemplates, itemTemplates, dbConnection)
 
         val idFactory = GameObjectIdFactory()
         idFactory.load(gameDatabase)
-        objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates)
+
+        objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
         writeInfo(TAG, "Start managers")
         worldManager = WorldManager(gameDatabase)
         manorManager = ManorManager()
         itemManager = ItemManager(worldManager)
         movementManager = MovementManager(worldManager)
-        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, playerTemplates)
+        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, charTemplates)
         chatManager = ChatManager(worldManager)
         spawnManager = SpawnManager(worldManager, gameDatabase, objectFactory)
         gameAnnouncer = GameAnnounceManager(chatManager).apply {

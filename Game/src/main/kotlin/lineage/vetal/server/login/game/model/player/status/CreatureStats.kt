@@ -4,7 +4,7 @@ import lineage.vetal.server.login.game.model.player.CreatureObject
 import lineage.vetal.server.login.game.model.player.PlayerObject
 import lineage.vetal.server.login.game.model.template.pc.CreatureTemplate
 
-abstract class CreatureStatus(
+abstract class CreatureStats(
     private val template: CreatureTemplate
 ) {
     var isRunning = true

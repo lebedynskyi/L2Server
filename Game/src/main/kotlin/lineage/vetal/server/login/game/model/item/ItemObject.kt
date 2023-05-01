@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.game.model.item
 
-import lineage.vetal.server.login.game.model.TemplatableObject
+import lineage.vetal.server.login.game.model.GameObject
 import lineage.vetal.server.login.game.model.position.SpawnPosition
 import lineage.vetal.server.login.game.model.template.items.ItemTemplate
 
@@ -11,9 +11,9 @@ enum class ItemLocation {
 abstract class ItemObject(
     objectId: Int,
     var ownerId: String?,
-    override val template: ItemTemplate,
+    val template: ItemTemplate,
     spawnPosition: SpawnPosition = SpawnPosition.zero
-) : TemplatableObject<ItemTemplate>(objectId, template.name, spawnPosition), Comparable<ItemObject> {
+) : GameObject(objectId, template.name, spawnPosition), Comparable<ItemObject> {
     var count = 0
 
     var customType1 = template.type1

@@ -59,14 +59,14 @@ class CharInfo(
 
         writeD(player.pvpFlag)
         writeD(player.karma)
-        writeD(player.status.getMAtkSpd())
-        writeD(player.status.getPAtkSpd())
+        writeD(player.stats.getMAtkSpd())
+        writeD(player.stats.getPAtkSpd())
         writeD(player.pvpFlag)
         writeD(player.karma)
 
-        val runSpd: Int = player.status.getBaseRunSpeed()
-        val walkSpd: Int = player.status.getBaseWalkSpeed()
-        val swimSpd: Int = player.status.getBaseSwimSpeed()
+        val runSpd: Int = player.stats.getBaseRunSpeed()
+        val walkSpd: Int = player.stats.getBaseWalkSpeed()
+        val swimSpd: Int = player.stats.getBaseSwimSpeed()
 
         writeD(runSpd)
         writeD(walkSpd)
@@ -77,8 +77,8 @@ class CharInfo(
         writeD(if (player.isFlying) runSpd else 0)
         writeD(if (player.isFlying) walkSpd else 0)
 
-        writeF(player.status.getMovementSpeedMultiplier())
-        writeF(player.status.getAttackSpeedMultiplier())
+        writeF(player.stats.getMovementSpeedMultiplier())
+        writeF(player.stats.getAttackSpeedMultiplier())
 
         //        val summon: Summon = player.summon
 //        if (player.isMounted && summon != null) {
@@ -120,8 +120,8 @@ class CharInfo(
         writeC(player.recomLeft)
         writeH(player.recomHave)
         writeD(player.classId)
-        writeD(player.status.maxCp)
-        writeD(player.status.curCp.toInt())
+        writeD(player.stats.maxCp)
+        writeD(player.stats.curCp.toInt())
         writeC(if (player.isMounted) 0 else player.enchantEffect)
         writeC(player.team.id)
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff

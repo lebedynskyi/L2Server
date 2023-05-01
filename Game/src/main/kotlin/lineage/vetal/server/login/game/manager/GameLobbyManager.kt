@@ -138,24 +138,7 @@ class GameLobbyManager(
             sendPacket(CharCreateFail.REASON_CREATION_FAILED)
             return
         }
-
-        // Create the player Object.
-        val player: Player = Player.create(
-            IdFactory.getInstance().getNextId(),
-            template,
-            getClient().getAccountName(),
-            _name,
-            _hairStyle,
-            _hairColor,
-            _face,
-            Sex.VALUES.get(_sex.toInt())
-        )
-        if (player == null) {
-            sendPacket(CharCreateFail.REASON_CREATION_FAILED)
-            return
-        }
 */
-
         // The class id related to this template is post-newbie.
         val playerTemplate = charStatsData[classId]
         if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {
@@ -163,7 +146,7 @@ class GameLobbyManager(
             return
         }
 
-        val newPlayer = objectFactory.createPlayerObject(name, client.account, playerTemplate, hairStyle, hairColor, face, sex)
+        val newPlayer = objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex)
         gameDatabase.charactersDao.insertCharacter(newPlayer)
         gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
 

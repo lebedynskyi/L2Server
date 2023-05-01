@@ -16,7 +16,7 @@ class PlayerObject(
     val appearance: Appearance,
     position: SpawnPosition
 ) : Playable(objectId, name, position) {
-    override var status: PlayerStatus = PlayerStatus(charTemplate)
+    override var stats: PlayerStatus = PlayerStatus(charTemplate)
     var inventory: WearableInventory = WearableInventory()
 
     var lastAccessTime: Long = 0

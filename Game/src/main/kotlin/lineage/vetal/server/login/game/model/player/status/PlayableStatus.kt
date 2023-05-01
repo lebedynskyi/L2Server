@@ -4,7 +4,7 @@ import lineage.vetal.server.login.game.model.template.pc.CharTemplate
 
 abstract class PlayableStatus(
     private val template: CharTemplate
-) : CreatureStatus(template) {
+) : CreatureStats(template) {
     override fun getINT(): Int {
         return template.baseINT
     }

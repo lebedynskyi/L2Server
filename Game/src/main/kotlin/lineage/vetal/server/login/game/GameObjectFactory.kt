@@ -22,21 +22,21 @@ import kotlin.IllegalArgumentException
 class GameObjectFactory(
     private val idFactory: GameObjectIdFactory,
     private val itemTemplates: Map<Int, ItemTemplate>,
-    private val npcTemplates: Map<Int, NpcTemplate>
+    private val npcTemplates: Map<Int, NpcTemplate>,
+    private val charTemplates: Map<Int, CharTemplate>
 ) {
-    @Deprecated("Template should be removed from here!!!")
     fun createPlayerObject(
-        name: String, account: AccountInfo, charTemplate: CharTemplate,
+        name: String, account: AccountInfo, templateId: Int,
         hairStyle: Int, hairColor: Int, face: Int, sex: Byte
     ): PlayerObject {
-        // TODO create inventory
+        val template = charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
         val appearance = Appearance(hairStyle, hairColor, face, CharacterSex.values()[sex.toInt()])
-        val position = SpawnPosition(charTemplate.spawnLocations.random())
+        val position = SpawnPosition(template.spawnLocations.random())
         val objectId = idFactory.createId()
         val playerId = UUID.randomUUID().toString()
-        val player = PlayerObject(playerId, account.id, objectId, name, charTemplate, appearance, position)
+        val player = PlayerObject(playerId, account.id, objectId, name, template, appearance, position)
 
-        charTemplate.startItems.forEach {
+        template.startItems.forEach {
             player.inventory.addItem(createItemObject(it.id, playerId, it.count))
         }
 

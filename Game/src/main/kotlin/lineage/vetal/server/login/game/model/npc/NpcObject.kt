@@ -10,5 +10,5 @@ class NpcObject(
     spawnPosition: SpawnPosition
 ) : CreatureObject(objectId, template.name, spawnPosition) {
 
-    override val status: NpcStatus = NpcStatus(template)
+    override val stats: NpcStatus = NpcStatus(template)
 }

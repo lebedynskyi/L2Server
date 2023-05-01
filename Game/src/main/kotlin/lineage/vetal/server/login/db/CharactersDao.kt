@@ -22,15 +22,15 @@ class CharactersDao(
             it.setInt(2, player.objectId)
             it.setString(3, player.accountId)
             it.setString(4, player.name)
-            it.setInt(5, player.status.level)
-            it.setInt(6, player.status.maxHp)
-            it.setDouble(7, player.status.curHp)
-            it.setInt(8, player.status.maxCp)
-            it.setDouble(9, player.status.curCp)
-            it.setInt(10, player.status.maxMp)
-            it.setDouble(11, player.status.curMp)
-            it.setLong(12, player.status.exp)
-            it.setInt(13, player.status.sp)
+            it.setInt(5, player.stats.level)
+            it.setInt(6, player.stats.maxHp)
+            it.setDouble(7, player.stats.curHp)
+            it.setInt(8, player.stats.maxCp)
+            it.setDouble(9, player.stats.curCp)
+            it.setInt(10, player.stats.maxMp)
+            it.setDouble(11, player.stats.curMp)
+            it.setLong(12, player.stats.exp)
+            it.setInt(13, player.stats.sp)
             it.setInt(14, player.appearance.face)
             it.setInt(15, player.appearance.hairStyle)
             it.setInt(16, player.appearance.hairColor)
@@ -115,7 +115,7 @@ class CharactersDao(
                 Appearance(it.getInt(14), it.getInt(15), it.getInt(16), CharacterSex.values()[it.getInt(17)]),
                 SpawnPosition(it.getInt(33), it.getInt(34), it.getInt(35), 0)
             ).apply {
-                status = PlayerStatus(charTemplate).apply {
+                stats = PlayerStatus(charTemplate).apply {
                     level = it.getInt(5)
                     maxHp = it.getInt(6)
                     curHp = it.getDouble(7)
