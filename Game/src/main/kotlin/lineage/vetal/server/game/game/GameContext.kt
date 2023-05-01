@@ -3,7 +3,6 @@ package lineage.vetal.server.game.game
 import lineage.vetal.server.core.db.HikariDBConnection
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
-import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.manager.*
 import lineage.vetal.server.game.xml.CharXMLReader
@@ -64,12 +63,12 @@ class GameContext(
         writeInfo(TAG, "Start managers")
         worldManager = WorldManager(this)
         manorManager = ManorManager()
-        itemManager = ItemManager(worldManager)
-        movementManager = MovementManager(worldManager)
-        gameLobby = GameLobbyManager(gameConfig, worldManager, gameDatabase, objectFactory, charTemplates)
-        chatManager = ChatManager(worldManager)
-        spawnManager = SpawnManager(worldManager, gameDatabase, objectFactory)
-        gameAnnouncer = GameAnnounceManager(chatManager).apply {
+        itemManager = ItemManager(this)
+        movementManager = MovementManager(this)
+        gameLobby = GameLobbyManager(this, charTemplates)
+        chatManager = ChatManager(this)
+        spawnManager = SpawnManager(this)
+        gameAnnouncer = GameAnnounceManager(this).apply {
             start()
         }
         writeInfo(TAG,"Managers started")

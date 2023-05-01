@@ -3,6 +3,7 @@ package lineage.vetal.server.game.game.manager
 import kotlinx.coroutines.*
 
 import lineage.vetal.server.core.utils.logs.writeInfo
+import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.SayType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -10,7 +11,7 @@ import kotlin.random.Random
 private const val TAG = "AnnounceManager"
 
 class GameAnnounceManager(
-    private val chatManager: ChatManager
+    private val context: GameContext
 ){
     private val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
     private val announcements = listOf("Hello on mega server", "This is the best server", "I did it", "Another random message")
@@ -24,7 +25,7 @@ class GameAnnounceManager(
 
                 if (isRunning) {
                     val msg = announcements.random()
-                    chatManager.announce(msg, SayType.ANNOUNCEMENT)
+                    context.chatManager.announce(msg, SayType.ANNOUNCEMENT)
                     writeInfo(TAG, "-> $msg")
                 }
             }

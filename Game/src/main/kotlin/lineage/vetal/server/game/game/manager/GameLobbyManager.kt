@@ -7,11 +7,9 @@ import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestInit
-import lineage.vetal.server.game.db.GameDatabase
-import lineage.vetal.server.game.game.GameObjectFactory
+import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
@@ -21,26 +19,23 @@ import vetal.server.writeError
 private const val TAG = "GameLobby"
 
 class GameLobbyManager(
-    private val gameConfig: lineage.vetal.server.game.ConfigGame,
-    private val gameWorld: WorldManager,
-    private val gameDatabase: GameDatabase,
-    private val objectFactory: GameObjectFactory,
-    private val charStatsData: Map<Int, CharTemplate>,
+    private val context: GameContext,
+    private val charTemplates: Map<Int, CharTemplate>
 ) {
     // TODO pending auth clients should be stored here.. And cleared after timer
     fun onConnectedToBridge(client: BridgeClient) {
-        val serverConfig = gameConfig.serverInfo
+        val serverConfig = context.gameConfig.serverInfo
         val blowFishKey = serverConfig.bridgeKey
         val serverStatus = ServerStatus(
-            gameConfig.serverInfo.id,
-            gameWorld.players.size,
+            context.gameConfig.serverInfo.id,
+            context.worldManager.players.size,
             true,
-            gameConfig.serverInfo.ip
+            context.gameConfig.serverInfo.ip
         )
 
         client.connection.crypt.init(blowFishKey.toByteArray())
         client.serverInfo = RegisteredServer(serverConfig, serverStatus)
-        client.sendPacket(RequestInit(gameConfig.serverInfo.id))
+        client.sendPacket(RequestInit(context.gameConfig.serverInfo.id))
     }
 
     fun onBridgeInitOk(client: BridgeClient) {
@@ -57,7 +52,7 @@ class GameLobbyManager(
     fun requestAuthLogin(client: GameClient, account: String, loginKey1: Int, loginKey2: Int, playKey1: Int, playKey2: Int) {
         // TODO validate it via bridge server communication.
         writeInfo(TAG, "Account connected $account")
-        val accountInfo = gameDatabase.accountDao.findAccount(account)
+        val accountInfo = context.gameDatabase.accountDao.findAccount(account)
         if (accountInfo == null) {
             client.saveAndClose()
             return
@@ -70,7 +65,7 @@ class GameLobbyManager(
     }
 
     fun onCharSlotSelection(client: GameClient) {
-        val slots = gameDatabase.charactersDao.getCharSlots(client.account.id)
+        val slots = context.gameDatabase.charactersDao.getCharSlots(client.account.id)
         var temp = 0L
         var lastActiveIndex = -1
         slots.forEachIndexed{ index, slot ->
@@ -151,15 +146,15 @@ class GameLobbyManager(
         }
 */
         // The class id related to this template is post-newbie.
-        val playerTemplate = charStatsData[classId]
+        val playerTemplate = charTemplates[classId]
         if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {
             client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
             return
         }
 
-        val newPlayer = objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex)
-        gameDatabase.charactersDao.insertCharacter(newPlayer)
-        gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
+        val newPlayer = context.objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex)
+        context.gameDatabase.charactersDao.insertCharacter(newPlayer)
+        context.gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
         onCharSlotSelection(client)
     }
@@ -177,8 +172,8 @@ class GameLobbyManager(
             return
         }
 
-        val playerItems = gameDatabase.itemsDao.getInventoryForPlayer(slot.id)
-        val player = gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
+        val playerItems = context.gameDatabase.itemsDao.getInventoryForPlayer(slot.id)
+        val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
             inventory.addAll(playerItems)
         }
 

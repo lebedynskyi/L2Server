@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.npc.NpcObject
@@ -9,7 +10,7 @@ import lineage.vetal.server.game.gameserver.packet.server.MoveToLocation
 private const val TAG = "MovementManager"
 
 class MovementManager(
-    private val worldManager: WorldManager
+    private val context: GameContext
 ) {
     fun startMovement(player: PlayerObject, start: Position, finish: Position) {
         // TODO start task. Introduce map with move object ? wtf to do ? Geo engine and etc
@@ -22,7 +23,7 @@ class MovementManager(
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {
-        worldManager.onPlayerPositionChanged(player, loc)
+        context.worldManager.onPlayerPositionChanged(player, loc)
         player.position = SpawnPosition(loc)
     }
 }

@@ -1,12 +1,13 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.gameserver.packet.server.DropItem
 import lineage.vetal.server.game.gameserver.packet.server.InventoryUpdate
 
 class ItemManager(
-    private val worldManager: WorldManager
+    private val context: GameContext
 ) {
     fun onPlayerDropItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
         // TODO a lot of conditions here

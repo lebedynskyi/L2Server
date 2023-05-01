@@ -1,23 +1,20 @@
 package lineage.vetal.server.game.game.manager
 
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.game.db.GameDatabase
-import lineage.vetal.server.game.game.GameObjectFactory
+import lineage.vetal.server.game.game.GameContext
 
 private const val TAG = "SpawnManager"
 
 class SpawnManager(
-    private val worldManager: WorldManager,
-    private val gameDatabase: GameDatabase,
-    private val gameObjectFactory: GameObjectFactory
+    private val context: GameContext
 ) {
     init {
         // TODO here we can start some timers for respawn
-        val spawnList = gameDatabase.spawnDao.getSpawnList()
+        val spawnList = context.gameDatabase.spawnDao.getSpawnList()
         for (spawnData in spawnList) {
-            val npc = gameObjectFactory.createNpcObject(spawnData.npcTemplateId, spawnData.spawnPosition)
-            worldManager.onNpcAdded(npc)
+            val npc = context.objectFactory.createNpcObject(spawnData.npcTemplateId, spawnData.spawnPosition)
+            context.worldManager.onNpcAdded(npc)
         }
-        writeInfo(TAG, "Loaded ${spawnList.size} NPC" )
+        writeInfo(TAG, "Loaded ${spawnList.size} NPC")
     }
 }
