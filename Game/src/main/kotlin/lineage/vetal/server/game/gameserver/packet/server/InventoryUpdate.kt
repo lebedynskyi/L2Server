@@ -1,6 +1,7 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
 import lineage.vetal.server.game.game.model.item.EquipmentObject
+import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.item.WeaponObject
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket

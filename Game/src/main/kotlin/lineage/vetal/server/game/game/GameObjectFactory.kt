@@ -1,10 +1,7 @@
 package lineage.vetal.server.game.game
 
 import lineage.vetal.server.core.model.AccountInfo
-import lineage.vetal.server.game.game.model.item.ArmorObject
-import lineage.vetal.server.game.game.model.item.EtcItemObject
-import lineage.vetal.server.game.game.model.item.ItemObject
-import lineage.vetal.server.game.game.model.item.WeaponObject
+import lineage.vetal.server.game.game.model.item.*
 import lineage.vetal.server.game.game.model.npc.NpcObject
 import lineage.vetal.server.game.game.model.player.Appearance
 import lineage.vetal.server.game.game.model.player.PlayerObject
@@ -27,9 +24,13 @@ class GameObjectFactory(
 ) {
     fun createPlayerObject(
         name: String, account: AccountInfo, templateId: Int,
-        hairStyle: Int, hairColor: Int, face: Int, sex: Byte
+        hairStyle: Int, hairColor: Int, face: Int, sex: Byte,
+        isNewbie: Boolean
     ): PlayerObject {
         val template = charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
+        if (isNewbie && template.classBaseLevel > 1) {
+            throw IllegalArgumentException("Cannot create newbie char for template $templateId")
+        }
         val appearance = Appearance(hairStyle, hairColor, face, CharacterSex.values()[sex.toInt()])
         val position = SpawnPosition(template.spawnLocations.random())
         val objectId = idFactory.createId()
@@ -37,7 +38,8 @@ class GameObjectFactory(
         val player = PlayerObject(playerId, account.id, objectId, name, template, appearance, position)
 
         template.startItems.forEach {
-            player.inventory.addItem(createItemObject(it.id, playerId, it.count))
+            val item = createItemObject(it.id, playerId, it.count)
+            player.inventory.addItem(item)
         }
 
         return player

@@ -7,5 +7,6 @@ abstract class EquipmentObject(
     ownerId: String,
     itemTemplate: ItemTemplate,
 ) : ItemObject(objectId, ownerId, itemTemplate) {
-    var isEquipped : Boolean = false
+    val isEquipped : Boolean get() = equippedSlot != null
+    var equippedSlot: Int? = null
 }

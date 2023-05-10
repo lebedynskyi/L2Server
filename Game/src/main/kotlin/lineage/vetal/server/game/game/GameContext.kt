@@ -65,7 +65,7 @@ class GameContext(
         manorManager = ManorManager()
         itemManager = ItemManager(this)
         movementManager = MovementManager(this)
-        gameLobby = GameLobbyManager(this, charTemplates)
+        gameLobby = GameLobbyManager(this)
         chatManager = ChatManager(this)
         spawnManager = SpawnManager(this)
         gameAnnouncer = GameAnnounceManager(this).apply {

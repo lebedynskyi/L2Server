@@ -41,8 +41,8 @@ enum class CrystalType(
 }
 
 abstract class ItemTemplate(set: StatSet) : Template(set) {
-    abstract val type1 : Int // needed for item list (inventory)
-    abstract val type2 : Int // different lists for armor, weapon, etc
+    abstract val type1: Int // needed for item list (inventory)
+    abstract val type2: Int // different lists for armor, weapon, etc
 
     val name = set.getString("name")
     val weight = set.getInteger("weight", 0)
@@ -60,6 +60,6 @@ abstract class ItemTemplate(set: StatSet) : Template(set) {
     val depositable = set.getBool("is_depositable", true)
     val isHeroItem = (id in 6611..6621) || id == 6842
     val isOlyRestricted = set.getBool("is_oly_restricted", false)
-    val defaultAction = set.getEnum("default_action", ItemAction:: class.java, ItemAction.none)
+    val defaultAction = set.getEnum("default_action", ItemAction::class.java, ItemAction.none)
     val skills = if (set.containsKey("item_skill")) set.getIntPairsArray("item_skill") else null
 }

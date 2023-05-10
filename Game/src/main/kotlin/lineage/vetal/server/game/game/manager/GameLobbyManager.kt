@@ -10,7 +10,6 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
@@ -20,7 +19,6 @@ private const val TAG = "GameLobby"
 
 class GameLobbyManager(
     private val context: GameContext,
-    private val charTemplates: Map<Int, CharTemplate>
 ) {
     // TODO pending auth clients should be stored here.. And cleared after timer
     fun onConnectedToBridge(client: BridgeClient) {
@@ -145,14 +143,7 @@ class GameLobbyManager(
             return
         }
 */
-        // The class id related to this template is post-newbie.
-        val playerTemplate = charTemplates[classId]
-        if (playerTemplate == null || playerTemplate.classBaseLevel > 1) {
-            client.sendPacket(CreateCharFail.REASON_CREATION_FAILED)
-            return
-        }
-
-        val newPlayer = context.objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex)
+        val newPlayer = context.objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex, true)
         context.gameDatabase.charactersDao.insertCharacter(newPlayer)
         context.gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
         client.sendPacket(CreateCharOK.STATIC_PACKET)

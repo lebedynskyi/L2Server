@@ -87,7 +87,7 @@ class StatSet : HashMap<String, Any?> {
     fun getDouble(key: String?, defaultValue: Double): Double {
         val value = get(key)
         if (value is Number) return value.toDouble()
-        if (value is String) return value.toDouble ()
+        if (value is String) return value.toDouble()
         return if (value is Boolean) if (value) 1.0 else 0.0 else defaultValue
     }
 
@@ -192,10 +192,10 @@ class StatSet : HashMap<String, Any?> {
     fun getString(key: String): String {
         val value = get(key)
         if (value != null) return value.toString()
-        throw IllegalArgumentException("StatsSet : String value required, but unspecified for key: $key. Map = ${map { it.key + "=" + it.value}}")
+        throw IllegalArgumentException("StatsSet : String value required, but unspecified for key: $key. Map = ${map { it.key + "=" + it.value }}")
     }
 
-    fun getString(key: String?, defaultValue: String): String {
+    fun getString(key: String?, defaultValue: String?): String? {
         val value = get(key)
         return value?.toString() ?: defaultValue
     }
@@ -253,7 +253,8 @@ class StatSet : HashMap<String, Any?> {
             val tempArray: Array<Pair<Int, Int>?> = arrayOfNulls(toSplit.size)
             var index = 0
             for (splitted in toSplit) {
-                val splittedHolder = splitted.toString().split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val splittedHolder =
+                    splitted.toString().split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 tempArray[index++] = Pair(splittedHolder[0].toInt(), splittedHolder[1].toInt())
             }
             return tempArray

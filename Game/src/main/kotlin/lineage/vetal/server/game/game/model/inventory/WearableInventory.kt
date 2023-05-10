@@ -1,23 +1,25 @@
 package lineage.vetal.server.game.game.model.inventory
 
-import lineage.vetal.server.game.game.model.player.Paperdoll
+import lineage.vetal.server.game.game.model.item.EquipmentObject
+import lineage.vetal.server.game.game.model.player.PaperDollSlot
 
 class WearableInventory : CreatureInventory() {
+    private val wearedItems: Map<PaperDollSlot, EquipmentObject> get() = _wearedItems
+    private val _wearedItems = mutableMapOf<PaperDollSlot, EquipmentObject>()
 
-    // TODO add methods to wear and unwear.. Save status of item ? Is it attribute of item?
+    fun equipItemFor(itemObject: EquipmentObject){
 
-    @Deprecated("Should be different. Why wee need to use find method? Equiped field  for char invenotry ?")
-    fun getItemIdFrom(paperdoll: Paperdoll): Int {
+    }
+
+    fun getItemIdFrom(paperDoll: PaperDollSlot): Int {
         return 0
     }
 
-    @Deprecated("Should be different. Why wee need to use find method? Equiped field  for char invenotry ?")
-    fun getItemObjectIdFrom(paperdoll: Paperdoll): Int {
+    fun getItemObjectIdFrom(paperDoll: PaperDollSlot): Int {
         return 0
     }
 
-    @Deprecated("Should be different. Why wee need to use find method? Equiped field  for char invenotry ?")
-    fun getAugmentationIdFrom(paperdoll: Paperdoll): Int {
+    fun getAugmentationIdFrom(paperDoll: PaperDollSlot): Int {
         return 0
     }
 }

@@ -1,10 +1,14 @@
 package lineage.vetal.server.game.game.manager
 
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.model.item.EquipmentObject
+import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
+import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.server.DropItem
 import lineage.vetal.server.game.gameserver.packet.server.InventoryUpdate
+import lineage.vetal.server.game.gameserver.packet.server.UserInfo
 
 class ItemManager(
     private val context: GameContext
@@ -49,5 +53,23 @@ class ItemManager(
 
     fun onNpcDropItem() {
 
+    }
+
+    fun onUseItem(client: GameClient, player: PlayerObject, objectId: Int, ctrlPressed: Boolean) {
+        val item = player.inventory.getItem(objectId) ?: return
+
+        when (item) {
+            is EquipmentObject -> {
+                item.equippedSlot = item.template.bodySlot
+                // Update inventory
+                player.sendPacket(UserInfo(player))
+                player.sendPacket(InventoryUpdate().apply {
+                    onModified(item)
+                })
+            }
+            is EtcItemObject -> {
+                System.err.println("XXX: Use EtcItem")
+            }
+        }
     }
 }

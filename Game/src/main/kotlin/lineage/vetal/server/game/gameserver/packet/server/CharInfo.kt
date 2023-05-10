@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
 import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.game.model.player.Paperdoll
+import lineage.vetal.server.game.game.model.player.PaperDollSlot
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
@@ -21,24 +21,24 @@ class CharInfo(
         writeD(player.appearance.sex.id)
         writeD(player.classId)
 
-        writeD(player.inventory.getItemIdFrom(Paperdoll.HAIRALL))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.HEAD))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.RHAND))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.LHAND))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.GLOVES))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.CHEST))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.LEGS))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.FEET))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.CLOAK))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.RHAND))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.HAIR))
-        writeD(player.inventory.getItemIdFrom(Paperdoll.FACE))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.HAIRALL))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.HEAD))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.RHAND))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.LHAND))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.GLOVES))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.CHEST))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.LEGS))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.FEET))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.CLOAK))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.RHAND))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.HAIR))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.FACE))
 
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
-        writeD(player.inventory.getAugmentationIdFrom(Paperdoll.RHAND))
+        writeD(player.inventory.getAugmentationIdFrom(PaperDollSlot.RHAND))
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
@@ -51,7 +51,7 @@ class CharInfo(
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
-        writeD(player.inventory.getAugmentationIdFrom(Paperdoll.LHAND))
+        writeD(player.inventory.getAugmentationIdFrom(PaperDollSlot.LHAND))
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
