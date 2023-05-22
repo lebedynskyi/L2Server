@@ -10,6 +10,6 @@ class UpdateOk : BridgeGamePacket() {
     }
 
     override fun read() {
-
+        readD()
     }
 }

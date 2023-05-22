@@ -12,8 +12,8 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
+import kotlin.system.exitProcess
 
-//TODO implement packet counter and limit per selection.
 class SelectorThread<T : Client>(
     private val hostName: String,
     private val port: Int,
@@ -158,13 +158,15 @@ class SelectorThread<T : Client>(
         val connection = client.connection
 
         try {
-            // TODO should be list of packets
-            val packet = connection.readPackets(readBuffer, stringBuffer)
+            val result = connection.readPackets(readBuffer, stringBuffer)
 
-            if (packet != null) {
-                _selectionReadFlow.tryEmit(client to packet)
-            } else if (connection.pendingClose) {
+            if (!result || connection.pendingClose) {
                 closeConnection(client, connection)
+            } else {
+                while (connection.hasNextPacket()) {
+                    val nextPacket = connection.nextPacket() ?: break
+                    _selectionReadFlow.tryEmit(client to nextPacket)
+                }
             }
         } catch (e: Exception) {
             writeError(TAG, "Cannot read packets", e)

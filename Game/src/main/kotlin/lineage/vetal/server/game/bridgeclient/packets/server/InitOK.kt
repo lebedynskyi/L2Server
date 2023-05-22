@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.GameContext
 
 class InitOK : BridgeGamePacket() {
     override fun read() {
-
+        readD()
     }
 
     override fun execute(client: BridgeClient, context: GameContext) {

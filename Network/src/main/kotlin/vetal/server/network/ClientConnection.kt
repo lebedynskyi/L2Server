@@ -18,14 +18,18 @@ open class ClientConnection(
 ) {
     private val TAG = "ClientConnection"
     private val DATA_HEADER_SIZE = 2
-    private val packetsQueue = ConcurrentLinkedQueue<SendablePacket>()
+    private val sendPacketsQueue = ConcurrentLinkedQueue<SendablePacket>()
+    private val readPacketsQueue = ConcurrentLinkedQueue<ReceivablePacket>()
 
     @Volatile
     internal var pendingClose = false
 
+    fun nextPacket(): ReceivablePacket? = readPacketsQueue.poll()
+    fun hasNextPacket(): Boolean = readPacketsQueue.size > 0
+
     fun sendPacket(packet: SendablePacket) {
         if (selectionKey.isValid) {
-            packetsQueue.add(packet)
+            sendPacketsQueue.add(packet)
             selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
             selector.wakeup()
         } else {
@@ -34,14 +38,14 @@ open class ClientConnection(
     }
 
     internal fun askClose(lastPacket: SendablePacket? = null) {
-        packetsQueue.clear()
+        sendPacketsQueue.clear()
         pendingClose = true
         if (lastPacket != null) {
             sendPacket(lastPacket)
         }
     }
 
-    fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): ReceivablePacket? {
+    fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer) : Boolean{
         byteBuffer.clear()
         stringBuffer.setLength(0)
 
@@ -49,7 +53,7 @@ open class ClientConnection(
         if (readResult <= 0) {
             // data < 0 means connection closed
             pendingClose = true
-            return null
+            return false
         }
 
         byteBuffer.flip()
@@ -59,7 +63,7 @@ open class ClientConnection(
     internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) :Boolean {
         byteBuffer.clear()
 
-        val packetIterator = packetsQueue.iterator()
+        val packetIterator = sendPacketsQueue.iterator()
         while (packetIterator.hasNext()) {
             tempBuffer.clear()
             val packet = packetIterator.next()
@@ -76,7 +80,7 @@ open class ClientConnection(
         // TODO check is packet was written to buffer or not.. It could be not enough space in socket
         byteBuffer.flip()
         val sentBytesCount = writeData(byteBuffer)
-        return packetsQueue.size <= 0
+        return sendPacketsQueue.size <= 0
     }
 
     internal fun closeSocket() {
@@ -88,19 +92,21 @@ open class ClientConnection(
         }
     }
 
-    private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): ReceivablePacket? {
-        if (buffer.position() >= buffer.limit()) {
-            return null
+    private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer) : Boolean {
+        while (buffer.position() < buffer.limit()) {
+            val header = buffer.short
+            val dataSize = header - DATA_HEADER_SIZE
+            val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
+            if (decryptedSize > 0) {
+                val packet = packetParser.parsePacket(buffer, sBuffer, decryptedSize)
+                readPacketsQueue.add(packet)
+                buffer.position(header.toInt())
+            } else {
+                return false
+            }
         }
-        val header = buffer.short
-        val dataSize = header - DATA_HEADER_SIZE
-        val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
 
-        if (decryptedSize > 0) {
-            return packetParser.parsePacket(buffer, sBuffer, decryptedSize)
-        }
-
-        return null
+        return true
     }
 
     private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {

@@ -9,6 +9,6 @@ class AuthOk : BridgeGamePacket() {
     }
 
     override fun read() {
-
+        readD()
     }
 }
