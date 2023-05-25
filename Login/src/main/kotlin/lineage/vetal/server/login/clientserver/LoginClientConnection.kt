@@ -15,8 +15,7 @@ class LoginClientConnection(
     socket: SocketChannel,
     selector: Selector,
     selectionKey: SelectionKey,
-    clientAddress: InetSocketAddress
-) : ClientConnection(socket, selector, selectionKey, clientAddress, loginCrypt, loginPacketParser) {
+) : ClientConnection(socket, selector, selectionKey, loginPacketParser, loginCrypt) {
     private val TAG = "LoginClientConnection"
 
     fun sendInitPacket(sessionId: Int) {

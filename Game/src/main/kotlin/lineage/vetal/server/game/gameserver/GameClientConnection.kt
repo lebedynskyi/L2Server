@@ -12,11 +12,10 @@ class GameClientConnection(
     socket: SocketChannel,
     selector: Selector,
     selectionKey: SelectionKey,
-    clientAddress: InetSocketAddress,
-    private val crypt: GameConnectionCrypt,
     packetParser: PacketParser,
+    private val crypt: GameConnectionCrypt,
 ) : ClientConnection(
-    socket, selector, selectionKey, clientAddress, crypt, packetParser
+    socket, selector, selectionKey, packetParser, crypt
 ) {
     fun sendInitPacket() {
         sendPacket(CryptInit(crypt.key))

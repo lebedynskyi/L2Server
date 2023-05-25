@@ -31,8 +31,6 @@ class LoginClientPacketParser : PacketParser {
                 writeDebug(TAG, "Unknown packet with opcode $opCode")
                 null
             }
-        }?.apply {
-            readFromBuffer(buffer, sBuffer)
         }
     }
 }

@@ -12,10 +12,10 @@ open class ClientConnection(
     private val socket: SocketChannel,
     private val selector: Selector,
     private val selectionKey: SelectionKey,
-    private val clientAddress: InetSocketAddress,
-    private val crypt: ConnectionCrypt,
     private val packetParser: PacketParser,
+    private val crypt: ConnectionCrypt = ConnectionCrypt.NO_CRYPT,
 ) {
+    private val clientAddress: InetSocketAddress = socket.remoteAddress as InetSocketAddress
     private val TAG = "ClientConnection"
     private val DATA_HEADER_SIZE = 2
     private val sendPacketsQueue = ConcurrentLinkedQueue<SendablePacket>()
@@ -96,11 +96,15 @@ open class ClientConnection(
         while (buffer.position() < buffer.limit()) {
             val header = buffer.short
             val dataSize = header - DATA_HEADER_SIZE
+            val packetEndPosition = buffer.position() + dataSize
             val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
             if (decryptedSize > 0) {
                 val packet = packetParser.parsePacket(buffer, sBuffer, decryptedSize)
-                readPacketsQueue.add(packet)
-                buffer.position(header.toInt())
+                packet?.let {
+                    it.readFromBuffer(buffer, sBuffer)
+                    readPacketsQueue.add(it)
+                }
+                buffer.position(packetEndPosition)
             } else {
                 return false
             }

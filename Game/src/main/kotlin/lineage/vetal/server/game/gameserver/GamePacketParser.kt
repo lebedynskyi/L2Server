@@ -12,7 +12,7 @@ class GamePacketParser : PacketParser {
 
     override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
         val opCode = buffer.get().toUByte().toInt()
-        val packet =  when (opCode) {
+        return when (opCode) {
             0x00 -> RequestProtocolVersion()
             0x01 -> RequestMoveToLocation()
             0x08 -> RequestAuthLogin()
@@ -44,8 +44,5 @@ class GamePacketParser : PacketParser {
                 null
             }
         }
-
-        packet?.readFromBuffer(buffer, sBuffer)
-        return packet
     }
 }

@@ -12,7 +12,6 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
-import kotlin.system.exitProcess
 
 class SelectorThread<T : Client>(
     private val hostName: String,
@@ -193,7 +192,7 @@ class SelectorThread<T : Client>(
     }
 
     private fun closeConnection(client: T, connection: ClientConnection) {
-        writeInfo(TAG, " Closed connection with client $client")
+        writeInfo(TAG, " Close connection with client $client")
         connection.closeSocket()
         _selectionCloseFlow.tryEmit(client)
 
