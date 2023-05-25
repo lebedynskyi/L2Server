@@ -1,28 +1,16 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
 import lineage.vetal.server.game.game.model.item.EquipmentObject
-import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.item.WeaponObject
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class InventoryUpdate : GameServerPacket() {
+    override val opCode: Byte = 0x27
+
     private val items: MutableList<UpdateInfo> = mutableListOf()
 
-    fun onItemRemoved(itemObject: ItemObject) {
-        items.add(UpdateInfo(itemObject, ChangeType.REMOVED))
-    }
-
-    fun onNewItem(itemObject: ItemObject) {
-        items.add(UpdateInfo(itemObject, ChangeType.ADDED))
-    }
-
-    fun onModified(itemObject: ItemObject) {
-        items.add(UpdateInfo(itemObject, ChangeType.MODIFIED))
-    }
-
     override fun write() {
-        writeC(0x27)
         writeH(items.size)
 
         for (temp in items) {
@@ -40,6 +28,18 @@ class InventoryUpdate : GameServerPacket() {
             writeD(temp.augmentationId)
             writeD(temp.durationLeft)
         }
+    }
+
+    fun onItemRemoved(itemObject: ItemObject) {
+        items.add(UpdateInfo(itemObject, ChangeType.REMOVED))
+    }
+
+    fun onNewItem(itemObject: ItemObject) {
+        items.add(UpdateInfo(itemObject, ChangeType.ADDED))
+    }
+
+    fun onModified(itemObject: ItemObject) {
+        items.add(UpdateInfo(itemObject, ChangeType.MODIFIED))
     }
 }
 

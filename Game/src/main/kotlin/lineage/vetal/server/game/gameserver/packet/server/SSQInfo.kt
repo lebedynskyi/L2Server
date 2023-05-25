@@ -4,8 +4,14 @@ import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 
 class SSQInfo private constructor(
-    private val _state: Int
+    private val state: Int
 ) : GameServerPacket() {
+    override val opCode: Byte = 0xf8.toByte()
+
+    override fun write() {
+        writeH(state)
+    }
+
     companion object {
         val REGULAR_SKY_PACKET = SSQInfo(256)
         val DUSK_SKY_PACKET = SSQInfo(257)
@@ -20,10 +26,5 @@ class SSQInfo private constructor(
 //            }
 //            return REGULAR_SKY_PACKET
 //        }
-    }
-
-    override fun write() {
-        writeC(0xf8)
-        writeH(_state)
     }
 }

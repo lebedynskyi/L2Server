@@ -1,18 +1,16 @@
 package lineage.vetal.server.game.gameserver
 
-import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.gameserver.packet.client.*
-import vetal.server.network.PacketParser
-import vetal.server.network.ReceivablePacket
+import vetal.server.sock.ReadablePacket
+import vetal.server.sock.SockPacketFactory
 import java.nio.ByteBuffer
 
-class GamePacketParser : PacketParser {
+class GamePacketParser : SockPacketFactory {
     private val TAG = "GamePacketParser"
 
-    override fun parsePacket(buffer: ByteBuffer, sBuffer: StringBuffer, size: Int): ReceivablePacket? {
-        val opCode = buffer.get().toUByte().toInt()
-        return when (opCode) {
+    override fun parsePacket(opCode: Byte, size: Int, buffer: ByteBuffer): ReadablePacket? {
+        return when (opCode.toInt()) {
             0x00 -> RequestProtocolVersion()
             0x01 -> RequestMoveToLocation()
             0x08 -> RequestAuthLogin()
@@ -27,20 +25,16 @@ class GamePacketParser : PacketParser {
             0x48 -> ValidatePosition()
             0x12 -> RequestDropItem()
             0x14 -> RequestUseItem()
-            0x04 -> {
-                writeDebug(TAG, "Select target")
-                null
-            }
-            0xd0 -> when (buffer.get().toInt()) {
-                0x08 -> RequestManorList()
-                else -> {
-                    writeInfo(TAG, "No second opcode for 0xd0 main opcode")
-                    null
-                }
-            }
+            0xd0 -> parsePacketFor0xD0(buffer)
+            else -> null
+        }
+    }
 
+    private fun parsePacketFor0xD0(buffer: ByteBuffer): ReadablePacket? {
+        return when (buffer.get().toInt()) {
+            0x08 -> RequestManorList()
             else -> {
-                writeDebug(TAG, "Unknown packet with opcode ${Integer.toHexString(opCode)}")
+                writeInfo(TAG, "No second opcode for 0xd0 main opcode")
                 null
             }
         }

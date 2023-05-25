@@ -5,16 +5,16 @@ import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientFactory
 import lineage.vetal.server.game.gameserver.packet.GamePacket
-import vetal.server.network.SelectorThread
+import vetal.server.sock.SockSelector
 
 class GameServer(
     private val context: GameContext
 ) {
-    private val gameSelector: SelectorThread<GameClient>
+    private val gameSelector: SockSelector<GameClient>
     private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
 
     init {
-        gameSelector = SelectorThread(
+        gameSelector = SockSelector(
             context.gameConfig.serverInfo.ip,
             context.gameConfig.serverInfo.port,
             GameClientFactory(),

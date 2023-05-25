@@ -5,16 +5,16 @@ import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.bridgeserver.packets.BridgeClientPacket
 import lineage.vetal.server.login.bridgeserver.packets.client.ClientDisconnected
-import vetal.server.network.SelectorThread
+import vetal.server.sock.SockSelector
 
 class BridgeServer(
     private val context: LoginContext
 ) {
-    private var selectorThread: SelectorThread<BridgeClient>
+    private var selectorThread: SockSelector<BridgeClient>
     private val serverScope = CoroutineScope(Dispatchers.IO + Job())
 
     init {
-        selectorThread = SelectorThread(
+        selectorThread = SockSelector(
             context.loginConfig.bridgeServer.hostname,
             context.loginConfig.bridgeServer.port,
             BridgeFactory(),

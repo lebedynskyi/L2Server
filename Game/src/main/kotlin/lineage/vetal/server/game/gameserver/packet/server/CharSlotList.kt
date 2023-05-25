@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.game.model.CharSelectionSlot
+import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class CharSlotList(
@@ -9,8 +9,9 @@ class CharSlotList(
     private val slots: List<CharSelectionSlot>,
     private val lastActiveIndex: Int,
 ) : GameServerPacket() {
+    override val opCode: Byte = 0x13
+
     override fun write() {
-        writeC(0x13)
         writeD(slots.size)
 
         slots.forEachIndexed { index, it ->

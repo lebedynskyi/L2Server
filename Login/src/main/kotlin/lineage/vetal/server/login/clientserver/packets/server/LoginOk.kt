@@ -1,13 +1,14 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class LoginOk(
-    val loginOk1: Int,
-    val loginOk2: Int
-) : SendablePacket() {
+    private val loginOk1: Int,
+    private val loginOk2: Int
+) : WriteablePacket() {
+    override val opCode: Byte = 0x03
+
     override fun write() {
-        writeC(0x03)
         writeD(loginOk1)
         writeD(loginOk2)
         writeD(0x00)

@@ -7,8 +7,9 @@ class DropItem(
     private val item: ItemObject,
     private val throwerId: Int
 ): GameServerPacket() {
+    override val opCode: Byte = 0x0c
+
     override fun write() {
-        writeC(0x0c)
         writeD(throwerId)
         writeD(item.objectId)
         writeD(item.template.id)

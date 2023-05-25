@@ -1,15 +1,13 @@
 package lineage.vetal.server.game.bridgeclient.packets.client
 
-import vetal.server.network.SendablePacket
-
+import vetal.server.sock.WriteablePacket
 
 class RequestInit(
     private var serverId: Int
-) : SendablePacket() {
+) : WriteablePacket() {
+    override val opCode: Byte = 0x01
 
     override fun write() {
-        writeC(0x01)
-
         writeD(serverId)
     }
 }

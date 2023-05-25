@@ -1,12 +1,13 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class GGAuth(
-    var sessionId: Int
-) : SendablePacket() {
+    private var sessionId: Int
+) : WriteablePacket() {
+    override val opCode: Byte = 0x0b
+
     override fun write() {
-        writeC(0x0b)
         writeD(sessionId)
         writeD(0x00)
         writeD(0x00)

@@ -6,9 +6,9 @@ import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 class NpcInfo(
     private val npc: NpcObject
 ) : GameServerPacket() {
-    override fun write() {
-        writeC(0x16)
+    override val opCode: Byte = 0x16
 
+    override fun write() {
         writeD(npc.objectId)
         writeD(npc.template.idTemplate + 1000000)
         writeD(if (true) 1 else 0) // writeD(_isAttackable ? 1 : 0);

@@ -1,6 +1,6 @@
 package lineage.vetal.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class Action(
     private val speed: Int,
@@ -8,10 +8,10 @@ class Action(
     private val topPressed: Boolean,
     private val leftPressed: Boolean,
     private val rightPressed: Boolean
-) : SendablePacket() {
-    override fun write() {
-        writeC(0x3)
+) : WriteablePacket() {
+    override val opCode: Byte = 0x3
 
+    override fun write() {
         writeD(speed)
         writeC(if (topPressed) 1 else 0)
         writeC(if (bottomPressed) 1 else 0)

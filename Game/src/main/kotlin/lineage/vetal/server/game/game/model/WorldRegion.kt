@@ -7,7 +7,7 @@ import lineage.vetal.server.game.gameserver.packet.server.CharInfo
 import lineage.vetal.server.game.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.game.gameserver.packet.server.NpcInfo
 import lineage.vetal.server.game.gameserver.packet.server.SpawnItem
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 import java.util.concurrent.ConcurrentHashMap
 
 // TODO need to understand design of this class. Is it just holder for items ? DO I need Broadcast Manager ?
@@ -53,13 +53,13 @@ data class WorldRegion(
         broadCast(NpcInfo(npc))
     }
 
-    fun broadCastRegion(packet: SendablePacket) {
+    fun broadCastRegion(packet: WriteablePacket) {
         players.values.forEach {
             it.sendPacket(packet)
         }
     }
 
-    fun broadCast(packet: SendablePacket) {
+    fun broadCast(packet: WriteablePacket) {
         players.values.plus(surroundingRegions.map { it.players.values }.flatten()).forEach {
             it.sendPacket(packet)
         }

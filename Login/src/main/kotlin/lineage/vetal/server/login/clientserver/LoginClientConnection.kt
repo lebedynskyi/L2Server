@@ -1,8 +1,7 @@
 package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.login.clientserver.packets.server.Init
-import vetal.server.network.ClientConnection
-import java.net.InetSocketAddress
+import vetal.server.sock.SockConnection
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
@@ -15,7 +14,7 @@ class LoginClientConnection(
     socket: SocketChannel,
     selector: Selector,
     selectionKey: SelectionKey,
-) : ClientConnection(socket, selector, selectionKey, loginPacketParser, loginCrypt) {
+) : SockConnection(socket, selector, selectionKey, loginPacketParser, loginCrypt) {
     private val TAG = "LoginClientConnection"
 
     fun sendInitPacket(sessionId: Int) {

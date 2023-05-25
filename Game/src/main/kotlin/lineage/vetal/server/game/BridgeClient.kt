@@ -6,16 +6,16 @@ import lineage.vetal.server.game.bridgeclient.BridgeGameClientFactory
 import lineage.vetal.server.game.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.game.bridgeclient.packets.server.BridgeConnected
 import lineage.vetal.server.game.game.GameContext
-import vetal.server.network.SelectorThread
+import vetal.server.sock.SockSelector
 
 class BridgeClient(
     private val context: GameContext
 ) {
-    private val bridgeSelector: SelectorThread<BridgeClient>
+    private val bridgeSelector: SockSelector<BridgeClient>
     private val coroutineScope = CoroutineScope(newSingleThreadContext("GameBridgeClient") + Job())
 
     init {
-        bridgeSelector = SelectorThread(
+        bridgeSelector = SockSelector(
             context.gameConfig.bridgeServer.hostname,
             context.gameConfig.bridgeServer.port,
             BridgeGameClientFactory(),

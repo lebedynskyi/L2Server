@@ -4,13 +4,14 @@ import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class NewCharacterSuccess(
-    private val templated: List<CharTemplate>
+    private val templates: List<CharTemplate>
 ) : GameServerPacket() {
-    override fun write() {
-        writeC(0x17)
-        writeD(templated.size)
+    override val opCode: Byte = 0x17
 
-        templated.forEach {
+    override fun write() {
+        writeD(templates.size)
+
+        templates.forEach {
             writeD(it.charClass.race.id)
             writeD(it.charClass.id)
             writeD(0x46)

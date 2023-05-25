@@ -4,13 +4,13 @@ import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.game.game.model.CharSelectionSlot
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import vetal.server.network.Client
+import vetal.server.sock.SockClient
 
 private const val TAG = "GameClient"
 
 class GameClient(
     override val connection: GameClientConnection,
-) : Client() {
+) : SockClient() {
 
     lateinit var account: AccountInfo
     lateinit var sessionKey: SessionKey

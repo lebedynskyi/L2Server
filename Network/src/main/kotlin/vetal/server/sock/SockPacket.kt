@@ -1,8 +1,8 @@
-package vetal.server.network
+package vetal.server.sock
 
 import java.nio.ByteBuffer
 
-abstract class Packet {
+abstract class SockPacket {
     override fun toString(): String {
         return this::class.java.simpleName
     }
@@ -18,7 +18,8 @@ string – Text(UTF8).Each letter is 2 bytes, 1st - the code of letter, 2nd –
 number of code table. The end of line is 0 symbol
  */
 
-abstract class SendablePacket : Packet() {
+abstract class WriteablePacket : SockPacket() {
+    abstract val opCode: Byte
     private var buffer: ByteBuffer? = null
 
     protected abstract fun write()
@@ -27,6 +28,10 @@ abstract class SendablePacket : Packet() {
         buffer = buf
         write()
         buffer = null
+    }
+
+    protected fun writeC(data: Byte) {
+        buffer?.put(data)
     }
 
     protected fun writeC(data: Int) {
@@ -64,7 +69,7 @@ abstract class SendablePacket : Packet() {
     }
 }
 
-abstract class ReceivablePacket : Packet() {
+abstract class ReadablePacket : SockPacket() {
     private var buffer: ByteBuffer? = null
     private var sBuffer: StringBuffer? = null
 

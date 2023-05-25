@@ -1,12 +1,11 @@
 package lineage.vetal.server.game.gameserver
 
-import vetal.server.network.ClientFactory
-import java.net.InetSocketAddress
+import vetal.server.sock.SockClientFactory
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 
-class GameClientFactory : ClientFactory<GameClient> {
+class GameClientFactory : SockClientFactory<GameClient> {
     override fun createClient(selector: Selector, socket: SocketChannel): GameClient {
         val selectionKey = socket.register(selector, SelectionKey.OP_READ)
         val crypt = GameConnectionCrypt.newInstance()

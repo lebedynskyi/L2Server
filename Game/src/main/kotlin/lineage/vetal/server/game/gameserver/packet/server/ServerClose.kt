@@ -1,11 +1,12 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 
-class ServerClose private constructor() : SendablePacket() {
+class ServerClose private constructor() : WriteablePacket() {
+    override val opCode: Byte = 0x26
+
     override fun write() {
-        writeC(0x26);
     }
 
     companion object {

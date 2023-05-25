@@ -1,4 +1,4 @@
-package vetal.server.network
+package vetal.server.sock
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -12,25 +12,26 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
+import java.util.concurrent.TimeUnit
 
-class SelectorThread<T : Client>(
+class SockSelector<T : SockClient>(
     private val hostName: String,
     private val port: Int,
-    private val clientFactory: ClientFactory<T>,
+    private val clientFactory: SockClientFactory<T>,
     private val isServer: Boolean,
-    private val TAG: String = "Selector"
+    private val clientReconnectDelay: Long = 5000,
+    private val TAG: String = "SockSelector"
 ) : Thread() {
-    private val READ_BUFFER_SIZE = 64 * 1024
-    private val WRITE_BUFFER_SIZE = 64 * 1024
-
     val connectionAcceptFlow get() = _selectionAcceptFlow.asSharedFlow()
     val connectionReadFlow get() = _selectionReadFlow.asSharedFlow()
     val connectionCloseFlow get() = _selectionCloseFlow.asSharedFlow()
 
     private val _selectionAcceptFlow = MutableSharedFlow<T>(1)
     private val _selectionCloseFlow = MutableSharedFlow<T>(1)
-    private val _selectionReadFlow = MutableSharedFlow<Pair<T, ReceivablePacket>>(1)
+    private val _selectionReadFlow = MutableSharedFlow<Pair<T, ReadablePacket>>(1)
 
+    private val READ_BUFFER_SIZE = 64 * 1024
+    private val WRITE_BUFFER_SIZE = 64 * 1024
     private val tempWriteBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val writeBuffer = ByteBuffer.allocate(WRITE_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
     private val readBuffer = ByteBuffer.allocate(READ_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
@@ -40,6 +41,14 @@ class SelectorThread<T : Client>(
     private var isRunning = false
     private lateinit var selector: Selector
 
+    fun startSelector() = start()
+
+    fun stopSelector() {
+        isRunning = false
+        selector.close()
+        writeInfo(TAG, "Selector stopped")
+    }
+
     override fun run() {
         isRunning = true
 
@@ -48,6 +57,9 @@ class SelectorThread<T : Client>(
         } else {
             startClient()
         }
+        writeInfo(TAG, "Selector started")
+        loopSelector()
+        stopSelector()
     }
 
     private fun startServer() {
@@ -63,9 +75,7 @@ class SelectorThread<T : Client>(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
         }
-        writeInfo(TAG, "Listening game clients on ${hostName}:${port}")
-        loopSelector()
-        closeSelector()
+        writeInfo(TAG, "Listening clients on ${hostName}:${port}")
     }
 
     private fun startClient() {
@@ -80,16 +90,14 @@ class SelectorThread<T : Client>(
             connect(address)
             register(selector, SelectionKey.OP_CONNECT)
         }
-        writeInfo(TAG, "Connecting to ${hostName}:${port}")
-        loopSelector()
-        closeSelector()
+        writeInfo(TAG, "Connecting to server ${hostName}:${port}")
     }
 
     private fun loopSelector() {
         while (isRunning) {
-            val readyChannels = selector.select()
-            if (readyChannels == 0) {
-                writeError(TAG, "Something wrong.. Selector woke up without ready keys")
+            val readyKeys = selector.select()
+            if (readyKeys == 0) {
+                writeError(TAG, "Something wrong... Selector woke up without ready keys")
                 continue
             }
 
@@ -97,13 +105,13 @@ class SelectorThread<T : Client>(
             while (keyIterator.hasNext()) {
                 val key = keyIterator.next()
                 when (key.readyOps()) {
-                    SelectionKey.OP_CONNECT -> finishConnection(key)
-                    SelectionKey.OP_ACCEPT -> acceptConnection(key)
+                    SelectionKey.OP_CONNECT -> finishOutcomeConnection(key)
+                    SelectionKey.OP_ACCEPT -> acceptIncomeConnection(key)
                     SelectionKey.OP_READ -> readPackets(key)
                     SelectionKey.OP_WRITE -> writePackets(key)
                     SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                         writePackets(key)
-                        if (key.isValid){
+                        if (key.isValid) {
                             readPackets(key)
                         }
                     }
@@ -114,14 +122,8 @@ class SelectorThread<T : Client>(
         }
     }
 
-    fun closeSelector() {
-        isRunning = false
-        selector.close()
-        writeInfo(TAG, "Selector closed")
-    }
-
     // Called on the server side to finish established connection
-    private fun acceptConnection(key: SelectionKey) {
+    private fun acceptIncomeConnection(key: SelectionKey) {
         val serverSocket = key.channel() as ServerSocketChannel
         val socket = serverSocket.accept().apply { configureBlocking(false) }
         val client = clientFactory.createClient(selector, socket)
@@ -130,7 +132,7 @@ class SelectorThread<T : Client>(
     }
 
     // Called on the client side to finish established connection
-    private fun finishConnection(key: SelectionKey) {
+    private fun finishOutcomeConnection(key: SelectionKey) {
         try {
             val socket = (key.channel() as SocketChannel)
             socket.finishConnect()
@@ -142,12 +144,10 @@ class SelectorThread<T : Client>(
                 clientFactory.createClient(selector, socket)
                 val client = key.attachment() as T
                 _selectionAcceptFlow.tryEmit(client)
-            } else {
-                writeError(TAG, "Something wrong. key is invalid", UnknownError("Unknown"))
             }
         } catch (e: Exception) {
-            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in 5 second")
-            sleep(5000)
+            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in ${TimeUnit.MILLISECONDS.toSeconds(clientReconnectDelay)} second")
+            sleep(clientReconnectDelay)
             startClient()
         }
     }
@@ -191,7 +191,7 @@ class SelectorThread<T : Client>(
         }
     }
 
-    private fun closeConnection(client: T, connection: ClientConnection) {
+    private fun closeConnection(client: T, connection: SockConnection) {
         writeInfo(TAG, " Close connection with client $client")
         connection.closeSocket()
         _selectionCloseFlow.tryEmit(client)

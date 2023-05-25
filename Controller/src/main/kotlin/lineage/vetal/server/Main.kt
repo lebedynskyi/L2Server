@@ -2,31 +2,27 @@ package lineage.vetal.server
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import vetal.server.network.*
+import vetal.server.sock.*
 import java.nio.ByteBuffer
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 
-class NetClient(override val connection: ClientConnection) : Client()
+class NetClient(override val connection: SockConnection) : SockClient()
 
-class NetClientFactory : ClientFactory<NetClient> {
+class NetClientFactory : SockClientFactory<NetClient> {
     override fun createClient(selector: Selector, socket: SocketChannel): NetClient {
         val selectionKey = socket.register(selector, SelectionKey.OP_READ)
-        val clientConnection = ClientConnection(socket, selector, selectionKey, NetPacketParser())
+        val clientConnection = SockConnection(socket, selector, selectionKey, NetPacketParser())
         return NetClient(clientConnection).also {
             selectionKey.attach(it)
         }
     }
 }
 
-class NetPacketParser : PacketParser {
-    override fun parsePacket(
-        buffer: ByteBuffer,
-        sBuffer: StringBuffer,
-        size: Int
-    ): ReceivablePacket? {
-        return when (buffer.get().toInt()) {
+class NetPacketParser : SockPacketFactory {
+    override fun parsePacket(opCode: Byte, size: Int, buffer: ByteBuffer): ReadablePacket? {
+        return when (opCode.toInt()) {
             0x01 -> RequestAuth()
             0x02 -> RequestAction()
             else -> null
@@ -36,8 +32,8 @@ class NetPacketParser : PacketParser {
 
 
 fun main(args: Array<String>) {
-    val selector: SelectorThread<NetClient> =
-        SelectorThread("192.168.0.137", 3456, NetClientFactory(), true, "ClientSelector")
+    val selector: SockSelector<NetClient> =
+        SockSelector("192.168.0.137", 3456, NetClientFactory(), true, TAG = "ClientSelector")
     var controller: NetClient? = null
     var plane: NetClient? = null
 

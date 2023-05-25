@@ -7,9 +7,9 @@ class CharSelected(
     private val player: PlayerObject,
     private val playOKId1: Int
 ) : GameServerPacket() {
-    override fun write() {
-        writeC(0x15)
+    override val opCode: Byte = 0x15
 
+    override fun write() {
         writeS(player.name)
         writeD(player.objectId)
         writeS(player.title)

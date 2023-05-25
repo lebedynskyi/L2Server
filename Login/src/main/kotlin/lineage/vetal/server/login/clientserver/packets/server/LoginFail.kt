@@ -1,10 +1,16 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class LoginFail(
     private val reason: Int
-) : SendablePacket() {
+) : WriteablePacket() {
+    override val opCode: Byte = 0x01
+
+    override fun write() {
+        writeD(reason)
+    }
+
     companion object {
         val REASON_SYSTEM_ERROR = LoginFail(0x01)
         val REASON_PASS_WRONG = LoginFail(0x02)
@@ -15,10 +21,5 @@ class LoginFail(
         val REASON_SERVER_MAINTENANCE = LoginFail(0x10)
         val REASON_TEMP_PASS_EXPIRED = LoginFail(0x11)
         val REASON_DUAL_BOX = LoginFail(0x23)
-    }
-
-    override fun write() {
-        writeC(0x01)
-        writeD(reason)
     }
 }

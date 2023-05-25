@@ -10,8 +10,9 @@ class InventoryList(
     private val items: Set<ItemObject>,
     private val showWindow: Boolean = false
 ) : GameServerPacket() {
+    override val opCode: Byte = 0x1b
+
     override fun write() {
-        writeC(0x1b)
         writeH(if (showWindow) 0x01 else 0x00)
         writeH(items.size)
 

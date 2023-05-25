@@ -1,4 +1,4 @@
-package vetal.server.network
+package vetal.server.sock
 
 import vetal.server.writeError
 import java.net.InetSocketAddress
@@ -8,26 +8,26 @@ import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
-open class ClientConnection(
+open class SockConnection(
     private val socket: SocketChannel,
     private val selector: Selector,
     private val selectionKey: SelectionKey,
-    private val packetParser: PacketParser,
-    private val crypt: ConnectionCrypt = ConnectionCrypt.NO_CRYPT,
+    private val packetParser: SockPacketFactory,
+    private val crypt: SockCrypt = SockCrypt.NO_CRYPT,
 ) {
-    private val clientAddress: InetSocketAddress = socket.remoteAddress as InetSocketAddress
     private val TAG = "ClientConnection"
-    private val DATA_HEADER_SIZE = 2
-    private val sendPacketsQueue = ConcurrentLinkedQueue<SendablePacket>()
-    private val readPacketsQueue = ConcurrentLinkedQueue<ReceivablePacket>()
+    private val clientAddress: InetSocketAddress = socket.remoteAddress as InetSocketAddress
+    private val headerSize = 2 // 2 bytes. opcode + size
+    private val sendPacketsQueue = ConcurrentLinkedQueue<WriteablePacket>()
+    private val readPacketsQueue = ConcurrentLinkedQueue<ReadablePacket>()
 
     @Volatile
     internal var pendingClose = false
 
-    fun nextPacket(): ReceivablePacket? = readPacketsQueue.poll()
+    fun nextPacket(): ReadablePacket? = readPacketsQueue.poll()
     fun hasNextPacket(): Boolean = readPacketsQueue.size > 0
 
-    fun sendPacket(packet: SendablePacket) {
+    fun sendPacket(packet: WriteablePacket) {
         if (selectionKey.isValid) {
             sendPacketsQueue.add(packet)
             selectionKey.interestOps(selectionKey.interestOps() or SelectionKey.OP_WRITE)
@@ -37,7 +37,7 @@ open class ClientConnection(
         }
     }
 
-    internal fun askClose(lastPacket: SendablePacket? = null) {
+    internal fun askClose(lastPacket: WriteablePacket? = null) {
         sendPacketsQueue.clear()
         pendingClose = true
         if (lastPacket != null) {
@@ -45,7 +45,7 @@ open class ClientConnection(
         }
     }
 
-    fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer) : Boolean{
+    fun readPackets(byteBuffer: ByteBuffer, stringBuffer: StringBuffer): Boolean {
         byteBuffer.clear()
         stringBuffer.setLength(0)
 
@@ -60,7 +60,7 @@ open class ClientConnection(
         return readPacketFromBuffer(byteBuffer, stringBuffer)
     }
 
-    internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer) :Boolean {
+    internal fun writePackets(byteBuffer: ByteBuffer, tempBuffer: ByteBuffer): Boolean {
         byteBuffer.clear()
 
         val packetIterator = sendPacketsQueue.iterator()
@@ -92,19 +92,21 @@ open class ClientConnection(
         }
     }
 
-    private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer) : Boolean {
+    private fun readPacketFromBuffer(buffer: ByteBuffer, sBuffer: StringBuffer): Boolean {
         while (buffer.position() < buffer.limit()) {
-            val header = buffer.short
-            val dataSize = header - DATA_HEADER_SIZE
-            val packetEndPosition = buffer.position() + dataSize
-            val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), dataSize)
+            val packetHeader = buffer.short
+            val packetSize = packetHeader - headerSize
+            val nextPacketPosition = buffer.position() + packetSize
+
+            val decryptedSize = crypt.decrypt(buffer.array(), buffer.position(), packetSize)
             if (decryptedSize > 0) {
-                val packet = packetParser.parsePacket(buffer, sBuffer, decryptedSize)
-                packet?.let {
-                    it.readFromBuffer(buffer, sBuffer)
-                    readPacketsQueue.add(it)
+                val opCode = buffer.get()
+                val packet = packetParser.parsePacket(opCode, packetSize, buffer)
+                if (packet != null) {
+                    packet.readFromBuffer(buffer, sBuffer)
+                    readPacketsQueue.add(packet)
                 }
-                buffer.position(packetEndPosition)
+                buffer.position(nextPacketPosition)
             } else {
                 return false
             }
@@ -113,12 +115,13 @@ open class ClientConnection(
         return true
     }
 
-    private fun writePacketToBuffer(packet: SendablePacket, buffer: ByteBuffer) {
+    private fun writePacketToBuffer(packet: WriteablePacket, buffer: ByteBuffer) {
         // reserve space for the size
-        buffer.position(buffer.position() + DATA_HEADER_SIZE)
+        buffer.position(buffer.position() + headerSize)
 
         // Write packet to buffer
         val dataStartPosition = buffer.position()
+        buffer.put(packet.opCode)
         packet.writeInto(buffer)
         val dataSize = buffer.position() - dataStartPosition
 
@@ -126,8 +129,8 @@ open class ClientConnection(
         val encryptedSize = crypt.encrypt(buffer.array(), dataStartPosition, dataSize)
 
         // Write final size to reserved header
-        buffer.position(dataStartPosition - DATA_HEADER_SIZE)
-        buffer.putShort((encryptedSize + DATA_HEADER_SIZE).toShort())
+        buffer.position(dataStartPosition - headerSize)
+        buffer.putShort((encryptedSize + headerSize).toShort())
 
         // Set position to end of packet
         buffer.position(dataStartPosition + encryptedSize)

@@ -3,14 +3,15 @@ package lineage.vetal.server.login.clientserver.packets.server
 import lineage.vetal.server.core.utils.ext.ifNullOrBlank
 import lineage.vetal.server.core.utils.ext.toByte
 import lineage.vetal.server.core.model.RegisteredServer
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 import java.net.InetAddress
 
 class ServerList(
     private val servers: List<RegisteredServer>
-) : SendablePacket() {
+) : WriteablePacket() {
+    override val opCode: Byte = 0x04
+
     override fun write() {
-        writeC(0x04)
         writeC(servers.size)
         // Last server
         writeC(2)

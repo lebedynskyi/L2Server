@@ -2,7 +2,7 @@ package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.core.encryption.BlowFishCrypt
 import lineage.vetal.server.core.encryption.CryptUtil
-import vetal.server.network.ConnectionCrypt
+import vetal.server.sock.SockCrypt
 import java.math.BigInteger
 import java.security.KeyPair
 import java.security.interfaces.RSAPublicKey
@@ -12,7 +12,7 @@ import kotlin.random.Random
 class LoginConnectionCrypt(
     val blowFishKey: ByteArray,
     val rsaPair: KeyPair
-) : ConnectionCrypt() {
+) : SockCrypt() {
 
     private val staticCrypt = BlowFishCrypt(STATIC_BLOW_FISH_KEY)
     private val generalCrypt = BlowFishCrypt(blowFishKey)

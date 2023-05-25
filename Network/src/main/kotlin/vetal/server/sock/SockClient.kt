@@ -1,16 +1,16 @@
-package vetal.server.network
+package vetal.server.sock
 
-import java.util.UUID
+import java.util.*
 
-abstract class Client {
-    abstract val connection: ClientConnection
+abstract class SockClient {
+    abstract val connection: SockConnection
     val clientId = UUID.randomUUID()
 
-    open fun sendPacket(packet: SendablePacket) {
+    open fun sendPacket(packet: WriteablePacket) {
         connection.sendPacket(packet)
     }
 
-    open fun saveAndClose(reason: SendablePacket? = null) {
+    open fun saveAndClose(reason: WriteablePacket? = null) {
         connection.pendingClose = true
         connection.askClose(reason)
     }

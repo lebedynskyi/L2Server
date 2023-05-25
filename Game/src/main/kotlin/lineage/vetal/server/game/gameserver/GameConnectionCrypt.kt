@@ -1,11 +1,11 @@
 package lineage.vetal.server.game.gameserver
 
-import vetal.server.network.ConnectionCrypt
+import vetal.server.sock.SockCrypt
 import kotlin.random.Random
 
 class GameConnectionCrypt private constructor(
     internal val key: ByteArray
-) : ConnectionCrypt() {
+) : SockCrypt() {
     companion object {
         private const val cachedKeysSize = 20
         private val CRYPT_KEYS = Array(cachedKeysSize) {

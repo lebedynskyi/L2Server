@@ -1,8 +1,8 @@
 package lineage.vetal.server
 
-import vetal.server.network.ReceivablePacket
+import vetal.server.sock.ReadablePacket
 
-class RequestAuth : ReceivablePacket() {
+class RequestAuth : ReadablePacket() {
     var isController: Boolean = true
 
     override fun read() {
@@ -14,7 +14,7 @@ class RequestAuth : ReceivablePacket() {
     }
 }
 
-class RequestAction : ReceivablePacket() {
+class RequestAction : ReadablePacket() {
     var speed: Int = 0
     var topPressed: Boolean = false
     var leftPressed: Boolean = false

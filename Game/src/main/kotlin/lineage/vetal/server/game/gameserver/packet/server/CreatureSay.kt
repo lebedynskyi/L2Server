@@ -3,10 +3,10 @@ package lineage.vetal.server.game.gameserver.packet.server
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
-import kotlin.Int
-import kotlin.String
 
 class CreatureSay : GameServerPacket {
+    override val opCode: Byte = 0x4a
+
     var objectId: Int = 0
     var name: String? = null
     var content: String? = null
@@ -30,7 +30,6 @@ class CreatureSay : GameServerPacket {
     }
 
     override fun write() {
-        writeC(0x4a)
         writeD(objectId)
         writeD(sayType.ordinal)
         if (content != null) {

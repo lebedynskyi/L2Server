@@ -1,18 +1,17 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.player.PaperDollSlot
+import lineage.vetal.server.game.game.model.player.PlayerObject
+import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class UserInfo(
-    private val player: PlayerObject
+    private val player: PlayerObject,
+    private val relation: Int = 0, // Siege status. I think it will show flag or something similar
 ) : GameServerPacket() {
-    // Siege status. I think it will show flag or something similar
-    val relation = 0
+    override val opCode: Byte = 0x04
 
     override fun write() {
-        writeC(0x04)
         writeD(player.position.x)
         writeD(player.position.y)
         writeD(player.position.z)

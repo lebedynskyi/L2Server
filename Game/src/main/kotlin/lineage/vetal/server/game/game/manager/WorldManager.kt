@@ -1,6 +1,5 @@
 package lineage.vetal.server.game.game.manager
 
-import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.WorldRegion
 import lineage.vetal.server.game.game.model.position.Position
@@ -10,7 +9,7 @@ import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 import vetal.server.writeError
 import vetal.server.writeInfo
 import java.util.*
@@ -51,7 +50,7 @@ class WorldManager(
         initializeSurroundingRegions()
     }
 
-    fun broadCast(packet: SendablePacket) {
+    fun broadCast(packet: WriteablePacket) {
         players.forEach { it.sendPacket(packet) }
     }
 

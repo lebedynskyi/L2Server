@@ -1,10 +1,10 @@
 package lineage.vetal.server.login.bridgeserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
-class AuthOk : SendablePacket() {
+class AuthOk : WriteablePacket() {
+    override val opCode: Byte = 0x02
     override fun write() {
-        writeC(0x02)
         writeD(1)
     }
 }

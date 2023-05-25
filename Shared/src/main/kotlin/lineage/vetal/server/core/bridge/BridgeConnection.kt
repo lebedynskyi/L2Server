@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.bridge
 
-import vetal.server.network.ClientConnection
-import vetal.server.network.PacketParser
+import vetal.server.sock.SockConnection
+import vetal.server.sock.SockPacketFactory
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
@@ -11,5 +11,5 @@ class BridgeConnection(
     socket: SocketChannel,
     selector: Selector,
     selectionKey: SelectionKey,
-    packetParser: PacketParser,
-) : ClientConnection(socket, selector, selectionKey, packetParser, crypt)
+    packetParser: SockPacketFactory,
+) : SockConnection(socket, selector, selectionKey, packetParser, crypt)

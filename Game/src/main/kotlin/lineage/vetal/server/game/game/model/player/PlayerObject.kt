@@ -5,7 +5,7 @@ import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.status.PlayerStatus
 import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.GameClient
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class PlayerObject(
     val id: String,
@@ -79,11 +79,11 @@ class PlayerObject(
         return charTemplate.getCollisionHeightBySex(appearance.sex)
     }
 
-    fun sendPacket(packet: SendablePacket) {
+    fun sendPacket(packet: WriteablePacket) {
         client?.sendPacket(packet)
     }
 
-    fun sendPacket(packets: List<SendablePacket>) {
+    fun sendPacket(packets: List<WriteablePacket>) {
         packets.forEach {
             client?.sendPacket(it)
         }

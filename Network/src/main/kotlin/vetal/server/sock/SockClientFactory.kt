@@ -1,9 +1,8 @@
-package vetal.server.network
+package vetal.server.sock
 
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
 
-
-interface ClientFactory<T: Client> {
+interface SockClientFactory<T : SockClient> {
     fun createClient(selector: Selector, socket: SocketChannel): T
 }

@@ -1,10 +1,11 @@
 package lineage.vetal.server.login.bridgeserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
-class InitOK : SendablePacket() {
+class InitOK : WriteablePacket() {
+    override val opCode: Byte = 0x01
+
     override fun write() {
-        writeC(0x01)
         writeD(1)
     }
 }

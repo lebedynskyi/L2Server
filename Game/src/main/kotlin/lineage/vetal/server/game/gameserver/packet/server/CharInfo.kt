@@ -1,16 +1,16 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.player.PaperDollSlot
 import lineage.vetal.server.game.game.model.player.PlayerObject
+import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class CharInfo(
     private val player: PlayerObject
 ) : GameServerPacket() {
+    override val opCode: Byte = 0x03
 
     override fun write() {
-        writeC(0x03)
         writeD(player.position.x)
         writeD(player.position.y)
         writeD(player.position.z)

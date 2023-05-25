@@ -1,17 +1,15 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import vetal.server.network.SendablePacket
+import vetal.server.sock.WriteablePacket
 
 class Init(
-    val sessionId: Int,
-    val publicKey: ByteArray,
-    val blowFishKey: ByteArray
-) : SendablePacket() {
+    private val sessionId: Int,
+    private val publicKey: ByteArray,
+    private val blowFishKey: ByteArray
+) : WriteablePacket() {
+    override val opCode: Byte = 0x00
 
     override fun write() {
-        // init packet id
-        writeC(0x00)
-
         // session id
         writeD(sessionId)
 

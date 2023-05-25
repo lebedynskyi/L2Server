@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.clientserver
 
-import vetal.server.network.ClientFactory
+import vetal.server.sock.SockClientFactory
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
@@ -10,7 +10,7 @@ import kotlin.random.Random
 class LoginClientFactory(
     private val blowFishKeys: Array<ByteArray>,
     private val rsaPairs: Array<KeyPair>
-) : ClientFactory<LoginClient> {
+) : SockClientFactory<LoginClient> {
 
     override fun createClient(selector: Selector, socket: SocketChannel): LoginClient {
         val crypt = LoginConnectionCrypt(blowFishKeys.random(), rsaPairs.random())

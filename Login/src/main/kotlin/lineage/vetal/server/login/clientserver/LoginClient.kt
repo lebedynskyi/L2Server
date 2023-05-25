@@ -2,12 +2,12 @@ package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
-import vetal.server.network.Client
+import vetal.server.sock.SockClient
 
 class LoginClient(
     val sessionId: Int,
     override val connection: LoginClientConnection
-) : Client() {
+) : SockClient() {
     var loginState: LoginState? = null
     var account: AccountInfo? = null
     var sessionKey: SessionKey? = null

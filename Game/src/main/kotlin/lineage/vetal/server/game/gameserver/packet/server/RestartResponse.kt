@@ -5,8 +5,9 @@ import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 class RestartResponse private constructor(
     private val result: Int
 ) : GameServerPacket() {
+    override val opCode: Byte = 0x5f
+
     override fun write() {
-        writeC(0x5f)
         writeD(result)
     }
 
