@@ -19,3 +19,13 @@ class Action(
         writeC(if (rightPressed) 1 else 0)
     }
 }
+
+class Info(
+    private val planeConnected: Boolean
+) : WriteablePacket() {
+    override val opCode: Byte = 0x4
+
+    override fun write() {
+        writeC(if (planeConnected) 1 else 0)
+    }
+}

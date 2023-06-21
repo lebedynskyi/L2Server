@@ -9,14 +9,15 @@ import java.nio.channels.SocketChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 
 open class SockConnection(
-    private val socket: SocketChannel,
-    private val selector: Selector,
-    private val selectionKey: SelectionKey,
     private val packetParser: SockPacketFactory,
     private val crypt: SockCrypt = SockCrypt.NO_CRYPT,
 ) {
+    internal lateinit var socket: SocketChannel
+    internal lateinit var selector: Selector
+    internal lateinit var selectionKey: SelectionKey
+
     private val TAG = "ClientConnection"
-    private val clientAddress: InetSocketAddress = socket.remoteAddress as InetSocketAddress
+    private val clientAddress: InetSocketAddress by lazy { socket.remoteAddress as InetSocketAddress }
     private val headerSize = 2 // 2 bytes. opcode + size
     private val sendPacketsQueue = ConcurrentLinkedQueue<WriteablePacket>()
     private val readPacketsQueue = ConcurrentLinkedQueue<ReadablePacket>()
@@ -39,6 +40,7 @@ open class SockConnection(
 
     internal fun askClose(lastPacket: WriteablePacket? = null) {
         sendPacketsQueue.clear()
+        readPacketsQueue.clear()
         pendingClose = true
         if (lastPacket != null) {
             sendPacket(lastPacket)

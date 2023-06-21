@@ -96,12 +96,13 @@ class SockSelector<T : SockClient>(
     private fun loopSelector() {
         while (isRunning) {
             val readyKeys = selector.select()
-            if (readyKeys == 0) {
+            val selectedKeys = selector.selectedKeys()
+            if (readyKeys == 0 && selectedKeys.isEmpty()) {
                 writeError(TAG, "Something wrong... Selector woke up without ready keys")
                 continue
             }
 
-            val keyIterator = selector.selectedKeys().iterator()
+            val keyIterator = selectedKeys.iterator()
             while (keyIterator.hasNext()) {
                 val key = keyIterator.next()
                 when (key.readyOps()) {
@@ -146,7 +147,12 @@ class SockSelector<T : SockClient>(
                 _selectionAcceptFlow.tryEmit(client)
             }
         } catch (e: Exception) {
-            writeError(TAG, "Unable to connect to server ${hostName}:${port}. Try again in ${TimeUnit.MILLISECONDS.toSeconds(clientReconnectDelay)} second")
+            writeError(
+                TAG,
+                "Unable to connect to server ${hostName}:${port}. Try again in ${
+                    TimeUnit.MILLISECONDS.toSeconds(clientReconnectDelay)
+                } second"
+            )
             sleep(clientReconnectDelay)
             startClient()
         }

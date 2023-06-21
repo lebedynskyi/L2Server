@@ -5,6 +5,6 @@ import vetal.server.sock.SockClient
 
 class BridgeClient(
     override val connection: BridgeConnection
-) : SockClient() {
+) : SockClient(connection) {
     var serverInfo: RegisteredServer? = null
 }

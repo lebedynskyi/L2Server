@@ -10,7 +10,7 @@ private const val TAG = "GameClient"
 
 class GameClient(
     override val connection: GameClientConnection,
-) : SockClient() {
+) : SockClient(connection) {
 
     lateinit var account: AccountInfo
     lateinit var sessionKey: SessionKey

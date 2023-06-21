@@ -3,7 +3,7 @@ plugins {
     id("kotlin")
 }
 
-version = "0.1.3"
+version = "0.1.5"
 
 tasks.jar {
     manifest {

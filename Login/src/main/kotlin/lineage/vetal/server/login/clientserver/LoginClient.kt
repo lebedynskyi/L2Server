@@ -7,7 +7,7 @@ import vetal.server.sock.SockClient
 class LoginClient(
     val sessionId: Int,
     override val connection: LoginClientConnection
-) : SockClient() {
+) : SockClient(connection) {
     var loginState: LoginState? = null
     var account: AccountInfo? = null
     var sessionKey: SessionKey? = null

@@ -2,10 +2,10 @@ package vetal.server.sock
 
 import java.util.*
 
-abstract class SockClient {
-    abstract val connection: SockConnection
-    val clientId = UUID.randomUUID()
-
+open class SockClient(
+    open val connection: SockConnection,
+    val clientId: UUID? = UUID.randomUUID()
+) {
     open fun sendPacket(packet: WriteablePacket) {
         connection.sendPacket(packet)
     }
