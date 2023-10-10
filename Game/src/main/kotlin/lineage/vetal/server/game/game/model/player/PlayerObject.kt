@@ -16,20 +16,19 @@ class PlayerObject(
     val appearance: Appearance,
     position: SpawnPosition
 ) : Playable(objectId, name, position) {
+
     override var stats: PlayerStatus = PlayerStatus(charTemplate)
     var inventory: WearableInventory = WearableInventory()
-
-    var lastAccessTime: Long = 0
     var client: GameClient? = null
-    var isActive = false
+
     var summon: Summon? = null
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
 
-    val raceId get() = charTemplate.charClass.race.ordinal
-    val classId get() = charTemplate.charClass.ordinal
-    var baseClassId = charTemplate.charClass.id
+    var isSitting: Boolean = false
 
+    var isActive = false
+    var lastAccessTime: Long = 0
     var isGM = false
     var accessLevel = 0
     var deleteTimer = 0L
@@ -64,12 +63,6 @@ class PlayerObject(
     var enchantEffect: Int = 0
     var pledgeType = 0
     var pledgeClass = 0
-
-    var isSitting: Boolean = false
-
-    init {
-        isRunning = true
-    }
 
     fun getCollisionRadius(): Double {
         return charTemplate.getCollisionRadiusBySex(appearance.sex)

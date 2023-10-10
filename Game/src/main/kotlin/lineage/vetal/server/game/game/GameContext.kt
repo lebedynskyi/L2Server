@@ -16,27 +16,25 @@ private const val NPCS_XML = "game/xml/npcs"
 private const val ITEMS_XML = "game/xml/items"
 private const val TAG = "GameContext"
 
-class GameContext(
-    dataFolder: String,
-) {
-    val worldManager: WorldManager
-    val spawnManager: SpawnManager
-    val movementManager: MovementManager
-    val itemManager: ItemManager
-    val gameAnnouncer: GameAnnounceManager
-    val gameLobby: GameLobbyManager
-    val gameDatabase: GameDatabase
-    val gameConfig: lineage.vetal.server.game.ConfigGame
-    val manorManager: ManorManager
-    val chatManager: ChatManager
-    val objectFactory: GameObjectFactory
+class GameContext {
+    lateinit var worldManager: WorldManager
+    lateinit var spawnManager: SpawnManager
+    lateinit var movementManager: MovementManager
+    lateinit var itemManager: ItemManager
+    lateinit var gameAnnouncer: GameAnnounceManager
+    lateinit var gameLobby: GameLobbyManager
+    lateinit var gameDatabase: GameDatabase
+    lateinit var gameConfig: lineage.vetal.server.game.ConfigGame
+    lateinit var manorManager: ManorManager
+    lateinit var chatManager: ChatManager
+    lateinit var objectFactory: GameObjectFactory
 
-    init {
+    fun load(dataFolder: String,) {
         writeSection(TAG)
-        writeInfo(TAG, "Reading configs")
+        writeInfo(TAG, "Loading context. Data folder is $dataFolder")
+
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
-
         gameConfig = lineage.vetal.server.game.ConfigGame.read(serverConfigFile)
 
         val itemsXmlFolder = File(dataFolder, ITEMS_XML)
@@ -53,6 +51,7 @@ class GameContext(
 
         writeInfo(TAG, "Initialize database")
         val dbConnection = HikariDBConnection(gameConfig.dataBaseConfig)
+        dbConnection.testConnection()
         gameDatabase = GameDatabase(charTemplates, itemTemplates, dbConnection)
 
         val idFactory = GameObjectIdFactory()

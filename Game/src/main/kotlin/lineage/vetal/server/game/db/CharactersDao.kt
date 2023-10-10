@@ -49,7 +49,7 @@ class CharactersDao(
             it.setInt(29, if (player.isIn7sDungeon) 1 else 0)
             it.setInt(30, player.clanPrivileges)
             it.setInt(31, if (player.wantsPeace) 1 else 0)
-            it.setInt(32, player.baseClassId)
+            it.setInt(32, player.charTemplate.charClass.id)
             it.setInt(33, if (player.isNoble) 1 else 0)
             it.setInt(34, player.position.x)
             it.setInt(35, player.position.y)
@@ -145,7 +145,7 @@ class CharactersDao(
                 isIn7sDungeon = it.getInt(28).toBoolean()
                 clanPrivileges = it.getInt(29)
                 wantsPeace = it.getInt(30).toBoolean()
-                baseClassId = it.getInt(31)
+//                charTemplate.charClass.id = it.getInt(31)
                 isNoble = it.getInt(32).toBoolean()
                 isHero = it.getInt(36).toBoolean()
             }

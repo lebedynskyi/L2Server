@@ -20,9 +20,9 @@ class UserInfo(
         writeS(
             player.name // if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
         )
-        writeD(player.raceId)
+        writeD(player.charTemplate.charClass.race.ordinal)
         writeD(player.appearance.sex.id)
-        writeD(player.classId)
+        writeD(player.charTemplate.charClass.ordinal)
 
         writeD(player.stats.level)
         writeQ(player.stats.exp)
@@ -139,14 +139,14 @@ class UserInfo(
         writeF(player.stats.getMovementSpeedMultiplier())
         writeF(player.stats.getAttackSpeedMultiplier())
 
-//        val summon: Summon = player.summon
-//        if (player.isMounted && summon != null) {
+        if (player.isMounted) {
+//            val summon: Summon = player.summon
 //            writeF(summon.getCollisionRadius())
 //            writeF(summon.getCollisionHeight())
-//        } else {
-        writeF(player.getCollisionRadius())
-        writeF(player.getCollisionHeight())
-//        }
+        } else {
+            writeF(player.getCollisionRadius())
+            writeF(player.getCollisionHeight())
+        }
 
         writeD(player.appearance.hairStyle)
         writeD(player.appearance.hairColor)
@@ -182,7 +182,7 @@ class UserInfo(
         writeH(player.recomHave)
         writeD(if (player.mountNpcId > 0) player.mountNpcId + 1000000 else 0)
         writeH(player.inventory.inventoryLimit)
-        writeD(player.classId)
+        writeD(player.charTemplate.charClass.ordinal)
         writeD(0x00)
         writeD(player.stats.maxCp)
         writeD(player.stats.curCp.toInt())
@@ -196,7 +196,7 @@ class UserInfo(
         writeC(if (player.isFishing) 1 else 0)
         writeLoc(Position(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
-        writeC(if (player.stats.isRunning) 0x01 else 0x00)
+        writeC(if (player.isRunning) 0x01 else 0x00)
         writeD(player.pledgeClass)
         writeD(player.pledgeType)
         writeD(player.appearance.titleColor)

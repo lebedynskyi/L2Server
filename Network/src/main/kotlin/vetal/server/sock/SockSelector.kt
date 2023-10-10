@@ -19,7 +19,7 @@ class SockSelector<T : SockClient>(
     private val port: Int,
     private val clientFactory: SockClientFactory<T>,
     private val isServer: Boolean,
-    private val clientReconnectDelay: Long = 5000,
+    private val clientReconnectDelay: Long = 10000,
     private val TAG: String = "SockSelector"
 ) : Thread() {
     val connectionAcceptFlow get() = _selectionAcceptFlow.asSharedFlow()
@@ -40,8 +40,6 @@ class SockSelector<T : SockClient>(
     @Volatile
     private var isRunning = false
     private lateinit var selector: Selector
-
-    fun startSelector() = start()
 
     fun stopSelector() {
         isRunning = false

@@ -64,6 +64,7 @@ class WorldManager(
         client.clientState = GameClientState.WORLD
         client.player = player
         player.isActive = true
+        player.isRunning = true
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
@@ -96,7 +97,6 @@ class WorldManager(
             player.region = newRegion
             newRegion.addPlayer(player)
             currentRegion.removePlayer(player)
-            //TODO Check it with Adrenaline. surrounding regions does not see this player anymore. need to remove it ? Client handle it ?
         }
     }
 

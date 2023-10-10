@@ -19,8 +19,8 @@ class CharSelected(
         writeD(0x00) // unknown
 
         writeD(player.appearance.sex.ordinal)
-        writeD(player.raceId)
-        writeD(player.classId)
+        writeD(player.charTemplate.charClass.race.ordinal)
+        writeD(player.charTemplate.charClass.ordinal)
 
         writeD(0x01)
 
@@ -53,7 +53,7 @@ class CharSelected(
 
         writeD(0x00) // c3
 
-        writeD(player.classId)
+        writeD(player.charTemplate.charClass.ordinal)
 
         writeD(0x00) // c3 InspectorBin
         writeD(0x00) // c3

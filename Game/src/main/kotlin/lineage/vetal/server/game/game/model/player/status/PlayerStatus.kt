@@ -14,8 +14,5 @@ class PlayerStatus(
     var curMp: Double = 0.0
     var exp: Long = 0
     var sp: Int = 0
-
-    override fun getBaseSwimSpeed(): Int {
-        return template.baseSwimSpeed
-    }
+    fun getBaseSwimSpeed() = template.baseSwimSpeed
 }

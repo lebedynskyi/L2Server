@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
     }
 
     val dataFolder = args[0]
-    val gameContext = GameContext(dataFolder)
+    val gameContext = GameContext()
+    gameContext.load(dataFolder)
 
     GameServer(gameContext).startServer()
     BridgeClient(gameContext).startClient()

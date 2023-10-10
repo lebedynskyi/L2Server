@@ -9,7 +9,9 @@ fun main(args: Array<String>) {
     }
 
     val dataFolder = args[0]
-    val context = LoginContext(dataFolder)
+    val context = LoginContext()
+    context.load(dataFolder)
+
 
     LoginClientServer(context).startServer()
     BridgeServer(context).startServer()

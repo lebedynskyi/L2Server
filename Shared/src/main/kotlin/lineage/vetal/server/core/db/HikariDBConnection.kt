@@ -21,7 +21,6 @@ class HikariDBConnection(
     init {
         initializeLoggers()
         initializePool()
-        testConnection()
     }
 
     private fun initializeLoggers() {
@@ -48,7 +47,7 @@ class HikariDBConnection(
         })
     }
 
-    private fun testConnection() {
+    fun testConnection() {
         try {
             databaseSource.connection.use {
                 writeInfo(TAG, "Successfully connected to DB - ${config.url}")

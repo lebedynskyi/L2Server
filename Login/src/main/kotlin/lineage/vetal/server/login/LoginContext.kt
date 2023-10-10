@@ -10,22 +10,23 @@ import java.io.File
 private const val PATH_SERVER_CONFIG = "login/config/Server.yaml"
 private const val TAG = "LoginContext"
 
-class LoginContext(
-    dataFolder: String
-) {
-    var loginConfig: ConfigLogin
-    val loginDatabase: LoginDatabase
-    val loginLobby: LoginLobby
-    val bridgeLobby: BridgeLobby
+class LoginContext {
+    lateinit var loginConfig: ConfigLogin
+    lateinit var loginDatabase: LoginDatabase
+    lateinit var loginLobby: LoginLobby
+    lateinit var bridgeLobby: BridgeLobby
 
-    init {
+    fun load(dataFolder: String) {
         writeSection(TAG)
+        writeInfo(TAG, "Loading context. Data folder is $dataFolder")
+
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading login server configs from ${serverConfigFile.absolutePath}")
         loginConfig = ConfigLogin.read(serverConfigFile)
 
         writeInfo(TAG, "Initializing database")
         val dbConnection = HikariDBConnection(loginConfig.dataBaseConfig)
+        dbConnection.testConnection()
         loginDatabase = LoginDatabase(dbConnection)
         writeInfo(TAG, "DB initialized successfully")
 
