@@ -1,13 +1,13 @@
 package lineage.vetal.server.game.db
 
 import lineage.vetal.server.core.db.DBConnection
-import lineage.vetal.server.core.db.Dao
+import lineage.vetal.server.core.db.DBDao
 import lineage.vetal.server.core.model.AccountInfo
 import java.util.*
 
 class AccountDao(
     db: DBConnection
-) : Dao(db) {
+) : DBDao(db) {
     private val FIND_ACCOUNT_SQL = "SELECT * FROM `accounts` WHERE login=?"
     private val INSERT_ACCOUNT_SQL = "INSERT INTO `accounts` (login, password) VALUES (?, ?)"
 

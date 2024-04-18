@@ -3,7 +3,7 @@ package lineage.vetal.server.core.db
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
-abstract class Dao(
+abstract class DBDao(
     private val dataBase: DBConnection
 ) {
     fun insertOrUpdate(sql: String, block: (PreparedStatement) -> Unit = {}): Boolean {

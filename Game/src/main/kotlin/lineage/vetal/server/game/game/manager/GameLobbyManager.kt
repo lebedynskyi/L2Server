@@ -4,7 +4,6 @@ import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.RegisteredServer
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.core.model.SessionKey
-import lineage.vetal.server.core.utils.ext.isValidPlayerName
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestAuth
@@ -20,6 +19,8 @@ private const val TAG = "GameLobby"
 class GameLobbyManager(
     private val context: GameContext,
 ) {
+    private val playerNameRegex = "^[a-zA-Z0-9]{3,16}$".toRegex()
+
     // TODO pending auth clients should be stored here.. And cleared after timer
     fun onConnectedToBridge(client: BridgeClient) {
         val serverConfig = context.gameConfig.serverInfo
@@ -178,5 +179,9 @@ class GameLobbyManager(
         client.player = player
         client.sendPacket(SSQInfo.REGULAR_SKY_PACKET)
         client.sendPacket(CharSelected(player, client.sessionKey.playOkID1))
+    }
+
+    private fun String.isValidPlayerName(): Boolean {
+        return matches(playerNameRegex)
     }
 }

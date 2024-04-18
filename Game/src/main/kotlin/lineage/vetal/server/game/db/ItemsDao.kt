@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.db
 
 import lineage.vetal.server.core.db.DBConnection
-import lineage.vetal.server.core.db.Dao
+import lineage.vetal.server.core.db.DBDao
 import lineage.vetal.server.game.db.sql.ItemsSQL
 import lineage.vetal.server.game.game.model.item.*
 import lineage.vetal.server.game.game.model.template.items.ArmorItemTemplate
@@ -12,7 +12,7 @@ import lineage.vetal.server.game.game.model.template.items.WeaponItemTemplate
 class ItemsDao(
     dbConnection: DBConnection,
     private val itemsTemplates: Map<Int, ItemTemplate>,
-) : Dao(dbConnection) {
+) : DBDao(dbConnection) {
     fun saveInventory(items: Set<ItemObject>) {
         items.forEach {item ->
             insertOrUpdate(ItemsSQL.UPDATE_ITEM_OWNER_SQL) { statement ->

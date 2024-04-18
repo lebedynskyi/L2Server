@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.db
 
 import lineage.vetal.server.core.db.DBConnection
-import lineage.vetal.server.core.db.Dao
+import lineage.vetal.server.core.db.DBDao
 import lineage.vetal.server.core.utils.ext.toBoolean
 import lineage.vetal.server.game.game.model.CharSelectionSlot
 import lineage.vetal.server.game.game.model.position.SpawnPosition
@@ -15,7 +15,7 @@ import lineage.vetal.server.game.db.sql.CharactersSQL
 class CharactersDao(
     connection: DBConnection,
     private val charTemplates: Map<Int, CharTemplate>
-) : Dao(connection) {
+) : DBDao(connection) {
     fun insertCharacter(player: PlayerObject): Boolean {
         return insertOrUpdate(CharactersSQL.INSERT_CHARACTER_SQL) {
             it.setString(1, player.id)
