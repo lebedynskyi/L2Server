@@ -12,7 +12,6 @@ import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
-import vetal.server.writeError
 
 private const val TAG = "GameLobby"
 
@@ -41,7 +40,7 @@ class GameLobbyManager(
         val serverStatus = client.serverInfo?.status
         if (serverStatus == null) {
             client.saveAndClose()
-            writeError("InitOK", "Status is null. Close connection")
+            writeInfo("InitOK", "Status is null. Close connection")
             return
         }
 

@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.login.clientserver.packets.server.Init
-import vetal.server.sock.SockConnection
+import vetalll.server.sock.SockConnection
 import java.security.PrivateKey
 
 // TODO wrap some how credentials keys

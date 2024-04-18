@@ -2,8 +2,8 @@ package lineage.vetal.server.game.gameserver
 
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.gameserver.packet.client.*
-import vetal.server.sock.ReadablePacket
-import vetal.server.sock.SockPacketFactory
+import vetalll.server.sock.ReadablePacket
+import vetalll.server.sock.SockPacketFactory
 import java.nio.ByteBuffer
 
 class GamePacketParser : SockPacketFactory {

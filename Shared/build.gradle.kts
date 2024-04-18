@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":Network"))
+    implementation(project(":Socks"))
 
     // Yaml
     api("com.charleskorn.kaml:kaml:0.43.0")

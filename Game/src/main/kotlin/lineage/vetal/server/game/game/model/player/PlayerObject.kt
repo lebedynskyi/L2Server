@@ -5,7 +5,7 @@ import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.status.PlayerStatus
 import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.GameClient
-import vetal.server.sock.WriteablePacket
+import vetalll.server.sock.WriteablePacket
 
 class PlayerObject(
     val id: String,

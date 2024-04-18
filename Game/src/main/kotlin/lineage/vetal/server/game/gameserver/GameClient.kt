@@ -4,7 +4,7 @@ import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.game.game.model.CharSelectionSlot
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import vetal.server.sock.SockClient
+import vetalll.server.sock.SockClient
 
 private const val TAG = "GameClient"
 

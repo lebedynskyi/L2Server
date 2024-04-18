@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.gameserver
 
-import vetal.server.sock.SockClientFactory
+import vetalll.server.sock.SockClientFactory
 
 class GameClientFactory : SockClientFactory<GameClient>() {
     override fun createClient(): GameClient {

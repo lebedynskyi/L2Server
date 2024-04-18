@@ -4,8 +4,8 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestAuth
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestInit
 import lineage.vetal.server.login.bridgeserver.packets.client.RequestUpdate
-import vetal.server.sock.SockPacketFactory
-import vetal.server.sock.ReadablePacket
+import vetalll.server.sock.SockPacketFactory
+import vetalll.server.sock.ReadablePacket
 import java.nio.ByteBuffer
 
 class BridgePacketParser : SockPacketFactory {

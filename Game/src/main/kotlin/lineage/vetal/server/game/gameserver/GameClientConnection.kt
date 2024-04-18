@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.gameserver
 
 import lineage.vetal.server.game.gameserver.packet.server.CryptInit
-import vetal.server.sock.SockConnection
-import vetal.server.sock.SockPacketFactory
+import vetalll.server.sock.SockConnection
+import vetalll.server.sock.SockPacketFactory
 
 class GameClientConnection(
     packetParser: SockPacketFactory,

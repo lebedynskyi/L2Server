@@ -1,7 +1,7 @@
 package lineage.vetal.server.core.bridge
 
 import lineage.vetal.server.core.encryption.BlowFishCrypt
-import vetal.server.sock.SockCrypt
+import vetalll.server.sock.SockCrypt
 import java.util.concurrent.atomic.AtomicBoolean
 
 class BridgeConnectionCrypt : SockCrypt() {

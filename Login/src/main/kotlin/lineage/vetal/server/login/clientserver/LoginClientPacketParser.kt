@@ -6,8 +6,8 @@ import lineage.vetal.server.login.clientserver.packets.client.RequestAuthLogin
 import lineage.vetal.server.login.clientserver.packets.client.RequestGGAuth
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerList
 import lineage.vetal.server.login.clientserver.packets.client.RequestServerLogin
-import vetal.server.sock.ReadablePacket
-import vetal.server.sock.SockPacketFactory
+import vetalll.server.sock.ReadablePacket
+import vetalll.server.sock.SockPacketFactory
 import java.nio.ByteBuffer
 
 class LoginClientPacketParser : SockPacketFactory {

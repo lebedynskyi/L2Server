@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.clientserver
 
-import vetal.server.sock.SockClientFactory
+import vetalll.server.sock.SockClientFactory
 import java.security.KeyPair
 import kotlin.random.Random
 

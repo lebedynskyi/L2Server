@@ -8,7 +8,7 @@ import lineage.vetal.server.login.LoginContext
 import lineage.vetal.server.login.clientserver.packets.LoginClientPacket
 import lineage.vetal.server.login.clientserver.packets.client.ClientConnected
 import lineage.vetal.server.login.clientserver.packets.client.ClientDisconnected
-import vetal.server.sock.SockSelector
+import vetalll.server.sock.SelectorThread
 import java.security.KeyPair
 
 class LoginClientServer(
@@ -19,7 +19,7 @@ class LoginClientServer(
     private val rsaPairs: Array<KeyPair>
     private val clientFactory: LoginClientFactory
 
-    private var selectorThread: SockSelector<LoginClient>
+    private var selectorThread: SelectorThread<LoginClient>
     private val serverScope = CoroutineScope(Dispatchers.IO + Job())
 
     init {
@@ -32,7 +32,7 @@ class LoginClientServer(
 
         clientFactory = LoginClientFactory(blowFishKeys, rsaPairs)
 
-        selectorThread = SockSelector(
+        selectorThread = SelectorThread(
             context.loginConfig.clientServer.hostname,
             context.loginConfig.clientServer.port,
             clientFactory,
@@ -42,7 +42,7 @@ class LoginClientServer(
     }
 
     fun startServer() {
-        selectorThread.start()
+        selectorThread.startSelector()
 
         // TODO error handler ? Try catch ? some hierarchy of errors?
 

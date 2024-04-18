@@ -7,7 +7,7 @@ import lineage.vetal.server.game.gameserver.packet.server.CharInfo
 import lineage.vetal.server.game.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.game.gameserver.packet.server.NpcInfo
 import lineage.vetal.server.game.gameserver.packet.server.SpawnItem
-import vetal.server.sock.WriteablePacket
+import vetalll.server.sock.WriteablePacket
 import java.util.concurrent.ConcurrentHashMap
 
 // TODO need to understand design of this class. Is it just holder for items ? DO I need Broadcast Manager ?

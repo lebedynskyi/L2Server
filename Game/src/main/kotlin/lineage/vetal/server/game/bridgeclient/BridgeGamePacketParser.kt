@@ -3,8 +3,8 @@ package lineage.vetal.server.game.bridgeclient
 import lineage.vetal.server.game.bridgeclient.packets.server.AuthOk
 import lineage.vetal.server.game.bridgeclient.packets.server.InitOK
 import lineage.vetal.server.game.bridgeclient.packets.server.UpdateOk
-import vetal.server.sock.ReadablePacket
-import vetal.server.sock.SockPacketFactory
+import vetalll.server.sock.ReadablePacket
+import vetalll.server.sock.SockPacketFactory
 import java.nio.ByteBuffer
 
 class BridgeGamePacketParser : SockPacketFactory {

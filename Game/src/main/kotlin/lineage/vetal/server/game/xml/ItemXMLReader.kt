@@ -5,7 +5,7 @@ import lineage.vetal.server.game.game.model.template.items.EtcItemTemplate
 import lineage.vetal.server.game.game.model.template.items.ItemTemplate
 import lineage.vetal.server.game.game.model.template.items.WeaponItemTemplate
 import org.w3c.dom.Document
-import vetal.server.writeError
+import vetalll.server.sock.writeInfo
 import java.nio.file.Path
 
 private const val TAG = "ItemXMLReader"
@@ -47,7 +47,7 @@ class ItemXMLReader(
                         else -> EtcItemTemplate(set)
                     }
                 } else {
-                    writeError(TAG, "Unable to parse item. No id found. Name ${set.getString("name")}")
+                    writeInfo(TAG, "Unable to parse item. No id found. Name ${set.getString("name")}")
                 }
             }
         }

@@ -1,7 +1,7 @@
 package lineage.vetal.server.login.bridgeserver
 
 import lineage.vetal.server.core.bridge.*
-import vetal.server.sock.SockClientFactory
+import vetalll.server.sock.SockClientFactory
 
 class BridgeFactory : SockClientFactory<BridgeClient>() {
     override fun createClient(): BridgeClient {

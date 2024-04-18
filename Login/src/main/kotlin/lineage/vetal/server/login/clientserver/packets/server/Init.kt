@@ -1,6 +1,6 @@
 package lineage.vetal.server.login.clientserver.packets.server
 
-import vetal.server.sock.WriteablePacket
+import vetalll.server.sock.WriteablePacket
 
 class Init(
     private val sessionId: Int,

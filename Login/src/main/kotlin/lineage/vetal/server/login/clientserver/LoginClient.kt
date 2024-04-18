@@ -2,7 +2,7 @@ package lineage.vetal.server.login.clientserver
 
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.core.model.SessionKey
-import vetal.server.sock.SockClient
+import vetalll.server.sock.SockClient
 
 class LoginClient(
     val sessionId: Int,

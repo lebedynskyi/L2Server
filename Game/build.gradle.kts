@@ -14,5 +14,5 @@ application {
 
 dependencies {
     implementation(project(":Shared"))
-    implementation(project(":Network"))
+    implementation(project(":Socks"))
 }

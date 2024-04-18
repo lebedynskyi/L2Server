@@ -1,7 +1,8 @@
 package lineage.vetal.server.core.bridge
 
-import vetal.server.sock.SockConnection
-import vetal.server.sock.SockPacketFactory
+import vetalll.server.sock.SockConnection
+import vetalll.server.sock.SockPacketFactory
+
 
 class BridgeConnection(
     packetParser: SockPacketFactory,

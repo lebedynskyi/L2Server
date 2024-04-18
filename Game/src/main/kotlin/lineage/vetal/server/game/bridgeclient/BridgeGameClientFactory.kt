@@ -3,7 +3,7 @@ package lineage.vetal.server.game.bridgeclient
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.bridge.BridgeConnection
 import lineage.vetal.server.core.bridge.BridgeConnectionCrypt
-import vetal.server.sock.SockClientFactory
+import vetalll.server.sock.SockClientFactory
 
 class BridgeGameClientFactory : SockClientFactory<BridgeClient>() {
     override fun createClient(): BridgeClient {

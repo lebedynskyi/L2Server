@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.bridgeclient.packets.client
 
-import vetal.server.sock.WriteablePacket
+import vetalll.server.sock.WriteablePacket
 
 class RequestInit(
     private var serverId: Int

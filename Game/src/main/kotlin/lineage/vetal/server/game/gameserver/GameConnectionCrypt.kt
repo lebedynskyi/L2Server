@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.gameserver
 
-import vetal.server.sock.SockCrypt
+import vetalll.server.sock.SockCrypt
 import kotlin.random.Random
 
 class GameConnectionCrypt private constructor(

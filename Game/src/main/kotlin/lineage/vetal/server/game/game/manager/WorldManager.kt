@@ -9,9 +9,8 @@ import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
-import vetal.server.sock.WriteablePacket
-import vetal.server.writeError
-import vetal.server.writeInfo
+import vetalll.server.sock.WriteablePacket
+import vetalll.server.sock.writeInfo
 import java.util.*
 
 // Geodata min/max tiles
@@ -103,7 +102,7 @@ class WorldManager(
     private fun addPlayerToWorld(player: PlayerObject) {
         val region = getRegion(player.position.x, player.position.y)
         if (region == null) {
-            writeError(TAG, " No region found for player ${player.name} and position ${player.position}")
+            writeInfo(TAG, " No region found for player ${player.name} and position ${player.position}")
             player.client?.saveAndClose(LeaveWorld())
             return
         }
