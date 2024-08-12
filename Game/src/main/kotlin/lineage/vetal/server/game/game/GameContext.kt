@@ -1,10 +1,12 @@
 package lineage.vetal.server.game.game
 
+import kotlinx.coroutines.Dispatchers
 import lineage.vetal.server.core.db.HikariDBConnection
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.manager.*
+import lineage.vetal.server.game.game.task.GameAnnouncerTask
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader
 import lineage.vetal.server.game.xml.NpcXMLReader
@@ -21,7 +23,7 @@ class GameContext {
     lateinit var spawnManager: SpawnManager
     lateinit var movementManager: MovementManager
     lateinit var itemManager: ItemManager
-    lateinit var gameAnnouncer: GameAnnounceManager
+    lateinit var gameAnnouncer: GameAnnouncerTask
     lateinit var gameLobby: GameLobbyManager
     lateinit var gameDatabase: GameDatabase
     lateinit var gameConfig: lineage.vetal.server.game.ConfigGame
@@ -29,7 +31,7 @@ class GameContext {
     lateinit var chatManager: ChatManager
     lateinit var objectFactory: GameObjectFactory
 
-    fun load(dataFolder: String,) {
+    fun load(dataFolder: String) {
         writeSection(TAG)
         writeInfo(TAG, "Loading context. Data folder is $dataFolder")
 
@@ -59,7 +61,7 @@ class GameContext {
 
         objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
-        writeInfo(TAG, "Start managers")
+        writeInfo(TAG, "Init managers")
         worldManager = WorldManager(this)
         manorManager = ManorManager()
         itemManager = ItemManager(this)
@@ -67,9 +69,9 @@ class GameContext {
         gameLobby = GameLobbyManager(this)
         chatManager = ChatManager(this)
         spawnManager = SpawnManager(this)
-        gameAnnouncer = GameAnnounceManager(this).apply {
-            start()
-        }
-        writeInfo(TAG,"Managers started")
+
+        val taskDispatcher = Dispatchers.IO
+        writeInfo(TAG, "Init tasks")
+        gameAnnouncer = GameAnnouncerTask(this, taskDispatcher)
     }
 }

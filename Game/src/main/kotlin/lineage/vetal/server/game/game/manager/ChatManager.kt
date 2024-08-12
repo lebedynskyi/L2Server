@@ -9,15 +9,15 @@ class ChatManager(
     private val context: GameContext,
 ) {
     fun playerSay(client: GameClient, text: String, sayTypeId: Int, targetName: String?) {
-        if (sayTypeId < 0 || sayTypeId > SayType.values().size) return
+        if (sayTypeId < 0 || sayTypeId > SayType.entries.size) return
         val player = client.player ?: return
         if (text.isBlank() || text.length > 100) return
 
         // Check player role. Chat ban ? Player is gm ? and etc
         // Check chat type? Send different messages?
-        val sayType = SayType.values()[sayTypeId]
+        val sayType = SayType.entries[sayTypeId]
         val message = text.replace("\\\\n", "")
-        if(sayType == SayType.HERO_VOICE) {
+        if (sayType == SayType.HERO_VOICE) {
             context.worldManager.broadCast(CreatureSay(sayType, text))
         } else {
             player.region.broadCast(CreatureSay(player, sayType, message))
