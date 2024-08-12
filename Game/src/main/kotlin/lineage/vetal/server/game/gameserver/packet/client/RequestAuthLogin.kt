@@ -19,7 +19,7 @@ class RequestAuthLogin : GamePacket() {
         loginKey2 = readD()
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
        context.gameLobby.requestAuthLogin(client, account, loginKey1, loginKey2, playKey1, playKey2)
     }
 }

@@ -13,7 +13,7 @@ class RequestProtocolVersion : GamePacket() {
         version = readD()
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         when (version) {
             737 -> client.sendInitPacket()
             740 -> client.sendInitPacket()

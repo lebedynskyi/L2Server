@@ -1,11 +1,11 @@
 package lineage.vetal.server.game.xml
 
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.model.template.items.ArmorItemTemplate
 import lineage.vetal.server.game.game.model.template.items.EtcItemTemplate
 import lineage.vetal.server.game.game.model.template.items.ItemTemplate
 import lineage.vetal.server.game.game.model.template.items.WeaponItemTemplate
 import org.w3c.dom.Document
-import vetalll.server.sock.writeInfo
 import java.nio.file.Path
 
 private const val TAG = "ItemXMLReader"

@@ -3,12 +3,11 @@ package lineage.vetal.server.game.game.manager
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.EquipmentObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
+import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.gameserver.GameClient
-import lineage.vetal.server.game.gameserver.packet.server.DropItem
-import lineage.vetal.server.game.gameserver.packet.server.InventoryUpdate
-import lineage.vetal.server.game.gameserver.packet.server.UserInfo
+import lineage.vetal.server.game.gameserver.packet.server.*
 
 class ItemManager(
     private val context: GameContext
@@ -22,33 +21,45 @@ class ItemManager(
             return
         }
 
-        val item = player.inventory.getItem(objectId) ?: return
-
         // Check is quest and etc?
-        if (item.count < count) {
+        val item = player.inventory.getItem(objectId)
+        if (item == null) {
+            player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
             return
         }
 
-        item.position = SpawnPosition(x, y, z, 0)
+        if (item.count < count) {
+            player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
+            return
+        }
+
+        item.position = SpawnPosition(x, y, z)
         item.ownerId = null
-        // TODO save item ? Save owner ID ?
+        context.gameDatabase.itemsDao.saveItem(item)
+
         player.inventory.removeItem(item)
         player.region.addItem(item)
         player.region.broadCast(DropItem(item, player.objectId))
 
-        val inventoryUpdate = InventoryUpdate()
-        inventoryUpdate.onItemRemoved(item)
+        val inventoryUpdate = InventoryUpdate().apply {
+            onItemRemoved(item)
+        }
         player.sendPacket(inventoryUpdate)
     }
 
-    // TODO maybe it is ActionManager ?
-    fun onPlayerPickUpItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
+    fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject, x: Int, y: Int, z: Int) {
         // TODO validation of position, owner and etc etc
+        item.ownerId = player.id
+        item.position = SpawnPosition.zero
+        player.inventory.addItem(item)
+        player.region.removeItem(item)
+        player.region.broadCast(DeleteObject(item))
+        context.gameDatabase.itemsDao.saveItem(item)
 
-        // remove from world / region
-        // add to inventory
-        // Get fresh from inventory with appropriate data
-        // send packet
+        val inventoryUpdate = InventoryUpdate().apply {
+            onNewItem(item)
+        }
+        player.sendPacket(inventoryUpdate)
     }
 
     fun onNpcDropItem() {
@@ -67,6 +78,7 @@ class ItemManager(
                     onModified(item)
                 })
             }
+
             is EtcItemObject -> {
                 System.err.println("XXX: Use EtcItem")
             }

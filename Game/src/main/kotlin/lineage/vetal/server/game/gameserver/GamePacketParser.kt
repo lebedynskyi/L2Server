@@ -1,20 +1,24 @@
 package lineage.vetal.server.game.gameserver
 
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.gameserver.packet.client.*
 import vetalll.server.sock.ReadablePacket
 import vetalll.server.sock.SockPacketFactory
 import java.nio.ByteBuffer
 
+private const val TAG = "GamePacketParser"
+
 class GamePacketParser : SockPacketFactory {
-    private val TAG = "GamePacketParser"
 
     override fun parsePacket(opCode: Byte, size: Int, buffer: ByteBuffer): ReadablePacket? {
-        return when (opCode.toInt()) {
+        return when (val opCodeInt = opCode.toInt()) {
             0x00 -> RequestProtocolVersion()
             0x01 -> RequestMoveToLocation()
+            0x04 -> RequestAction()
             0x08 -> RequestAuthLogin()
             0x09 -> RequestQuit()
+            0x0F -> RequestItemList()
             0x0e -> RequestCharacterTemplates()
             0x0b -> RequestCreateCharacter()
             0x0d -> RequestSelectCharacter()
@@ -26,7 +30,10 @@ class GamePacketParser : SockPacketFactory {
             0x12 -> RequestDropItem()
             0x14 -> RequestUseItem()
             0xd0 -> parsePacketFor0xD0(buffer)
-            else -> null
+            else -> {
+                writeError(TAG, "No parser for packet with opcode ${Integer.toHexString(opCodeInt)}")
+                null
+            }
         }
     }
 

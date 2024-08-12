@@ -20,10 +20,11 @@ class DropItem(
 
         // only show item count if it is a stackable item
         if (item.template.stackable)
-            writeD(0x01);
+            writeD(0x01)
         else
-            writeD(0x00);
-        writeD(item.count);
+            writeD(0x00)
+
+        writeD(item.count)
 
         writeD(1); // unknown
     }

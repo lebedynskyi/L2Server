@@ -4,7 +4,7 @@ lobbyConfig:
   autoRegistration: true
 
 clientServer:
-  hostname: "*"
+  hostname: "127.0.0.1"
   port: 2106
 
 bridgeServer:
@@ -13,14 +13,14 @@ bridgeServer:
 
 registeredServers:
   - id: 1
-    ip: "55.55.55.55"
+    ip: "127.0.0.1"
     port: 7777
     ageLimit: 18
     isPvp: false
     maxOnline: 5
     bridgeKey: "fhgj#G$FSWD&T&#3"
   - id: 2
-    ip: "44.44.44.44"
+    ip: "127.0.0.1"
     port: 7777
     ageLimit: 18
     isPvp: false
@@ -30,8 +30,8 @@ registeredServers:
 dataBaseConfig:  # MariaDB
   driver: "org.mariadb.jdbc.Driver"
   url: "jdbc:mariadb://127.0.0.1/l2db"
-  user: "l2db"
-  password: "l2dbpass"
+  user: "root"
+  password: "det4Deb5"
   timeOut: 5000
 
 #dataBaseConfig:  # SQLite

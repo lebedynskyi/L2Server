@@ -3,6 +3,7 @@ package lineage.vetal.server.core.db
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
+// TODO transactions for collections ?
 abstract class DBDao(
     private val dataBase: DBConnection
 ) {
@@ -14,7 +15,11 @@ abstract class DBDao(
         } > 0
     }
 
-    fun <T> querySingle(sql: String, onPrepare: ((PreparedStatement) -> Unit)? = null, onTransform: (ResultSet) -> T): T? {
+    fun <T> querySingle(
+        sql: String,
+        onPrepare: ((PreparedStatement) -> Unit)? = null,
+        onTransform: (ResultSet) -> T
+    ): T? {
         return dataBase.connection.use { connection ->
             connection.prepareStatement(sql).apply {
                 onPrepare?.invoke(this)
@@ -24,7 +29,11 @@ abstract class DBDao(
         }
     }
 
-    fun <T> queryList(sql: String, onPrepare: ((PreparedStatement) -> Unit)? = null, onTransform: (ResultSet) -> T): List<T> {
+    fun <T> queryList(
+        sql: String,
+        onPrepare: ((PreparedStatement) -> Unit)? = null,
+        onTransform: (ResultSet) -> T
+    ): List<T> {
         return dataBase.connection.use { connection ->
             connection.prepareStatement(sql).apply {
                 onPrepare?.invoke(this)

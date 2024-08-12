@@ -10,18 +10,14 @@ import vetalll.server.sock.SelectorThread
 class BridgeServer(
     private val context: LoginContext
 ) {
-    private var selectorThread: SelectorThread<BridgeClient>
-    private val serverScope = CoroutineScope(Dispatchers.IO + Job())
-
-    init {
-        selectorThread = SelectorThread(
-            context.loginConfig.bridgeServer.hostname,
-            context.loginConfig.bridgeServer.port,
-            BridgeFactory(),
-            isServer = true,
-            TAG = "BridgeServerSelector"
-        )
-    }
+    private val serverScope = CoroutineScope(newSingleThreadContext("BridgeServer") + Job())
+    private var selectorThread: SelectorThread<BridgeClient> = SelectorThread(
+        context.loginConfig.bridgeServer.hostname,
+        context.loginConfig.bridgeServer.port,
+        BridgeFactory(),
+        isServer = true,
+        TAG = "BridgeServerSelector"
+    )
 
     fun startServer() {
         selectorThread.startSelector()

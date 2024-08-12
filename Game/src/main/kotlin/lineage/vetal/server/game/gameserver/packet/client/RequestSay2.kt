@@ -18,7 +18,7 @@ class RequestSay2 : GamePacket() {
         }
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         context.chatManager.playerSay(client, text, typeId, targetName)
     }
 }

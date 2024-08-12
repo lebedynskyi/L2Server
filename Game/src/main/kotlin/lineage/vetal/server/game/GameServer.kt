@@ -10,18 +10,14 @@ import vetalll.server.sock.SelectorThread
 class GameServer(
     private val context: GameContext
 ) {
-    private val gameSelector: SelectorThread<GameClient>
+    private val gameSelector: SelectorThread<GameClient> = SelectorThread(
+        context.gameConfig.serverInfo.ip,
+        context.gameConfig.serverInfo.port,
+        GameClientFactory(),
+        isServer = true,
+        TAG = "GameServerSelector"
+    )
     private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
-
-    init {
-        gameSelector = SelectorThread(
-            context.gameConfig.serverInfo.ip,
-            context.gameConfig.serverInfo.port,
-            GameClientFactory(),
-            isServer = true,
-            TAG = "GameServerSelector"
-        )
-    }
 
     fun startServer() {
         gameSelector.startSelector()

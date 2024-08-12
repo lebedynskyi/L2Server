@@ -1,5 +1,8 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeError
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.WorldRegion
 import lineage.vetal.server.game.game.model.position.Position
@@ -10,7 +13,6 @@ import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
 import vetalll.server.sock.WriteablePacket
-import vetalll.server.sock.writeInfo
 import java.util.*
 
 // Geodata min/max tiles
@@ -69,24 +71,30 @@ class WorldManager(
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
         context.gameDatabase.charactersDao.updateLastAccess(player.objectId, (Calendar.getInstance().time.time / 1000).toInt())
         addPlayerToWorld(player)
+        writeDebug(TAG, "Player enter world. ${player.name} -> ${player.id}")
     }
 
     fun onPlayerRestart(client: GameClient, player: PlayerObject) {
-        client.player = null
+        if (!player.isActive) {
+            writeError(TAG, "Not active player asked for restart")
+            return
+        }
+
+        removePlayerFromWorld(client, player)
+
         client.clientState = GameClientState.LOBBY
-        onPlayerQuit(client, player)
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
         context.gameLobby.onCharSlotSelection(client)
     }
 
     fun onPlayerQuit(client: GameClient, player: PlayerObject) {
-        player.region.removePlayer(player)
-        if (player.isActive) {
-            client.saveAndClose(LeaveWorld())
-            context.gameDatabase.itemsDao.saveInventory(player.inventory.items)
-            context.gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
+        if (!player.isActive) {
+            writeError(TAG, "Not active player asked for quit. Disconnect after LeaveWorld")
+            return
         }
-        player.isActive = false
+
+        removePlayerFromWorld(client, player)
+        client.saveAndClose(LeaveWorld())
     }
 
     fun onPlayerPositionChanged(player: PlayerObject, loc: Position) {
@@ -108,6 +116,15 @@ class WorldManager(
         }
         player.region = region
         region.addPlayer(player)
+    }
+
+    private fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
+        player.region.removePlayer(player)
+        player.isActive = false
+        client.player = null
+
+        context.gameDatabase.itemsDao.saveItems(player.inventory.items)
+        context.gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
     }
 
     private fun isRegionExist(x: Int, y: Int): Boolean {

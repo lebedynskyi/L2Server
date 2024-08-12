@@ -20,7 +20,7 @@ class LoginClientServer(
     private val clientFactory: LoginClientFactory
 
     private var selectorThread: SelectorThread<LoginClient>
-    private val serverScope = CoroutineScope(Dispatchers.IO + Job())
+    private val serverScope = CoroutineScope(newSingleThreadContext("LoginClientServer") + Job())
 
     init {
         writeSection(TAG)

@@ -22,7 +22,7 @@ class RequestMoveToLocation : GamePacket() {
         startZ = readD()
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         val player = client.player ?: return
         val startLocation = Position(startX, startY, startZ)
         val finishLocation = Position(targetX, targetY, targetZ)

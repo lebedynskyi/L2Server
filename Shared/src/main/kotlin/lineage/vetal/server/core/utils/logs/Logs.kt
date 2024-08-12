@@ -23,6 +23,10 @@ fun writeError(tag: String, msg: Any, e: Throwable) {
     e.printStackTrace()
 }
 
+fun writeError(tag: String, msg: Any) {
+    System.err.println("$ANSI_RED E: $tag: $ANSI_RESET$msg")
+}
+
 fun writeSection(section: String, char: Char = '-') {
     print("[$section]")
 

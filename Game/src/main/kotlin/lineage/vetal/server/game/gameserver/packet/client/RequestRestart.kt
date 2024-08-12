@@ -5,7 +5,7 @@ import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 
 class RequestRestart : GamePacket() {
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         val player = client.player ?: return
         context.worldManager.onPlayerRestart(client, player)
     }

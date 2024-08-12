@@ -21,12 +21,14 @@ class GameAnnounceManager(
         isRunning = true
         coroutineScope.launch {
             while (isRunning) {
-                delay(TimeUnit.SECONDS.toMillis(Random.nextLong(30, 60)))
+                delay(TimeUnit.SECONDS.toMillis(Random.nextLong(60, 120)))
 
                 if (isRunning) {
                     val msg = announcements.random()
                     context.chatManager.announce(msg, SayType.ANNOUNCEMENT)
                     writeInfo(TAG, "-> $msg")
+                } else {
+                    cancel()
                 }
             }
         }

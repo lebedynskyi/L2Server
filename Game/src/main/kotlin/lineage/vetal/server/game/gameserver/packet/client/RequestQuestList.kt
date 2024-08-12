@@ -6,7 +6,7 @@ import lineage.vetal.server.game.gameserver.packet.GamePacket
 import lineage.vetal.server.game.gameserver.packet.server.QuestList
 
 class RequestQuestList : GamePacket() {
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         client.player ?: return
         client.sendPacket(QuestList())
     }

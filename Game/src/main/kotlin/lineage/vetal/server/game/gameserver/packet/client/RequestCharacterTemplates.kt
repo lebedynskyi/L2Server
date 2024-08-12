@@ -11,7 +11,7 @@ class RequestCharacterTemplates : GamePacket() {
 
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         client.sendPacket(NewCharacterSuccess(emptyList()))
     }
 }

@@ -5,7 +5,7 @@ class SpawnPosition(
     x: Int,
     y: Int,
     z: Int,
-    val heading: Int
+    val heading: Int = 0
 ) : Position(x, y, z) {
     constructor(location: Position) : this(location.x, location.y, location.z, 0)
 

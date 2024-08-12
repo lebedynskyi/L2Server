@@ -224,6 +224,8 @@ enum class ClassId(
                     SPELLHOWLER
                 )
             )
+
+            else -> {}
         }
     }
 

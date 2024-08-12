@@ -36,7 +36,7 @@ class RequestCreateCharacter : GamePacket() {
         face = readD()
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         context.gameLobby.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
     }
 }

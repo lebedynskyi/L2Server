@@ -11,21 +11,17 @@ import vetalll.server.sock.SelectorThread
 class BridgeClient(
     private val context: GameContext
 ) {
-    private val bridgeSelector: SelectorThread<BridgeClient>
-    private val coroutineScope = CoroutineScope(newSingleThreadContext("GameBridgeClient") + Job())
-
-    init {
-        bridgeSelector = SelectorThread(
-            context.gameConfig.bridgeServer.hostname,
-            context.gameConfig.bridgeServer.port,
-            BridgeGameClientFactory(),
-            isServer = false,
-            TAG = "BridgeClientSelector"
-        )
-    }
+    private val coroutineScope = CoroutineScope(newSingleThreadContext("BridgeClient") + Job())
+    private val bridgeSelector: SelectorThread<BridgeClient> = SelectorThread(
+        context.gameConfig.bridgeServer.hostname,
+        context.gameConfig.bridgeServer.port,
+        BridgeGameClientFactory(),
+        isServer = false,
+        TAG = "BridgeClientSelector"
+    )
 
     fun startClient() {
-        bridgeSelector.start()
+        bridgeSelector.startSelector()
 
         coroutineScope.launch {
             bridgeSelector.connectionAcceptFlow.collect {

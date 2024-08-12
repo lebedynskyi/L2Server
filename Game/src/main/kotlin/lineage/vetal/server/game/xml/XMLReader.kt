@@ -184,18 +184,6 @@ interface XmlReader {
         }
     }
 
-    fun <T : Enum<T>?> parseEnum(node: Node?, clazz: Class<T?>): T? {
-        return parseEnum(node, clazz, null)
-    }
-
-    fun <T : Enum<T>?> parseEnum(attrs: NamedNodeMap, clazz: Class<T?>, name: String?): T? {
-        return parseEnum(attrs.getNamedItem(name), clazz)
-    }
-
-    fun <T : Enum<T>?> parseEnum(attrs: NamedNodeMap, clazz: Class<T>, name: String?, defaultValue: T): T {
-        return parseEnum(attrs.getNamedItem(name), clazz, defaultValue)
-    }
-
     fun parseAttributes(node: Node): StatSet {
         val attrs = node.attributes
         val map = StatSet()

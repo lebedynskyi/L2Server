@@ -145,7 +145,7 @@ class GameLobbyManager(
 */
         val newPlayer = context.objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex, true)
         context.gameDatabase.charactersDao.insertCharacter(newPlayer)
-        context.gameDatabase.itemsDao.saveInventory(newPlayer.inventory.items)
+        context.gameDatabase.itemsDao.saveItems(newPlayer.inventory.items)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
         onCharSlotSelection(client)
     }
@@ -163,7 +163,7 @@ class GameLobbyManager(
             return
         }
 
-        val playerItems = context.gameDatabase.itemsDao.getInventoryForPlayer(slot.id)
+        val playerItems = context.gameDatabase.itemsDao.getItemsForPlayer(slot.id)
         val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
             inventory.addAll(playerItems)
         }

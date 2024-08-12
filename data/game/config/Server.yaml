@@ -1,6 +1,6 @@
 serverInfo:
   id: 2
-  ip: "192.168.0.137"
+  ip: "127.0.0.1"
   port: 7777
   ageLimit: 18
   isPvp: false
@@ -14,8 +14,8 @@ bridgeServer:
 dataBaseConfig:  # MariaDB
   driver: "org.mariadb.jdbc.Driver"
   url: "jdbc:mariadb://127.0.0.1/l2db"
-  user: "l2db"
-  password: "l2dbpass"
+  user: "root"
+  password: "det4Deb5"
   timeOut: 5000
 #
 #dataBaseConfig:  # SQLite

@@ -15,7 +15,7 @@ class RequestSelectCharacter : GamePacket() {
         readD() // Not used.
     }
 
-    override fun execute(client: GameClient, context: GameContext) {
+    override fun executeImpl(client: GameClient, context: GameContext) {
         context.gameLobby.requestSelectChar(client, slotIndex)
     }
 }
