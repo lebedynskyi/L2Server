@@ -1,9 +1,9 @@
 package lineage.vetal.server.game.game.model.template.pc
 
-import lineage.vetal.server.game.game.model.template.Template
+import lineage.vetal.server.game.game.model.template.GameObjectTemplate
 import lineage.vetal.server.game.xml.StatSet
 
-open class CreatureTemplate(set: StatSet) : Template(set){
+open class CreatureTemplate(set: StatSet) : GameObjectTemplate(set){
     val baseSTR = set.getInteger("str", 40)
     val baseCON = set.getInteger("con", 21)
     val baseDEX = set.getInteger("dex", 30)

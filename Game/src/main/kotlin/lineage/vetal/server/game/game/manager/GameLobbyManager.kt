@@ -48,7 +48,7 @@ class GameLobbyManager(
     }
 
     fun requestAuthLogin(client: GameClient, account: String, loginKey1: Int, loginKey2: Int, playKey1: Int, playKey2: Int) {
-        // TODO validate it via bridge server communication.
+        // TODO validate it via bridge server communication. Not via database!
         writeInfo(TAG, "Account connected $account")
         val accountInfo = context.gameDatabase.accountDao.findAccount(account)
         if (accountInfo == null) {

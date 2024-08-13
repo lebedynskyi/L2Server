@@ -6,6 +6,8 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.manager.*
+import lineage.vetal.server.game.game.model.GameObjectFactory
+import lineage.vetal.server.game.game.model.GameObjectIdFactory
 import lineage.vetal.server.game.game.task.GameAnnouncerTask
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader

@@ -66,6 +66,6 @@ open class Position {
     }
 
     companion object {
-        val ZERO_LOC = Position(0, 0, 0)
+        val zero = Position(0, 0, 0)
     }
 }

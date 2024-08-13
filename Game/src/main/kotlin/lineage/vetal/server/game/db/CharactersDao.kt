@@ -39,8 +39,8 @@ class CharactersDao(
             it.setInt(19, player.pvpKills)
             it.setInt(20, player.pkKills)
             it.setInt(21, player.clanId)
-            it.setInt(22, player.charTemplate.charClass.race.ordinal)
-            it.setInt(23, player.charTemplate.charClass.ordinal)
+            it.setInt(22, player.template.charClass.race.ordinal)
+            it.setInt(23, player.template.charClass.ordinal)
             it.setLong(24, player.deleteTimer)
             it.setInt(25, if (player.hasDwarvenCraft) 1 else 0)
             it.setString(26, player.title)
@@ -49,7 +49,7 @@ class CharactersDao(
             it.setInt(29, if (player.isIn7sDungeon) 1 else 0)
             it.setInt(30, player.clanPrivileges)
             it.setInt(31, if (player.wantsPeace) 1 else 0)
-            it.setInt(32, player.charTemplate.charClass.id)
+            it.setInt(32, player.template.charClass.id)
             it.setInt(33, if (player.isNoble) 1 else 0)
             it.setInt(34, player.position.x)
             it.setInt(35, player.position.y)
@@ -114,15 +114,15 @@ class CharactersDao(
         return querySingle(CharactersSQL.SELECT_CHARACTER_SQL,
             onPrepare = { it.setString(1, charId) }) {
             PlayerObject(
-                it.getString(1),
+                it.getInt(1),
                 it.getString(2),
-                it.getInt(3),
+                it.getString(3),
+                Appearance(it.getInt(14), it.getInt(15), it.getInt(16), CharacterSex.values()[it.getInt(17)]),
                 it.getString(4),
                 charTemplates.getValue(it.getInt(22)),
-                Appearance(it.getInt(14), it.getInt(15), it.getInt(16), CharacterSex.values()[it.getInt(17)]),
                 SpawnPosition(it.getInt(33), it.getInt(34), it.getInt(35), 0)
             ).apply {
-                stats = PlayerStatus(charTemplate).apply {
+                stats = PlayerStatus(template).apply {
                     level = it.getInt(5)
                     maxHp = it.getInt(6)
                     curHp = it.getDouble(7)

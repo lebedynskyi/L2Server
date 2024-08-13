@@ -38,18 +38,17 @@ class ItemsDao(
             it.setString(1, playerId)
         }) {
             val itemId = it.getInt(3)
-            val ownerId =
-                it.getString(1) ?: throw throw IllegalStateException("Unable to find template for item id $itemId")
+            val ownerId = it.getString(1) ?: throw throw IllegalStateException("Unable to find template for item id $itemId")
             val objectId = it.getInt(2)
-            val template =
-                itemsTemplates[itemId] ?: throw IllegalStateException("Unable to find template for item id $itemId")
+            val template = itemsTemplates[itemId] ?: throw IllegalStateException("Unable to find template for item id $itemId")
 
             when (template) {
-                is ArmorItemTemplate -> ArmorObject(objectId, ownerId, template)
-                is WeaponItemTemplate -> WeaponObject(objectId, ownerId, template)
-                is EtcItemTemplate -> EtcItemObject(objectId, ownerId, template)
+                is ArmorItemTemplate -> ArmorObject(objectId, template)
+                is WeaponItemTemplate -> WeaponObject(objectId, template)
+                is EtcItemTemplate -> EtcItemObject(objectId, template)
                 else -> throw IllegalStateException("Unable to find template for item id $itemId")
             }.apply {
+                this.ownerId = ownerId
                 count = it.getInt(4)
                 enchantLevel = it.getInt(5)
                 itemLocation = ItemLocation.valueOf(it.getString(6))

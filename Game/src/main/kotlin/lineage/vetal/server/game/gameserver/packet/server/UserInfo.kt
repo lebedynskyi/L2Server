@@ -20,9 +20,9 @@ class UserInfo(
         writeS(
             player.name // if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
         )
-        writeD(player.charTemplate.charClass.race.ordinal)
+        writeD(player.template.charClass.race.ordinal)
         writeD(player.appearance.sex.id)
-        writeD(player.charTemplate.charClass.ordinal)
+        writeD(player.template.charClass.ordinal)
 
         writeD(player.stats.level)
         writeQ(player.stats.exp)
@@ -182,7 +182,7 @@ class UserInfo(
         writeH(player.recomHave)
         writeD(if (player.mountNpcId > 0) player.mountNpcId + 1000000 else 0)
         writeH(player.inventory.inventoryLimit)
-        writeD(player.charTemplate.charClass.ordinal)
+        writeD(player.template.charClass.ordinal)
         writeD(0x00)
         writeD(player.stats.maxCp)
         writeD(player.stats.curCp.toInt())

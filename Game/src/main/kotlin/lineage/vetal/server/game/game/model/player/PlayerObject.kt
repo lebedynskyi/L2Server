@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.model.player
 
+import lineage.vetal.server.game.game.model.behaviour.PlayerBehaviour
 import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.status.PlayerStatus
@@ -7,20 +8,22 @@ import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 import lineage.vetal.server.game.gameserver.GameClient
 import vetalll.server.sock.WriteablePacket
 
+
 class PlayerObject(
+    objectId: Int,
     val id: String,
     val accountId: String,
-    objectId: Int,
-    name: String,
-    val charTemplate: CharTemplate,
     val appearance: Appearance,
-    position: SpawnPosition
-) : Playable(objectId, name, position) {
+    override var name: String,
+    override val template: CharTemplate,
+    override var position: SpawnPosition,
+    override val behaviour: PlayerBehaviour = PlayerBehaviour(),
+) : Playable(objectId, position, template, behaviour) {
+    override var stats: PlayerStatus = PlayerStatus(template)
 
-    override var stats: PlayerStatus = PlayerStatus(charTemplate)
-    var inventory: WearableInventory = WearableInventory()
     var client: GameClient? = null
 
+    var inventory: WearableInventory = WearableInventory()
     var summon: Summon? = null
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
@@ -65,11 +68,11 @@ class PlayerObject(
     var pledgeClass = 0
 
     fun getCollisionRadius(): Double {
-        return charTemplate.getCollisionRadiusBySex(appearance.sex)
+        return template.getCollisionRadiusBySex(appearance.sex)
     }
 
     fun getCollisionHeight(): Double {
-        return charTemplate.getCollisionHeightBySex(appearance.sex)
+        return template.getCollisionHeightBySex(appearance.sex)
     }
 
     fun sendPacket(packet: WriteablePacket) {

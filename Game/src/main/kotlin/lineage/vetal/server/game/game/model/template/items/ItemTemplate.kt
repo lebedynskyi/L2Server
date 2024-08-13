@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.game.model.template.items
 
-import lineage.vetal.server.game.game.model.template.Template
+import lineage.vetal.server.game.game.model.template.GameObjectTemplate
 import lineage.vetal.server.game.xml.StatSet
 
 const val TYPE1_WEAPON_RING_EARRING_NECKLACE = 0
@@ -40,7 +40,7 @@ enum class CrystalType(
     S(1, 2, 3, 4)
 }
 
-abstract class ItemTemplate(set: StatSet) : Template(set) {
+abstract class ItemTemplate(set: StatSet) : GameObjectTemplate(set) {
     abstract val type1: Int // needed for item list (inventory)
     abstract val type2: Int // different lists for armor, weapon, etc
 

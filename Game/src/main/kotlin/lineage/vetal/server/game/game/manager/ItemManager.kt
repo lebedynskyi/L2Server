@@ -35,6 +35,12 @@ class ItemManager(
 
         item.position = SpawnPosition(x, y, z)
         item.ownerId = null
+        when (item) {
+            is EquipmentObject -> {
+                item.equippedSlot = 0
+            }
+        }
+
         context.gameDatabase.itemsDao.saveItem(item)
 
         player.inventory.removeItem(item)

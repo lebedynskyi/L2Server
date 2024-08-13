@@ -4,9 +4,8 @@ import lineage.vetal.server.game.game.model.template.items.ItemTemplate
 
 abstract class EquipmentObject(
     objectId: Int,
-    ownerId: String,
-    itemTemplate: ItemTemplate,
-) : ItemObject(objectId, ownerId, itemTemplate) {
-    val isEquipped : Boolean get() = equippedSlot != null
+    override val template: ItemTemplate,
+) : ItemObject(objectId, template) {
+    val isEquipped: Boolean get() = equippedSlot != null
     var equippedSlot: Int? = null
 }

@@ -3,7 +3,6 @@ package lineage.vetal.server.core.db
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
-// TODO transactions for collections ?
 abstract class DBDao(
     private val dataBase: DBConnection
 ) {

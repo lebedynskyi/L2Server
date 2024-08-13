@@ -7,10 +7,10 @@ class SpawnPosition(
     z: Int,
     val heading: Int = 0
 ) : Position(x, y, z) {
-    constructor(location: Position) : this(location.x, location.y, location.z, 0)
+    constructor(pos: Position) : this(pos.x, pos.y, pos.z, 0)
 
     override fun toString(): String {
-        return "SpawnPosition {x=$x, y=$y, z=$z, heading=$heading}"
+        return "SpawnPosition {x=$x, y=$y, z=$z, h=$heading}"
     }
 
     companion object {

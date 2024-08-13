@@ -242,7 +242,7 @@ enum class ClassId(
          * @return EnumSet<ClassId> : Available subclasses for given player.
         </ClassId> */
         fun getAvailableSubclasses(player: PlayerObject): EnumSet<ClassId>? {
-            var classId: ClassId? = VALUES[player.charTemplate.charClass.id]
+            var classId: ClassId? = VALUES[player.template.charClass.id]
             if (classId!!.level < 2) return null
 
             // handle 3rd level class

@@ -11,7 +11,7 @@ class CharactersSQL {
                 "FROM characters " +
                 "WHERE account_id=?"
         const val SELECT_CHARACTER_SQL = "" +
-                "SELECT id,account_id,obj_Id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,hero " +
+                "SELECT obj_Id,id,account_id,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,exp,sp,face,hairStyle,hairColor,sex,karma,pvpkills,pkkills,clanid,classid,deletetime,cancraft,title,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,nobless,x,y,z,hero " +
                 "FROM characters " +
                 "WHERE id=?"
         const val SELECT_CHARACTERS_IDS_SQL = "" +
