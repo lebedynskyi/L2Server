@@ -13,20 +13,20 @@ class InventoryUpdate : GameServerPacket() {
     override fun write() {
         writeH(items.size)
 
-        for (temp in items) {
-            writeH(temp.changeType.ordinal)
-            writeH(temp.type1)
-            writeD(temp.objectId)
-            writeD(temp.itemId)
-            writeD(temp.count)
-            writeH(temp.type2)
-            writeH(temp.customType1)
-            writeH(if (temp.equipped) 0x01 else 0x00)
-            writeD(temp.bodySlot)
-            writeH(temp.enchant)
-            writeH(temp.customType2)
-            writeD(temp.augmentationId)
-            writeD(temp.durationLeft)
+        items.forEach {
+            writeH(it.changeType.ordinal)
+            writeH(it.type1)
+            writeD(it.objectId)
+            writeD(it.itemId)
+            writeD(it.count)
+            writeH(it.type2)
+            writeH(it.customType1)
+            writeH(if (it.equipped) 0x01 else 0x00)
+            writeD(it.bodySlot.gameId)
+            writeH(it.enchant)
+            writeH(it.customType2)
+            writeD(it.augmentationId)
+            writeD(it.durationLeft)
         }
     }
 

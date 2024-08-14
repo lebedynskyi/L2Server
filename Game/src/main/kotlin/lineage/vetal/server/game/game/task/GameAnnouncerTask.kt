@@ -8,7 +8,7 @@ import lineage.vetal.server.game.game.model.player.SayType
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-private const val TAG = "AnnounceManager"
+private const val TAG = "GameAnnouncerTask"
 
 private val announcements = listOf(
     "Welcome on Vitalii Lebedynskyi server",
@@ -21,7 +21,7 @@ class GameAnnouncerTask(
     private val context: GameContext,
     dispatcher: CoroutineDispatcher,
 ) : AbstractTask(dispatcher, period = {
-    TimeUnit.SECONDS.toMillis(Random.nextLong(60, 120))
+    TimeUnit.SECONDS.toMillis(Random.nextLong(120, 180))
 }) {
     init {
         writeInfo(TAG, "Started with ${announcements.size} messages")

@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import lineage.vetal.server.game.game.model.player.PaperDollSlot
+import lineage.vetal.server.game.game.model.inventory.PaperDollSlot
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
@@ -29,7 +29,7 @@ class CharInfo(
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.CHEST))
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.LEGS))
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.FEET))
-        writeD(player.inventory.getItemIdFrom(PaperDollSlot.CLOAK))
+        writeD(player.inventory.getItemIdFrom(PaperDollSlot.UNDERWEAR))
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.RHAND))
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.HAIR))
         writeD(player.inventory.getItemIdFrom(PaperDollSlot.FACE))
@@ -38,7 +38,7 @@ class CharInfo(
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
-        writeD(player.inventory.getAugmentationIdFrom(PaperDollSlot.RHAND))
+        writeD(player.inventory.getAugmentationIdFromSlot(PaperDollSlot.RHAND))
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
@@ -51,7 +51,7 @@ class CharInfo(
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)
-        writeD(player.inventory.getAugmentationIdFrom(PaperDollSlot.LHAND))
+        writeD(player.inventory.getAugmentationIdFromSlot(PaperDollSlot.LHAND))
         writeH(0x00)
         writeH(0x00)
         writeH(0x00)

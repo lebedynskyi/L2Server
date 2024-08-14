@@ -2,7 +2,6 @@ package lineage.vetal.server.game.game.model.item
 
 import lineage.vetal.server.game.game.model.GameObject
 import lineage.vetal.server.game.game.model.behaviour.ItemBehaviour
-import lineage.vetal.server.game.game.model.player.PaperDollSlot
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.template.items.ItemTemplate
 
@@ -15,7 +14,7 @@ abstract class ItemObject(
     override val template: ItemTemplate,
     override val behaviour: ItemBehaviour = ItemBehaviour(),
     override var position: SpawnPosition = SpawnPosition.zero,
-    override var name: String = template.name
+    override val name: String = template.name
 ) : GameObject(objectId, position, template, behaviour), Comparable<ItemObject> {
     var customType1: Int = 0
     var customType2: Int = 0
@@ -26,7 +25,6 @@ abstract class ItemObject(
     var itemLocationData: Int = 0
     var createTime: Long = System.currentTimeMillis()
     var itemLocation: ItemLocation = ItemLocation.NONE
-    var paperDollSlot: PaperDollSlot = PaperDollSlot.NONE
 
     override fun compareTo(other: ItemObject): Int {
         val comparison = other.createTime.compareTo(createTime)
@@ -35,5 +33,9 @@ abstract class ItemObject(
         }
 
         return other.objectId.compareTo(objectId)
+    }
+
+    override fun toString(): String {
+        return "$objectId - ${template.name}(${template.id})"
     }
 }

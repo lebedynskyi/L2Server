@@ -13,7 +13,7 @@ class ItemsDao(
     dbConnection: DBConnection,
     private val itemsTemplates: Map<Int, ItemTemplate>,
 ) : DBDao(dbConnection) {
-    fun saveItems(items: Set<ItemObject>) {
+    fun saveItems(items: Iterable<ItemObject>) {
         items.forEach(::saveItem)
     }
 

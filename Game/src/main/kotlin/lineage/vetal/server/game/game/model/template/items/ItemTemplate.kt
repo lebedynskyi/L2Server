@@ -48,7 +48,7 @@ abstract class ItemTemplate(set: StatSet) : GameObjectTemplate(set) {
     val weight = set.getInteger("weight", 0)
     val materialType = set.getEnum("material", MaterialType::class.java, MaterialType.STEEL)
     val duration = set.getInteger("duration", -1)
-    val bodySlot = ItemSlot.Slots[set.getString("bodypart", "none")] ?: ItemSlot.SLOT_NONE
+    val bodySlot: ItemSlot = ItemSlot.fromValue(set.getString("bodypart", null))
     val referencePrice = set.getInteger("price", 0)
     val crystalType = set.getEnum("crystal_type", CrystalType::class.java, CrystalType.NONE)
     val crystalCount = set.getInteger("crystal_count", 0)

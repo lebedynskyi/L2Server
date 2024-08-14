@@ -165,7 +165,7 @@ class GameLobbyManager(
 
         val playerItems = context.gameDatabase.itemsDao.getItemsForPlayer(slot.id)
         val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
-            inventory.addAll(playerItems)
+            inventory.addItems(playerItems)
         }
 
         if (player == null) {

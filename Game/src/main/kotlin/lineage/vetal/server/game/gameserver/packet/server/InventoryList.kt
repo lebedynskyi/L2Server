@@ -25,7 +25,7 @@ class InventoryList(
             writeH(template.type2)
             writeH(item.customType1)
             writeH(if (item is EquipmentObject && item.isEquipped) 0x01 else 0x00)
-            writeD(template.bodySlot)
+            writeD(template.bodySlot.gameId)
             writeH(item.enchantLevel)
             writeH(item.customType2)
             if (item is WeaponObject && item.isAugmented) {

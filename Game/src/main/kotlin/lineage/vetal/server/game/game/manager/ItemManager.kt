@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.EquipmentObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
@@ -8,6 +9,8 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.server.*
+
+private const val TAG = "ItemManager"
 
 class ItemManager(
     private val context: GameContext
@@ -35,12 +38,14 @@ class ItemManager(
 
         item.position = SpawnPosition(x, y, z)
         item.ownerId = null
+
         when (item) {
             is EquipmentObject -> {
-                item.equippedSlot = 0
+                player.inventory.unEquip(item)
             }
         }
 
+        // TODO drop stackable items
         context.gameDatabase.itemsDao.saveItem(item)
 
         player.inventory.removeItem(item)
@@ -55,9 +60,12 @@ class ItemManager(
 
     fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject, x: Int, y: Int, z: Int) {
         // TODO validation of position, owner and etc etc
+        // TODO a lot of conditions here. delay and etc. Move to item
         item.ownerId = player.id
         item.position = SpawnPosition.zero
+
         player.inventory.addItem(item)
+
         player.region.removeItem(item)
         player.region.broadCast(DeleteObject(item))
         context.gameDatabase.itemsDao.saveItem(item)
@@ -77,16 +85,22 @@ class ItemManager(
 
         when (item) {
             is EquipmentObject -> {
-                item.equippedSlot = item.template.bodySlot
-                // Update inventory
-                player.sendPacket(UserInfo(player))
-                player.sendPacket(InventoryUpdate().apply {
-                    onModified(item)
+                val affectedItems = mutableListOf<ItemObject>()
+                if (item.isEquipped) {
+                    player.inventory.unEquip(item)
+                } else {
+                    affectedItems.addAll(player.inventory.equip(item))
+                }
+                affectedItems.add(item)
+
+                client.sendPacket(UserInfo(player))
+                client.sendPacket(InventoryUpdate().apply {
+                    affectedItems.forEach { onModified(it) }
                 })
             }
 
             is EtcItemObject -> {
-                System.err.println("XXX: Use EtcItem")
+                writeError(TAG, "Use ETC item is not implemented")
             }
         }
     }

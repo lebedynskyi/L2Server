@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.position.SpawnPosition
@@ -14,8 +15,7 @@ class MovementManager(
     private val context: GameContext
 ) {
     fun startMovement(player: PlayerObject, start: Position, finish: Position) {
-        System.err.println("${Calendar.getInstance().time}: Start move $start -> $finish}")
-        System.err.println("${Calendar.getInstance().time}: Start move MoveSpeed ${player.stats.getMoveSpeed()}, RunSpeed ${player.stats.getBaseRunSpeed()}")
+        writeDebug(TAG, "${player.name} start move $start -> $finish}, MoveSpeed ${player.stats.getMoveSpeed()}, RunSpeed ${player.stats.getBaseRunSpeed()}")
         player.position = SpawnPosition(finish.x, finish.y, finish.z, 0)
         player.region.broadCast(MoveToLocation(player, finish))
     }

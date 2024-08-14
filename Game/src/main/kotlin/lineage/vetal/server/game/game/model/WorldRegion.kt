@@ -39,6 +39,10 @@ data class WorldRegion(
         player.sendPacket(npc.values.map { NpcInfo(it) })
         player.sendPacket(items.values.map { SpawnItem(it) })
 
+        player.sendPacket(surroundingRegions.map { it.players.values }.flatten().map { CharInfo(it) })
+        player.sendPacket(surroundingRegions.map {it.npc.values}.flatten().map { NpcInfo(it) })
+        player.sendPacket(surroundingRegions.map {it.items.values}.flatten().map { SpawnItem(it) })
+
         broadCast(CharInfo(player))
     }
 

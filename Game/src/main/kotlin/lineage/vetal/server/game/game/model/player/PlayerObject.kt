@@ -14,20 +14,21 @@ class PlayerObject(
     val id: String,
     val accountId: String,
     val appearance: Appearance,
-    override var name: String,
+    var charName: String,
     override val template: CharTemplate,
     override var position: SpawnPosition,
     override val behaviour: PlayerBehaviour = PlayerBehaviour(),
 ) : Playable(objectId, position, template, behaviour) {
     override var stats: PlayerStatus = PlayerStatus(template)
 
-    var client: GameClient? = null
+    override val name get() = charName // TODO if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
 
+    var client: GameClient? = null
     var inventory: WearableInventory = WearableInventory()
     var summon: Summon? = null
+
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
-
     var isSitting: Boolean = false
 
     var isActive = false
@@ -83,5 +84,9 @@ class PlayerObject(
         packets.forEach {
             client?.sendPacket(it)
         }
+    }
+
+    override fun toString(): String {
+        return "$objectId - $name"
     }
 }

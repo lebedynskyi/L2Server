@@ -9,12 +9,9 @@ class NpcObject(
     objectId: Int,
     override val template: NpcTemplate,
     override var position: SpawnPosition,
+    override val name: String = template.name,
     override val behaviour: NPCBehaviour = NPCBehaviour(),
 ) : CreatureObject(objectId, behaviour, template, position) {
-
-    override var name: String
-        get() = template.name
-        set(value) {}
 
     override val stats: NpcStatus = NpcStatus(template)
 }
