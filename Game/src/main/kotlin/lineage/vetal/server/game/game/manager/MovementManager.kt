@@ -7,7 +7,6 @@ import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.npc.NpcObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.gameserver.packet.server.MoveToLocation
-import java.util.Calendar
 
 private const val TAG = "MovementManager"
 
@@ -25,7 +24,7 @@ class MovementManager(
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {
-        System.err.println("${Calendar.getInstance().time}: Validate -> $loc")
+        writeDebug(TAG, "${player.name} validate pos -> $loc")
         context.worldManager.onPlayerPositionChanged(player, loc)
         player.position = SpawnPosition(loc)
     }

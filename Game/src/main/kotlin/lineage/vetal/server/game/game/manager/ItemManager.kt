@@ -97,6 +97,7 @@ class ItemManager(
                 client.sendPacket(InventoryUpdate().apply {
                     affectedItems.forEach { onModified(it) }
                 })
+                context.gameDatabase.itemsDao.saveItems(affectedItems)
             }
 
             is EtcItemObject -> {

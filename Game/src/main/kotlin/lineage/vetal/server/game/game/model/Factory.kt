@@ -2,6 +2,7 @@ package lineage.vetal.server.game.game.model
 
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.game.db.GameDatabase
+import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.item.ArmorObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.item.ItemObject
@@ -80,8 +81,7 @@ class GameObjectFactory(
         hairStyle: Int, hairColor: Int, face: Int, sex: Byte,
         isNewbie: Boolean
     ): PlayerObject {
-        val template =
-            charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
+        val template = charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
         if (isNewbie && template.classBaseLevel > 1) {
             throw IllegalArgumentException("Cannot create newbie char for template $templateId")
         }
@@ -89,7 +89,9 @@ class GameObjectFactory(
         val position = SpawnPosition(template.spawnLocations.random())
         val objectId = idFactory.createId()
         val playerId = UUID.randomUUID().toString()
-        val player = PlayerObject(objectId, playerId, account.id, appearance, name, template, position)
+        val player = PlayerObject(objectId, playerId, account.id, appearance, name, template, position).apply {
+            inventory = WearableInventory()
+        }
 
         template.startItems.forEach {
             val item = createItemObject(it.id, playerId, it.count)

@@ -19,12 +19,12 @@ class PlayerObject(
     override var position: SpawnPosition,
     override val behaviour: PlayerBehaviour = PlayerBehaviour(),
 ) : Playable(objectId, position, template, behaviour) {
+    lateinit var inventory: WearableInventory
+
     override var stats: PlayerStatus = PlayerStatus(template)
 
     override val name get() = charName // TODO if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
-
     var client: GameClient? = null
-    var inventory: WearableInventory = WearableInventory()
     var summon: Summon? = null
 
     var team: TeamType = TeamType.NONE

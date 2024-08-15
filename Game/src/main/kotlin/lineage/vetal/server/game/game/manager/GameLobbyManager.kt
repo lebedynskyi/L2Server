@@ -5,10 +5,14 @@ import lineage.vetal.server.core.model.RegisteredServer
 import lineage.vetal.server.core.model.ServerStatus
 import lineage.vetal.server.core.model.SessionKey
 import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestAuth
 import lineage.vetal.server.game.bridgeclient.packets.client.RequestInit
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.model.inventory.WearableInventory
+import lineage.vetal.server.game.game.model.item.EquipmentObject
+import lineage.vetal.server.game.game.model.item.ItemLocation
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
@@ -47,7 +51,14 @@ class GameLobbyManager(
         client.sendPacket(RequestAuth(serverStatus))
     }
 
-    fun requestAuthLogin(client: GameClient, account: String, loginKey1: Int, loginKey2: Int, playKey1: Int, playKey2: Int) {
+    fun requestAuthLogin(
+        client: GameClient,
+        account: String,
+        loginKey1: Int,
+        loginKey2: Int,
+        playKey1: Int,
+        playKey2: Int
+    ) {
         // TODO validate it via bridge server communication. Not via database!
         writeInfo(TAG, "Account connected $account")
         val accountInfo = context.gameDatabase.accountDao.findAccount(account)
@@ -66,7 +77,7 @@ class GameLobbyManager(
         val slots = context.gameDatabase.charactersDao.getCharSlots(client.account.id)
         var temp = 0L
         var lastActiveIndex = -1
-        slots.forEachIndexed{ index, slot ->
+        slots.forEachIndexed { index, slot ->
             if (slot.lastAccess >= temp) {
                 lastActiveIndex = index
                 temp = slot.lastAccess
@@ -143,7 +154,16 @@ class GameLobbyManager(
             return
         }
 */
-        val newPlayer = context.objectFactory.createPlayerObject(name, client.account, classId, hairStyle, hairColor, face, sex, true)
+        val newPlayer = context.objectFactory.createPlayerObject(
+            name,
+            client.account,
+            classId,
+            hairStyle,
+            hairColor,
+            face,
+            sex,
+            true
+        )
         context.gameDatabase.charactersDao.insertCharacter(newPlayer)
         context.gameDatabase.itemsDao.saveItems(newPlayer.inventory.items)
         client.sendPacket(CreateCharOK.STATIC_PACKET)
@@ -153,23 +173,31 @@ class GameLobbyManager(
     fun requestSelectChar(client: GameClient, slotIndex: Int) {
         val slot = client.characterSlots.getOrNull(slotIndex)
         if (slot == null) {
-            writeDebug(TAG, "Unable to select character for account ${client.account.account}")
+            writeError(TAG, "Unable to select character for account ${client.account.account}")
             client.saveAndClose()
             return
         }
 
-        if (client.player != null){
-            writeDebug(TAG, "Unable to select character for account ${client.account.account}. Player is already attached")
+        if (client.player != null) {
+            writeError(
+                TAG,
+                "Unable to select character for account ${client.account.account}. Player is already attached"
+            )
             return
         }
 
         val playerItems = context.gameDatabase.itemsDao.getItemsForPlayer(slot.id)
         val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
-            inventory.addItems(playerItems)
+            inventory = WearableInventory().apply { addItems(playerItems) }
+
+            playerItems.filter { it.itemLocation == ItemLocation.PAPERDOLL }.filterIsInstance<EquipmentObject>()
+                .forEach {
+                    inventory.equip(it)
+                }
         }
 
         if (player == null) {
-            writeDebug(TAG, "Unable to select character for account ${client.account.account}. Cannot find player")
+            writeError(TAG, "Unable to select character for account ${client.account.account}. Cannot find player")
             client.saveAndClose()
             return
         }

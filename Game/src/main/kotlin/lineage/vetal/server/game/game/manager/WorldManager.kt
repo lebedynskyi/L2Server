@@ -110,7 +110,7 @@ class WorldManager(
     private fun addPlayerToWorld(player: PlayerObject) {
         val region = getRegion(player.position.x, player.position.y)
         if (region == null) {
-            writeInfo(TAG, " No region found for player ${player.name} and position ${player.position}")
+            writeInfo(TAG, "No region found for player ${player.name} and position ${player.position}")
             player.client?.saveAndClose(LeaveWorld())
             return
         }
