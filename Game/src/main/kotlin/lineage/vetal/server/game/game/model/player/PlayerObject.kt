@@ -14,7 +14,7 @@ class PlayerObject(
     val id: String,
     val accountId: String,
     val appearance: Appearance,
-    var charName: String,
+    private var charName: String,
     override val template: CharTemplate,
     override var position: SpawnPosition,
     override val behaviour: PlayerBehaviour = PlayerBehaviour(),
@@ -26,12 +26,10 @@ class PlayerObject(
     override val name get() = charName // TODO if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
     var client: GameClient? = null
     var summon: Summon? = null
-
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
-    var isSitting: Boolean = false
 
-    var isActive = false
+    var isInWorld = false
     var lastAccessTime: Long = 0
     var isGM = false
     var accessLevel = 0
@@ -54,14 +52,10 @@ class PlayerObject(
     var clanPrivileges = 0
     var isNoble = false
     var isHero = false
-    var isFishing = false
-    var isMounted = false
-    var mountType: Int = 0
 
     var recomLeft: Int = 0
     var recomHave: Int = 0
 
-    var mountNpcId: Int = 0
     var hasDwarvenCraft = false
     var wantsPeace = false
     var enchantEffect: Int = 0

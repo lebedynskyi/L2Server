@@ -20,7 +20,7 @@ open class NpcTemplate(
     val corpseTime = set.getInteger("corpseTime", 7)
     val enchantEffect = set.getInteger("enchant", 0)
     val dropHerbGroup = set.getInteger("dropHerbGroup", 0)
-    val race: NpcRace = NpcRace.values()[set.getInteger("raceId", 0)]
+    val race: NpcRace = NpcRace.entries[set.getInteger("raceId", 0)]
     val ssCount = set.getInteger("ssCount", 0)
     val ssRate = set.getInteger("ssRate", 0)
     val spsCount = set.getInteger("spsCount", 0)

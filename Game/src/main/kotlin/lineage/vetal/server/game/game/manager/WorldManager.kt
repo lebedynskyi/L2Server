@@ -64,8 +64,8 @@ class WorldManager(
         player.client = client
         client.clientState = GameClientState.WORLD
         client.player = player
-        player.isActive = true
-        player.isRunning = true
+        player.isInWorld = true
+        player.stats.isRunning = true
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
@@ -75,7 +75,7 @@ class WorldManager(
     }
 
     fun onPlayerRestart(client: GameClient, player: PlayerObject) {
-        if (!player.isActive) {
+        if (!player.isInWorld) {
             writeError(TAG, "Not active player asked for restart")
             return
         }
@@ -88,7 +88,7 @@ class WorldManager(
     }
 
     fun onPlayerQuit(client: GameClient, player: PlayerObject) {
-        if (!player.isActive) {
+        if (!player.isInWorld) {
             writeError(TAG, "Not active player asked for quit. Disconnect after LeaveWorld")
             return
         }
@@ -101,9 +101,10 @@ class WorldManager(
         val currentRegion = player.region
         val newRegion = getRegion(loc)
         if (currentRegion != newRegion && newRegion != null) {
+            writeDebug(TAG, "${player.name} changed region from [${currentRegion.tileX},${currentRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
             player.region = newRegion
-            newRegion.addPlayer(player)
             currentRegion.removePlayer(player)
+            newRegion.addPlayer(player)
         }
     }
 
@@ -120,7 +121,7 @@ class WorldManager(
 
     private fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
-        player.isActive = false
+        player.isInWorld = false
         client.player = null
 
         context.gameDatabase.itemsDao.saveItems(player.inventory.items)

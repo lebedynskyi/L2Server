@@ -15,21 +15,21 @@ abstract class CreatureStats(
 
     // Stats
     open fun getINT() = template.baseINT
-    open fun getSTR()= template.baseSTR
+    open fun getSTR() = template.baseSTR
     open fun getCON() = template.baseCON
     open fun getMEN() = template.baseMEN
     open fun getDEX() = template.baseDEX
     open fun getWIT() = template.baseWIT
-    open fun getBaseRunSpeed() = template.baseRunSpeed
-    open fun getBaseWalkSpeed() = template.baseWalkSpeed
-    open fun getBaseMoveSpeed() = if (isRunning) getBaseRunSpeed() else getBaseWalkSpeed()
+
+    open fun getBaseRunSpeed(): Int = template.baseRunSpeed
+    open fun getBaseWalkSpeed(): Int = template.baseWalkSpeed
+    open fun getBaseMoveSpeed(): Int = if (isRunning) getBaseRunSpeed() else getBaseWalkSpeed()
 
     // -------------     Calculation zone    --------------
-    open fun getMoveSpeed(): Float {
-        return 42F
+    open fun getMoveSpeed(): Double {
+        return getBaseMoveSpeed().toDouble()
     }
 
-    //No finished
     open fun getPAtk(target: CreatureObject?): Int {
         return template.basePAtk.toInt()
     }

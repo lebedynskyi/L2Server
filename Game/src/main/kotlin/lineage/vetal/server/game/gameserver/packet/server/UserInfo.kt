@@ -137,7 +137,7 @@ class UserInfo(
         writeF(player.stats.getMovementSpeedMultiplier())
         writeF(player.stats.getAttackSpeedMultiplier())
 
-        if (player.isMounted) {
+        if (player.stats.isMounted) {
 //            val summon: Summon = player.summon
 //            writeF(summon.getCollisionRadius())
 //            writeF(summon.getCollisionHeight())
@@ -159,7 +159,7 @@ class UserInfo(
         writeD(player.allyId)
         writeD(player.allyCrestId)
         writeD(relation)
-        writeC(player.mountType)
+        writeC(player.stats.mountType)
         writeC(player.operateType.id)
         writeC(if (player.hasDwarvenCraft) 1 else 0)
         writeD(player.pkKills)
@@ -178,23 +178,23 @@ class UserInfo(
         writeD(player.clanPrivelegies)
         writeH(player.recomLeft)
         writeH(player.recomHave)
-        writeD(if (player.mountNpcId > 0) player.mountNpcId + 1000000 else 0)
+        writeD(if (player.stats.mountNpcId > 0) player.stats.mountNpcId + 1000000 else 0)
         writeH(player.inventory.inventoryLimit)
         writeD(player.template.charClass.ordinal)
         writeD(0x00)
         writeD(player.stats.maxCp)
         writeD(player.stats.curCp.toInt())
-        writeC(if (player.isMounted) 0 else player.enchantEffect)
+        writeC(if (player.stats.isMounted) 0 else player.enchantEffect)
         writeC(player.team.id)
 
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff
 
         writeC(if (player.isNoble) 1 else 0)
         writeC(if (player.isHero) 1 else 0)
-        writeC(if (player.isFishing) 1 else 0)
+        writeC(if (player.stats.isFishing) 1 else 0)
         writeLoc(Position(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
-        writeC(if (player.isRunning) 0x01 else 0x00)
+        writeC(if (player.stats.isRunning) 0x01 else 0x00)
         writeD(player.pledgeClass)
         writeD(player.pledgeType)
         writeD(player.appearance.titleColor)

@@ -101,13 +101,13 @@ class CharInfo(
 
         writeD(0)
 
-        writeC(if (player.isSitting) 0 else 1)
-        writeC(if (player.isRunning) 1 else 0)
+        writeC(if (player.stats.isSitting) 0 else 1)
+        writeC(if (player.stats.isRunning) 1 else 0)
         writeC(if (player.isInCombat) 1 else 0)
         writeC(if (player.isAlikeDead) 1 else 0)
         writeC(0)//writeC(if (!canSeeInvis && !player.appearance.isVisible) 1 else 0)
 
-        writeC(player.mountType)
+        writeC(player.stats.mountType)
         writeC(player.operateType.id)
 
         writeH(0)//writeH(player.getCubicList().size())
@@ -122,12 +122,12 @@ class CharInfo(
         writeD(player.template.charClass.ordinal)
         writeD(player.stats.maxCp)
         writeD(player.stats.curCp.toInt())
-        writeC(if (player.isMounted) 0 else player.enchantEffect)
+        writeC(if (player.stats.isMounted) 0 else player.enchantEffect)
         writeC(player.team.id)
         writeD(0) // writeD(player.getClanCrestLargeId())  // clan related stuff
         writeC(if (player.isNoble) 1 else 0)
         writeC(if (player.isHero) 1 else 0)
-        writeC(if (player.isFishing) 1 else 0)
+        writeC(if (player.stats.isFishing) 1 else 0)
         writeLoc(Position(0, 0, 0))//writeLoc(player.getFishingStance().getLoc())
         writeD(player.appearance.nameColor)
         writeD(player.position.heading)

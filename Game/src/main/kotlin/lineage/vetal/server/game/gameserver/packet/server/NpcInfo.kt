@@ -43,7 +43,7 @@ class NpcInfo(
 
         writeC(1) // name above char
 
-        writeC(if (npc.isRunning) 1 else 0)
+        writeC(if (npc.stats.isRunning) 1 else 0)
         writeC(if (npc.isInCombat) 1 else 0)
         writeC(if (npc.isAlikeDead) 1 else 0)
         writeC(0)//writeC(if (_isSummoned) 2 else 0)
