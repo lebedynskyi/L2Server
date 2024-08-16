@@ -1,6 +1,5 @@
 package lineage.vetal.server.game.game.manager
 
-import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.position.SpawnPosition
@@ -23,10 +22,10 @@ class MovementManager(
 
     }
 
-    fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {
+    fun onPlayerValidatePosition(player: PlayerObject, loc: SpawnPosition) {
 //        writeDebug(TAG, "${player.name} validate pos -> $loc")
         context.worldManager.onPlayerPositionChanged(player, loc)
         player.position = SpawnPosition(loc)
-        // TODO save position
+        context.gameDatabase.charactersDao.updateCoordinates(player.objectId, loc)
     }
 }

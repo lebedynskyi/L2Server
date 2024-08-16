@@ -132,7 +132,7 @@ class ItemManager(
                 }
                 affectedItems.add(item)
 
-                client.sendPacket(UserInfo(player))
+                context.worldManager.broadCast(player.region, UserInfo(player))
                 client.sendPacket(InventoryUpdate().apply {
                     affectedItems.forEach { onChanged(it) }
                 })
