@@ -81,7 +81,8 @@ class GameObjectFactory(
         hairStyle: Int, hairColor: Int, face: Int, sex: Byte,
         isNewbie: Boolean
     ): PlayerObject {
-        val template = charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
+        val template =
+            charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
         if (isNewbie && template.classBaseLevel > 1) {
             throw IllegalArgumentException("Cannot create newbie char for template $templateId")
         }
@@ -94,7 +95,8 @@ class GameObjectFactory(
         }
 
         template.startItems.forEach {
-            val item = createItemObject(it.id, playerId, it.count)
+            val item = createItemObject(it.id, it.count)
+            item.ownerId = playerId
             player.inventory.addItem(item)
         }
 
@@ -108,7 +110,7 @@ class GameObjectFactory(
         return NpcObject(objectId, template, position)
     }
 
-    private fun createItemObject(templateId: Int, playerId: String, count: Int = 1): ItemObject {
+    fun createItemObject(templateId: Int, count: Int = 1): ItemObject {
         val objectId = idFactory.createId()
         val template =
             itemTemplates[templateId] ?: throw IllegalArgumentException("Cannot find item template for id $templateId")
@@ -120,7 +122,6 @@ class GameObjectFactory(
             else -> throw IllegalArgumentException("Cannot fund item template of type $template")
         }.apply {
             this.count = count
-            this.ownerId = playerId
         }
     }
 }

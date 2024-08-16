@@ -12,7 +12,7 @@ class WearableInventory : CreatureInventory() {
         return items.filterIsInstance<EquipmentObject>()
             .firstOrNull { it.equippedSlot == slot }?.apply {
                 equippedSlot = null
-                itemLocation = ItemLocation.NONE
+                itemLocation = ItemLocation.None
             }
     }
 
@@ -20,13 +20,13 @@ class WearableInventory : CreatureInventory() {
         items.filterIsInstance<EquipmentObject>()
             .firstOrNull { it.objectId == item.objectId }?.let {
                 it.equippedSlot = null
-                it.itemLocation = ItemLocation.NONE
+                it.itemLocation = ItemLocation.None
             }
     }
 
     private fun equip(item: EquipmentObject, slot: PaperDollSlot) {
         item.equippedSlot = slot
-        item.itemLocation = ItemLocation.PAPERDOLL
+        item.itemLocation = ItemLocation.PaperDoll(slot)
     }
 
     fun equip(item: EquipmentObject): List<EquipmentObject> {

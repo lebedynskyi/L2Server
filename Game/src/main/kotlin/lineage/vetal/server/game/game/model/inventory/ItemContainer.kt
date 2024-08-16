@@ -21,7 +21,15 @@ abstract class ItemContainer {
         return items.firstOrNull { it.objectId == objectId }
     }
 
+    fun getItemById(id: Int): ItemObject? {
+        return items.firstOrNull { it.template.id == id }
+    }
+
     fun removeItem(item: ItemObject) {
         items.remove(item)
+    }
+
+    fun updateCount(objectId: Int, count: Int) {
+        getItem(objectId)?.count = count
     }
 }

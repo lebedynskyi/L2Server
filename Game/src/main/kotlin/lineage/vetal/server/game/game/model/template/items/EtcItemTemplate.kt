@@ -20,6 +20,7 @@ class EtcItemTemplate(
             else -> TYPE2_OTHER
         }
 
+    val isQuest: Boolean get() = etcType == EtcItemType.QUEST && type2 != TYPE2_MONEY
     val etcType = set.getEnum("etcitem_type", EtcItemType::class.java, EtcItemType.NONE);
     val itemHandlerName = set.getString("handler", null)
 }

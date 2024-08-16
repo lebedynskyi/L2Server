@@ -4,6 +4,7 @@ import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.EquipmentObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
+import lineage.vetal.server.game.game.model.item.ItemLocation
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
@@ -16,16 +17,9 @@ class ItemManager(
     private val context: GameContext
 ) {
     fun onPlayerDropItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
-        // TODO a lot of conditions here
         // Check delay for action. Introduce some timer ? Protector?
-        // TODO store item in the world ?
 
-        if (player.isAlikeDead) {
-            return
-        }
-
-        // Check is quest and etc?
-        val item = player.inventory.getItem(objectId)
+        var item = player.inventory.getItem(objectId)
         if (item == null) {
             player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
             return
@@ -36,43 +30,88 @@ class ItemManager(
             return
         }
 
-        item.position = SpawnPosition(x, y, z)
-        item.ownerId = null
-
-        when (item) {
-            is EquipmentObject -> {
-                player.inventory.unEquip(item)
-            }
+        if (item.count - count < 0) {
+            player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
+            return
         }
 
-        // TODO drop stackable items
-        context.gameDatabase.itemsDao.saveItem(item)
+        if (!item.template.dropable) {
+            player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
+            return
+        }
 
-        player.inventory.removeItem(item)
+        if (item.template.isHeroItem) {
+            player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
+            return
+        }
+
+        if (player.isAlikeDead) {
+            return
+        }
+
+        val inventoryPacket = InventoryUpdate()
+
+        if (item is EtcItemObject) {
+            if (item.template.isQuest) {
+                player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
+                return
+            }
+
+            // TODO if adena sendPacket(SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA).addNumber(count));
+            if (item.template.stackable) {
+                val newCount = item.count - count
+                if (newCount == 0){
+                    player.inventory.removeItem(item)
+                    inventoryPacket.onRemoved(item)
+                } else {
+                    player.inventory.updateCount(item.objectId, newCount)
+                    context.gameDatabase.itemsDao.saveItem(item)
+                    inventoryPacket.onChanged(item)
+                    item = context.objectFactory.createItemObject(item.template.id, count)
+                }
+            } else {
+                player.inventory.removeItem(item)
+                inventoryPacket.onRemoved(item)
+            }
+        } else if (item is EquipmentObject) {
+            player.inventory.unEquip(item)
+            player.inventory.removeItem(item)
+            inventoryPacket.onRemoved(item)
+
+        } else {
+            player.inventory.removeItem(item)
+            inventoryPacket.onRemoved(item)
+        }
+
+        item.position = SpawnPosition(x, y, z)
+        item.itemLocation = ItemLocation.None
+        item.ownerId = null
+        player.sendPacket(inventoryPacket)
         player.region.addItem(item)
         player.region.broadCast(DropItem(item, player.objectId))
-
-        val inventoryUpdate = InventoryUpdate().apply {
-            onItemRemoved(item)
-        }
-        player.sendPacket(inventoryUpdate)
+        context.gameDatabase.itemsDao.saveItem(item)
     }
 
     fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject, x: Int, y: Int, z: Int) {
         // TODO validation of position, owner and etc etc
-        // TODO a lot of conditions here. delay and etc. Move to item
+        // TODO a lot of conditions here. delay and Move to item
         item.ownerId = player.id
         item.position = SpawnPosition.zero
 
-        player.inventory.addItem(item)
+        val inventoryUpdate = InventoryUpdate()
+        val existItem = player.inventory.getItemById(item.template.id)
+        if (existItem?.template?.stackable == true && item.template.stackable) {
+            player.inventory.updateCount(existItem.objectId, existItem.count + item.count)
+            context.gameDatabase.itemsDao.saveItem(existItem)
+            inventoryUpdate.onChanged(existItem)
+        } else {
+            player.inventory.addItem(item)
+            context.gameDatabase.itemsDao.saveItem(item)
+            inventoryUpdate.onNewItem(item)
+        }
 
         player.region.removeItem(item)
         player.region.broadCast(DeleteObject(item))
-        context.gameDatabase.itemsDao.saveItem(item)
-
-        val inventoryUpdate = InventoryUpdate().apply {
-            onNewItem(item)
-        }
         player.sendPacket(inventoryUpdate)
     }
 
@@ -95,7 +134,7 @@ class ItemManager(
 
                 client.sendPacket(UserInfo(player))
                 client.sendPacket(InventoryUpdate().apply {
-                    affectedItems.forEach { onModified(it) }
+                    affectedItems.forEach { onChanged(it) }
                 })
                 context.gameDatabase.itemsDao.saveItems(affectedItems)
             }

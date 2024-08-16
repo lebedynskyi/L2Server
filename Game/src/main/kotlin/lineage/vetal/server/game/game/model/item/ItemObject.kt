@@ -5,10 +5,6 @@ import lineage.vetal.server.game.game.model.behaviour.ItemBehaviour
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.template.items.ItemTemplate
 
-enum class ItemLocation {
-    NONE, INVENTORY, PAPERDOLL, WAREHOUSE, CLANWH, PET, PET_EQUIP, FREIGHT
-}
-
 abstract class ItemObject(
     objectId: Int,
     override val template: ItemTemplate,
@@ -22,9 +18,8 @@ abstract class ItemObject(
     var ownerId: String? = null
     var enchantLevel: Int = 0
     var durationLeft: Int = 0
-    var itemLocationData: Int = 0
     var createTime: Long = System.currentTimeMillis()
-    var itemLocation: ItemLocation = ItemLocation.NONE
+    var itemLocation: ItemLocation = ItemLocation.None
 
     override fun compareTo(other: ItemObject): Int {
         val comparison = other.createTime.compareTo(createTime)

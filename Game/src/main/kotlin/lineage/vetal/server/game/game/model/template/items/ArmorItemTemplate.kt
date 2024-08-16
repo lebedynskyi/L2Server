@@ -10,7 +10,6 @@ enum class ArmorType {
 class ArmorItemTemplate(
     set: StatSet
 ) : ItemTemplate(set) {
-
     override val type1: Int
     override val type2: Int
     val armorType: ArmorType

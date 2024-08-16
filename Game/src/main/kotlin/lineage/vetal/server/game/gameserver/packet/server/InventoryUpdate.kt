@@ -30,7 +30,7 @@ class InventoryUpdate : GameServerPacket() {
         }
     }
 
-    fun onItemRemoved(itemObject: ItemObject) {
+    fun onRemoved(itemObject: ItemObject) {
         items.add(UpdateInfo(itemObject, ChangeType.REMOVED))
     }
 
@@ -38,7 +38,7 @@ class InventoryUpdate : GameServerPacket() {
         items.add(UpdateInfo(itemObject, ChangeType.ADDED))
     }
 
-    fun onModified(itemObject: ItemObject) {
+    fun onChanged(itemObject: ItemObject) {
         items.add(UpdateInfo(itemObject, ChangeType.MODIFIED))
     }
 }

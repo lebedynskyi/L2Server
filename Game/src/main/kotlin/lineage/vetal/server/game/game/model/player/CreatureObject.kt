@@ -17,7 +17,7 @@ abstract class CreatureObject(
     abstract val stats: CreatureStats
 
     var title: String? = null
-    var isRunning: Boolean = false
+    var isRunning: Boolean = true
     var isInCombat: Boolean = false
     var isAlikeDead: Boolean = false
     var isFlying = false

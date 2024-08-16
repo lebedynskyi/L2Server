@@ -82,6 +82,10 @@ class GameLobbyManager(
                 lastActiveIndex = index
                 temp = slot.lastAccess
             }
+
+            slot.inventory = WearableInventory().apply {
+                addItems(context.gameDatabase.itemsDao.getVisibleItemsForPlayer(slot.id))
+            }
         }
         client.characterSlots = slots
         client.sendPacket(CharSlotList(client, slots, lastActiveIndex))
@@ -190,7 +194,7 @@ class GameLobbyManager(
         val player = context.gameDatabase.charactersDao.getCharacter(slot.id)?.apply {
             inventory = WearableInventory().apply { addItems(playerItems) }
 
-            playerItems.filter { it.itemLocation == ItemLocation.PAPERDOLL }.filterIsInstance<EquipmentObject>()
+            playerItems.filter { it.itemLocation is ItemLocation.PaperDoll }.filterIsInstance<EquipmentObject>()
                 .forEach {
                     inventory.equip(it)
                 }

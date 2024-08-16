@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.game.model
 
+import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.player.CharacterSex
-import java.util.UUID
 
 data class CharSelectionSlot(
     val id: String,
@@ -34,4 +34,6 @@ data class CharSelectionSlot(
     var y: Int,
     var z: Int,
     var accessLevel: Int
-)
+) {
+    lateinit var inventory: WearableInventory
+}
