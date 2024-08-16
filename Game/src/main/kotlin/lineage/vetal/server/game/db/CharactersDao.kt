@@ -66,9 +66,9 @@ class CharactersDao(
         }
     }
 
-    fun updateLastAccess(objId: Int, lastAccess: Int): Boolean {
+    fun updateLastAccess(objId: Int, lastAccess: Long): Boolean {
         return insertOrUpdate(CharactersSQL.UPDATE_lAST_ACCESS_SQL) {
-            it.setInt(1, lastAccess)
+            it.setLong(1, lastAccess)
             it.setInt(2, objId)
         }
     }

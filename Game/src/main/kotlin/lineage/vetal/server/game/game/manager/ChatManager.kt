@@ -15,12 +15,13 @@ class ChatManager(
 
         // Check player role. Chat ban ? Player is gm ? and etc
         // Check chat type? Send different messages?
+        // Check command?
         val sayType = SayType.entries[sayTypeId]
         val message = text.replace("\\\\n", "")
         if (sayType == SayType.HERO_VOICE) {
             context.worldManager.broadCast(CreatureSay(sayType, text))
         } else {
-            player.region.broadCast(CreatureSay(player, sayType, message))
+            context.worldManager.broadCast(player.region, CreatureSay(player, sayType, message))
         }
     }
 

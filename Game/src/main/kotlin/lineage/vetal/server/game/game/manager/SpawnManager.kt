@@ -9,7 +9,6 @@ class SpawnManager(
     private val context: GameContext
 ) {
     init {
-        // TODO here we can start some timers for respawn
         val spawnList = context.gameDatabase.spawnDao.getSpawnList()
         for (spawnData in spawnList) {
             val npc = context.objectFactory.createNpcObject(spawnData.npcTemplateId, spawnData.spawnPosition)

@@ -14,18 +14,19 @@ class MovementManager(
     private val context: GameContext
 ) {
     fun startMovement(player: PlayerObject, start: Position, finish: Position) {
-        writeDebug(TAG, "${player.name} start move $start -> $finish}, MoveSpeed ${player.stats.getMoveSpeed()}, RunSpeed ${player.stats.getBaseRunSpeed()}")
+//        writeDebug(TAG, "${player.name} start move $start -> $finish}, MoveSpeed ${player.stats.getMoveSpeed()}, RunSpeed ${player.stats.getBaseRunSpeed()}")
         player.position = SpawnPosition(finish.x, finish.y, finish.z, 0)
-        player.region.broadCast(MoveToLocation(player, finish))
+        context.worldManager.broadCast(player.region, MoveToLocation(player, finish))
     }
 
     fun startMovement(npc: NpcObject, finish: Position) {
-        npc.region.broadCast(MoveToLocation(npc, finish))
+
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, loc: Position) {
-        writeDebug(TAG, "${player.name} validate pos -> $loc")
+//        writeDebug(TAG, "${player.name} validate pos -> $loc")
         context.worldManager.onPlayerPositionChanged(player, loc)
         player.position = SpawnPosition(loc)
+        // TODO save position
     }
 }

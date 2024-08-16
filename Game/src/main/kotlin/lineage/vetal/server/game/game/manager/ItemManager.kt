@@ -74,10 +74,10 @@ class ItemManager(
                 inventoryPacket.onRemoved(item)
             }
         } else if (item is EquipmentObject) {
+            // TODO does not work if item was equipped
             player.inventory.unEquip(item)
             player.inventory.removeItem(item)
             inventoryPacket.onRemoved(item)
-
         } else {
             player.inventory.removeItem(item)
             inventoryPacket.onRemoved(item)
@@ -88,7 +88,7 @@ class ItemManager(
         item.ownerId = null
         player.sendPacket(inventoryPacket)
         player.region.addItem(item)
-        player.region.broadCast(DropItem(item, player.objectId))
+        context.worldManager.broadCast(player.region, DropItem(item, player.objectId))
         context.gameDatabase.itemsDao.saveItem(item)
     }
 
@@ -111,7 +111,7 @@ class ItemManager(
         }
 
         player.region.removeItem(item)
-        player.region.broadCast(DeleteObject(item))
+        context.worldManager.broadCast(player.region, DeleteObject(item))
         player.sendPacket(inventoryUpdate)
     }
 

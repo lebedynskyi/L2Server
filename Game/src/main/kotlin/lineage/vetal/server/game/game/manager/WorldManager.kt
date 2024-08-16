@@ -51,26 +51,35 @@ class WorldManager(
         initializeSurroundingRegions()
     }
 
-    fun broadCast(packet: WriteablePacket) {
-        players.forEach { it.sendPacket(packet) }
-    }
-
-    fun onNpcAdded(npc: NpcObject) {
-        getRegion(npc.position)?.addNpc(npc)
-    }
-
     fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
-        player.lastAccessTime = Calendar.getInstance().timeInMillis
-        player.client = client
+        val region = getRegion(player.position.x, player.position.y)
+        if (region == null) {
+            writeError(TAG, "No region found for player ${player.name} and position ${player.position}")
+            player.client?.saveAndClose(LeaveWorld())
+            return
+        }
+
         client.clientState = GameClientState.WORLD
         client.player = player
+
+        player.lastAccessTime = Calendar.getInstance().timeInMillis
+        player.client = client
         player.isInWorld = true
         player.stats.isRunning = true
+        player.region = region
+
         player.sendPacket(UserInfo(player))
         player.sendPacket(InventoryList(player.inventory.items, true))
-        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "This is startup message from  Server!"))
-        context.gameDatabase.charactersDao.updateLastAccess(player.objectId, (Calendar.getInstance().time.time / 1000).toInt())
-        addPlayerToWorld(player)
+        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
+
+        player.sendPacket(region.surround.map { it.players.values }.flatten().plus(region.players.values).map { CharInfo(it) })
+        player.sendPacket(region.surround.map { it.npc.values }.flatten().plus(region.npc.values).map { NpcInfo(it) })
+        player.sendPacket(region.surround.map { it.items.values }.flatten().plus(region.items.values).map { SpawnItem(it) })
+
+        broadCast(region, CharInfo(player))
+
+        region.addPlayer(player)
+        context.gameDatabase.charactersDao.updateLastAccess(player.objectId, player.lastAccessTime)
         writeDebug(TAG, "Player enter world. ${player.name} -> ${player.id}")
     }
 
@@ -98,29 +107,64 @@ class WorldManager(
     }
 
     fun onPlayerPositionChanged(player: PlayerObject, loc: Position) {
-        val currentRegion = player.region
+        val oldRegion = player.region
         val newRegion = getRegion(loc)
-        if (currentRegion != newRegion && newRegion != null) {
-            writeDebug(TAG, "${player.name} changed region from [${currentRegion.tileX},${currentRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
+        if (oldRegion != newRegion && newRegion != null) {
+            writeDebug(TAG, "${player.name} changed region from [${oldRegion.tileX},${oldRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
+
+            val oldSlice = oldRegion.slice(newRegion)
+            oldSlice.map { it.players.values}.flatten().forEach {
+                it.sendPacket(DeleteObject(player))
+            }
+
+            oldSlice.map { it.items.values }.flatten().forEach {
+                player.sendPacket(DeleteObject(it))
+            }
+
+            oldSlice.map { it.npc.values }.flatten().forEach {
+                player.sendPacket(DeleteObject(it))
+            }
+
+            val newSlice = newRegion.slice(oldRegion)
+            newSlice.map { it.players.values}.flatten().forEach {
+                it.sendPacket(CharInfo(player))
+            }
+
+            newSlice.map { it.players.values }.flatten().forEach {
+                player.sendPacket(CharInfo(it))
+            }
+
+            newSlice.map { it.items.values }.flatten().forEach {
+                player.sendPacket(SpawnItem(it))
+            }
+
+            newSlice.map { it.npc.values }.flatten().forEach {
+                player.sendPacket(NpcInfo(it))
+            }
+
+            oldRegion.removePlayer(player)
             player.region = newRegion
-            currentRegion.removePlayer(player)
             newRegion.addPlayer(player)
         }
     }
 
-    private fun addPlayerToWorld(player: PlayerObject) {
-        val region = getRegion(player.position.x, player.position.y)
-        if (region == null) {
-            writeInfo(TAG, "No region found for player ${player.name} and position ${player.position}")
-            player.client?.saveAndClose(LeaveWorld())
-            return
+    fun broadCast(packet: WriteablePacket) {
+        players.forEach { it.sendPacket(packet) }
+    }
+
+    fun broadCast(region: WorldRegion, packet: WriteablePacket) {
+        region.surround.map { it.players.values }.flatten().plus(region.players.values).forEach {
+            it.sendPacket(packet)
         }
-        player.region = region
-        region.addPlayer(player)
+    }
+
+    fun onNpcAdded(npc: NpcObject) {
+        getRegion(npc.position)?.addNpc(npc)
     }
 
     private fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
+        broadCast(player.region, DeleteObject(player))
         player.isInWorld = false
         client.player = null
 
@@ -129,7 +173,7 @@ class WorldManager(
     }
 
     private fun isRegionExist(x: Int, y: Int): Boolean {
-        return x in 0 until REGIONS_X && y in 0 until REGIONS_Y
+        return x in 0..<REGIONS_X && y in 0..<REGIONS_Y
     }
 
     private fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
@@ -146,20 +190,17 @@ class WorldManager(
             for (regY in 0 until REGIONS_Y) {
                 val region = regions[regX][regY]
                 val surrounding = mutableListOf<WorldRegion>()
-                for (srX in -1..1) {
-                    for (srY in -1..1) {
-                        val sorX = regX + srX
-                        val sorY = regY + srY
-                        if (isRegionExist(sorX, sorY) && sorX != regX && sorY != regY) {
-                            val surroundRegion = regions[sorX][sorY]
+                for (srX in regX - 1..regX + 1) {
+                    for (srY in regY - 1..regY + 1) {
+                        if (isRegionExist(srX, srY) && (srX != regX || srY != regY)) {
+                            val surroundRegion = regions[srX][srY]
                             surrounding.add(surroundRegion)
                         }
                     }
                 }
 
-                region.surroundingRegions = surrounding.toTypedArray()
+                region.surround = surrounding
             }
         }
-        writeInfo(TAG, "Init surrounded regions complete")
     }
 }
