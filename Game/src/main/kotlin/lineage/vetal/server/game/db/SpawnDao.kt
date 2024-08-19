@@ -2,13 +2,13 @@ package lineage.vetal.server.game.db
 
 import lineage.vetal.server.core.db.DBConnection
 import lineage.vetal.server.core.db.DBDao
+import lineage.vetal.server.game.db.sql.SpawnSQL.Companion.QUERY_SPAWN_LIST
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.npc.NpcSpawnData
 
 class SpawnDao(
     dbConnection: DBConnection
 ) : DBDao(dbConnection) {
-    private val QUERY_SPAWN_LIST = "SELECT * from spawnlist"
 
     fun getSpawnList(): List<NpcSpawnData> {
         return queryList(QUERY_SPAWN_LIST) {

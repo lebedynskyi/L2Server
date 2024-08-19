@@ -9,15 +9,8 @@ class GameDatabase(
     itemsTemplates: Map<Int, ItemTemplate>,
     dbConnection: DBConnection
 ) {
-    val accountDao: AccountDao
-    val charactersDao: CharactersDao
-    val spawnDao: SpawnDao
-    val itemsDao: ItemsDao
-
-    init {
-        charactersDao = CharactersDao(dbConnection, characterTemplates)
-        itemsDao = ItemsDao(dbConnection, itemsTemplates)
-        accountDao = AccountDao(dbConnection)
-        spawnDao = SpawnDao(dbConnection)
-    }
+    val accountDao: AccountDao = AccountDao(dbConnection)
+    val charactersDao: CharactersDao = CharactersDao(dbConnection, characterTemplates)
+    val spawnDao: SpawnDao = SpawnDao(dbConnection)
+    val itemsDao: ItemsDao = ItemsDao(dbConnection, itemsTemplates)
 }

@@ -160,7 +160,7 @@ class GameLobbyManager(
 */
         val newPlayer = context.objectFactory.createPlayerObject(
             name,
-            client.account,
+            client.account.id,
             classId,
             hairStyle,
             hairColor,

@@ -17,6 +17,8 @@ import java.util.function.Predicate
 import javax.xml.parsers.DocumentBuilderFactory
 
 private const val TAG = "XmlReader"
+private const val JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage"
+private const val W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"
 
 // TODO redesign parser. Make it return data without holding it inside.
 interface XmlReader {
@@ -29,10 +31,7 @@ interface XmlReader {
         if (Files.isDirectory(path)) {
             val pathsToParse: MutableList<Path> = LinkedList()
             try {
-                Files.walkFileTree(
-                    path,
-                    EnumSet.noneOf(FileVisitOption::class.java),
-                    Int.MAX_VALUE,
+                Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption::class.java), Int.MAX_VALUE,
                     object : SimpleFileVisitor<Path>() {
                         override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
                             pathsToParse.add(file)
@@ -40,12 +39,7 @@ interface XmlReader {
                         }
                     })
                 pathsToParse.forEach(Consumer { p: Path ->
-                    parse(
-                        p,
-                        validate,
-                        ignoreComments,
-                        ignoreWhitespaces
-                    )
+                    parse(p, validate, ignoreComments, ignoreWhitespaces)
                 })
             } catch (e: IOException) {
                 writeError(TAG, "Could not parse file: $path", e)
@@ -247,6 +241,14 @@ interface XmlReader {
         }
     }
 
+    fun isNode(node: Node): Boolean {
+        return node.nodeType == Node.ELEMENT_NODE
+    }
+
+    fun isText(node: Node): Boolean {
+        return node.nodeType == Node.TEXT_NODE
+    }
+
     class XMLErrorHandler : ErrorHandler {
         @Throws(SAXParseException::class)
         override fun warning(e: SAXParseException) {
@@ -262,18 +264,5 @@ interface XmlReader {
         override fun fatalError(e: SAXParseException) {
             throw e
         }
-    }
-
-    companion object {
-        fun isNode(node: Node): Boolean {
-            return node.nodeType == Node.ELEMENT_NODE
-        }
-
-        fun isText(node: Node): Boolean {
-            return node.nodeType == Node.TEXT_NODE
-        }
-
-        const val JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage"
-        const val W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema"
     }
 }

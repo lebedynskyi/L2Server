@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.model
+package lineage.vetal.server.game.game
 
 import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.game.db.GameDatabase
@@ -77,20 +77,20 @@ class GameObjectFactory(
     private val TAG = "GameObjectFactory"
 
     fun createPlayerObject(
-        name: String, account: AccountInfo, templateId: Int,
-        hairStyle: Int, hairColor: Int, face: Int, sex: Byte,
-        isNewbie: Boolean
+        name: String, accountId: String, templateId: Int,
+        hairStyle: Int, hairColor: Int, face: Int, sex: Byte, isNewbie: Boolean
     ): PlayerObject {
         val template =
             charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
         if (isNewbie && template.classBaseLevel > 1) {
             throw IllegalArgumentException("Cannot create newbie char for template $templateId")
         }
-        val appearance = Appearance(hairStyle, hairColor, face, CharacterSex.values()[sex.toInt()])
+
+        val appearance = Appearance(hairStyle, hairColor, face, CharacterSex.entries[sex.toInt()])
         val position = SpawnPosition(template.spawnLocations.random())
         val objectId = idFactory.createId()
         val playerId = UUID.randomUUID().toString()
-        val player = PlayerObject(objectId, playerId, account.id, appearance, name, template, position).apply {
+        val player = PlayerObject(objectId, playerId, accountId, appearance, name, template, position).apply {
             inventory = WearableInventory()
         }
 
@@ -104,22 +104,22 @@ class GameObjectFactory(
     }
 
     fun createNpcObject(templateId: Int, position: SpawnPosition): NpcObject {
-        val objectId = idFactory.createId()
         val template =
             npcTemplates[templateId] ?: throw IllegalArgumentException("Cannot find NPC template for id $templateId")
+        val objectId = idFactory.createId()
         return NpcObject(objectId, template, position)
     }
 
     fun createItemObject(templateId: Int, count: Int = 1): ItemObject {
-        val objectId = idFactory.createId()
         val template =
             itemTemplates[templateId] ?: throw IllegalArgumentException("Cannot find item template for id $templateId")
+        val objectId = idFactory.createId()
 
         return when (template) {
             is ArmorItemTemplate -> ArmorObject(objectId, template)
             is EtcItemTemplate -> EtcItemObject(objectId, template)
             is WeaponItemTemplate -> WeaponObject(objectId, template)
-            else -> throw IllegalArgumentException("Cannot fund item template of type $template")
+            else -> throw IllegalArgumentException("Cannot find item template of type $template")
         }.apply {
             this.count = count
         }

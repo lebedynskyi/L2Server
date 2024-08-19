@@ -24,6 +24,7 @@ class PlayerObject(
     override var stats: PlayerStatus = PlayerStatus(template)
 
     override val name get() = charName // TODO if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
+
     var client: GameClient? = null
     var summon: Summon? = null
     var team: TeamType = TeamType.NONE

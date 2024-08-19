@@ -17,7 +17,7 @@ dataBaseConfig:  # MariaDB
   user: "root"
   password: "det4Deb5"
   timeOut: 5000
-#
+
 #dataBaseConfig:  # SQLite
 #  driver: "org.sqlite.JDBC"
 #  url: "jdbc:sqlite:/Users/Vitalii_Lebedynskyi/TRASH/l2.db"

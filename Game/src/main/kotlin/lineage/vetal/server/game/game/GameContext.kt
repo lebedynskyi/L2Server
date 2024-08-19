@@ -4,10 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import lineage.vetal.server.core.db.HikariDBConnection
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
+import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.manager.*
-import lineage.vetal.server.game.game.model.GameObjectFactory
-import lineage.vetal.server.game.game.model.GameObjectIdFactory
 import lineage.vetal.server.game.game.task.GameAnnouncerTask
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader
@@ -28,7 +27,7 @@ class GameContext {
     lateinit var gameAnnouncer: GameAnnouncerTask
     lateinit var gameLobby: GameLobbyManager
     lateinit var gameDatabase: GameDatabase
-    lateinit var gameConfig: lineage.vetal.server.game.ConfigGame
+    lateinit var gameConfig: ConfigGame
     lateinit var manorManager: ManorManager
     lateinit var chatManager: ChatManager
     lateinit var objectFactory: GameObjectFactory
@@ -39,7 +38,7 @@ class GameContext {
 
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
-        gameConfig = lineage.vetal.server.game.ConfigGame.read(serverConfigFile)
+        gameConfig = ConfigGame.read(serverConfigFile)
 
         val itemsXmlFolder = File(dataFolder, ITEMS_XML)
         val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()

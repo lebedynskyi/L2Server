@@ -74,8 +74,11 @@ class ItemManager(
                 inventoryPacket.onRemoved(item)
             }
         } else if (item is EquipmentObject) {
-            // TODO does not work if item was equipped
-            player.inventory.unEquip(item)
+            if (item.isEquipped) {
+                player.inventory.unEquip(item)
+                context.worldManager.broadCast(player.region, CharInfo(player))
+                player.sendPacket(InventoryList(player.inventory.items, false))
+            }
             player.inventory.removeItem(item)
             inventoryPacket.onRemoved(item)
         } else {

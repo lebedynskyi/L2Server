@@ -2,7 +2,7 @@ package lineage.vetal.server.game.game.task
 
 import kotlinx.coroutines.*
 
-private const val DEFAULT_TASK_PERIOD = 1000L
+private const val DEFAULT_TASK_PERIOD = 1000L // 1 second
 
 abstract class AbstractTask(
     coroutineDispatcher: CoroutineDispatcher,
