@@ -76,3 +76,5 @@ class GameContext {
         gameAnnouncer = GameAnnouncerTask(this, taskDispatcher)
     }
 }
+
+1
