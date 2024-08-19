@@ -82,3 +82,5 @@ class GameContext {
         2
 
         f1
+
+        f2
