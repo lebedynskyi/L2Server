@@ -8,6 +8,25 @@ import lineage.vetal.server.game.game.model.template.items.ItemSlot
 private const val TAG = "WearableInventory"
 
 class WearableInventory : CreatureInventory() {
+    fun getAugmentationIdFromSlot(slot: PaperDollSlot): Int {
+        return 0
+    }
+
+    fun getItemObjectIdFrom(slot: PaperDollSlot): Int {
+        return items.filterIsInstance<EquipmentObject>()
+            .firstOrNull { it.equippedSlot == slot }?.objectId ?: 0
+    }
+
+    fun getItemFrom(slot: PaperDollSlot): EquipmentObject? {
+        return items.filterIsInstance<EquipmentObject>()
+            .firstOrNull { it.equippedSlot == slot }
+    }
+
+    fun getItemIdFrom(slot: PaperDollSlot): Int {
+        return items.filterIsInstance<EquipmentObject>()
+            .firstOrNull { it.equippedSlot == slot }?.template?.id ?: 0
+    }
+
     fun unEquip(slot: PaperDollSlot): EquipmentObject? {
         return items.filterIsInstance<EquipmentObject>()
             .firstOrNull { it.equippedSlot == slot }?.apply {
@@ -22,11 +41,6 @@ class WearableInventory : CreatureInventory() {
                 it.equippedSlot = null
                 it.itemLocation = ItemLocation.None
             }
-    }
-
-    private fun equip(item: EquipmentObject, slot: PaperDollSlot) {
-        item.equippedSlot = slot
-        item.itemLocation = ItemLocation.PaperDoll(slot)
     }
 
     fun equip(item: EquipmentObject): List<EquipmentObject> {
@@ -131,22 +145,8 @@ class WearableInventory : CreatureInventory() {
         return unEquippedItems.filterNotNull()
     }
 
-    fun getAugmentationIdFromSlot(slot: PaperDollSlot): Int {
-        return 0
-    }
-
-    fun getItemObjectIdFrom(slot: PaperDollSlot): Int {
-        return items.filterIsInstance<EquipmentObject>()
-            .firstOrNull { it.equippedSlot == slot }?.objectId ?: 0
-    }
-
-    fun getItemFrom(slot: PaperDollSlot): EquipmentObject? {
-        return items.filterIsInstance<EquipmentObject>()
-            .firstOrNull { it.equippedSlot == slot }
-    }
-
-    fun getItemIdFrom(slot: PaperDollSlot): Int {
-        return items.filterIsInstance<EquipmentObject>()
-            .firstOrNull { it.equippedSlot == slot }?.template?.id ?: 0
+    private fun equip(item: EquipmentObject, slot: PaperDollSlot) {
+        item.equippedSlot = slot
+        item.itemLocation = ItemLocation.PaperDoll(slot)
     }
 }

@@ -10,7 +10,7 @@ class RequestUseItem : GamePacket() {
 
     override fun executeImpl(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        context.itemManager.onUseItem(client, player, objectId, ctrlPressed)
+        context.itemManager.onPlayerUseItem(player, objectId, ctrlPressed)
     }
 
     override fun read() {

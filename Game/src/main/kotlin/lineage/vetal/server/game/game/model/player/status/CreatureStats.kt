@@ -25,6 +25,8 @@ abstract class CreatureStats(
     open fun getBaseWalkSpeed(): Int = template.baseWalkSpeed
     open fun getBaseMoveSpeed(): Int = if (isRunning) getBaseRunSpeed() else getBaseWalkSpeed()
 
+    // TODO list of hennas, Buffs, passive skills
+
     // -------------     Calculation zone    --------------
     open fun getMoveSpeed(): Double {
         return getBaseMoveSpeed().toDouble()

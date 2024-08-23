@@ -8,6 +8,12 @@ class SystemMessageId(
     override val opCode: Byte = 0x64
     private val paramsCount = 0
 
+    override fun write() {
+        writeD(id)
+        writeD(paramsCount)
+        // TODO should parameters here
+    }
+
     companion object {
         val YOU_HAVE_BEEN_DISCONNECTED = SystemMessageId(0)
         val THE_SERVER_WILL_BE_COMING_DOWN_IN_S1_SECONDS = SystemMessageId(1)
@@ -1969,8 +1975,7 @@ class SystemMessageId(
         val S1_CANNOT_DUEL_BECAUSE_S1_IS_CURRENTLY_ENGAGED_IN_A_PRIVATE_STORE_OR_MANUFACTURE = SystemMessageId(2017)
         val S1_CANNOT_DUEL_BECAUSE_S1_IS_CURRENTLY_FISHING = SystemMessageId(2018)
         val S1_CANNOT_DUEL_BECAUSE_S1_HP_OR_MP_IS_BELOW_50_PERCENT = SystemMessageId(2019)
-        val S1_CANNOT_MAKE_A_CHALLANGE_TO_A_DUEL_BECAUSE_S1_IS_CURRENTLY_IN_A_DUEL_PROHIBITED_AREA =
-            SystemMessageId(2020)
+        val S1_CANNOT_MAKE_A_CHALLANGE_TO_A_DUEL_BECAUSE_S1_IS_CURRENTLY_IN_A_DUEL_PROHIBITED_AREA = SystemMessageId(2020)
         val S1_CANNOT_DUEL_BECAUSE_S1_IS_CURRENTLY_ENGAGED_IN_BATTLE = SystemMessageId(2021)
         val S1_CANNOT_DUEL_BECAUSE_S1_IS_ALREADY_ENGAGED_IN_A_DUEL = SystemMessageId(2022)
         val S1_CANNOT_DUEL_BECAUSE_S1_IS_IN_A_CHAOTIC_STATE = SystemMessageId(2023)
@@ -1982,10 +1987,5 @@ class SystemMessageId(
         val S1_CANNOT_PARTICIPATE_IN_OLYMPIAD_DURING_TELEPORT = SystemMessageId(2029)
         val CURRENTLY_LOGGING_IN = SystemMessageId(2030)
         val PLEASE_WAIT_A_MOMENT = SystemMessageId(2031)
-    }
-
-    override fun write() {
-        writeD(id)
-        writeD(paramsCount)
     }
 }

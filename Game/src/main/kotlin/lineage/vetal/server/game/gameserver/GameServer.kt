@@ -1,9 +1,7 @@
-package lineage.vetal.server.game
+package lineage.vetal.server.game.gameserver
 
 import kotlinx.coroutines.*
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.gameserver.GameClient
-import lineage.vetal.server.game.gameserver.GameClientFactory
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 import vetalll.server.sock.SelectorThread
 

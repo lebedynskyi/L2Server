@@ -110,7 +110,7 @@ class WorldManager(
         val oldRegion = player.region
         val newRegion = getRegion(loc)
         if (oldRegion != newRegion && newRegion != null) {
-            writeDebug(TAG, "${player.name} changed region from [${oldRegion.tileX},${oldRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
+            writeDebug(TAG, "'${player.name}' changed region from [${oldRegion.tileX},${oldRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
 
             val oldSlice = oldRegion.slice(newRegion)
             oldSlice.map { it.players.values}.flatten().forEach {

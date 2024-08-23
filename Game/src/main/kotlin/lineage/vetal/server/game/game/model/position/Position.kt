@@ -2,34 +2,18 @@ package lineage.vetal.server.game.game.model.position
 
 import lineage.vetal.server.game.xml.StatSet
 
+open class Position(
+    val x: Int,
+    val y: Int,
+    val z: Int
+) {
+    constructor(loc: Position) : this(loc.x, loc.y, loc.z)
 
-open class Position {
-    @Volatile
-    var x: Int
-
-    @Volatile
-    var y: Int
-
-    @Volatile
-    var z: Int
-
-    constructor(x: Int, y: Int, z: Int) {
-        this.x = x
-        this.y = y
-        this.z = z
-    }
-
-    constructor(loc: Position) {
-        x = loc.x
-        y = loc.y
-        z = loc.z
-    }
-
-    constructor(loc: StatSet) {
-        x = loc.getInteger("x")
-        y = loc.getInteger("y")
-        z = loc.getInteger("z")
-    }
+    constructor(loc: StatSet) : this(
+        loc.getInteger("x"),
+        loc.getInteger("y"),
+        loc.getInteger("z")
+    )
 
     override fun toString(): String {
         return "Pos: $x, $y, $z"
@@ -39,30 +23,17 @@ open class Position {
         return x xor y xor z
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (o is Position) {
-            val loc = o
-            return loc.x == x && loc.y == y && loc.z == z
-        }
-        return false
-    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    operator fun set(x: Int, y: Int, z: Int) {
-        this.x = x
-        this.y = y
-        this.z = z
-    }
+        other as Position
 
-    fun set(loc: Position) {
-        x = loc.x
-        y = loc.y
-        z = loc.z
-    }
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (z != other.z) return false
 
-    fun clean() {
-        x = 0
-        y = 0
-        z = 0
+        return true
     }
 
     companion object {

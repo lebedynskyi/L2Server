@@ -161,7 +161,7 @@ class UserInfo(
         writeD(relation)
         writeC(player.stats.mountType)
         writeC(player.operateType.id)
-        writeC(if (player.hasDwarvenCraft) 1 else 0)
+        writeC(if (player.hasDwarvesCraft) 1 else 0)
         writeD(player.pkKills)
         writeD(player.pvpKills)
 
@@ -175,9 +175,9 @@ class UserInfo(
         writeD(0) // writeD(player.getAbnormalEffect()) // Body effect. Big head? Stealth? Etc
 
         writeC(0x00)
-        writeD(player.clanPrivelegies)
-        writeH(player.recomLeft)
-        writeH(player.recomHave)
+        writeD(player.clanPrivileges)
+        writeH(player.recLeft)
+        writeH(player.recHave)
         writeD(if (player.stats.mountNpcId > 0) player.stats.mountNpcId + 1000000 else 0)
         writeH(player.inventory.inventoryLimit)
         writeD(player.template.charClass.ordinal)

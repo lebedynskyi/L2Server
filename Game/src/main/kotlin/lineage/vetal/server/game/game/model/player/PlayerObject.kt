@@ -45,19 +45,19 @@ class PlayerObject(
     var clanCrestId: Int = 0
     var allyId: Int = 0
     var allyCrestId: Int = 0
-    var clanPrivelegies: Int = 0
 
     var isOnlineInt = 0
     var isIn7sDungeon = false
     var isInPartyMatchRoom = false
     var clanPrivileges = 0
+
     var isNoble = false
     var isHero = false
 
-    var recomLeft: Int = 0
-    var recomHave: Int = 0
+    var recLeft: Int = 0
+    var recHave: Int = 0
 
-    var hasDwarvenCraft = false
+    var hasDwarvesCraft = false
     var wantsPeace = false
     var enchantEffect: Int = 0
     var pledgeType = 0

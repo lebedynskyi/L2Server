@@ -28,7 +28,7 @@ fun writeError(tag: String, msg: Any) {
 }
 
 fun writeSection(section: String, char: Char = '-') {
-    print("[$section]")
+    print("[$ANSI_YELLOW$section$ANSI_RESET]")
 
     var symbolsLeft = 80 - section.length
     while (symbolsLeft >= 0) {

@@ -2,9 +2,7 @@ package lineage.vetal.server.game.game.model.position
 
 
 class SpawnPosition(
-    x: Int,
-    y: Int,
-    z: Int,
+    x: Int, y: Int, z: Int,
     val heading: Int = 0
 ) : Position(x, y, z) {
     constructor(pos: Position) : this(pos.x, pos.y, pos.z, 0)

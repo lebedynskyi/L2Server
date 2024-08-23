@@ -26,6 +26,6 @@ class RequestMoveToLocation : GamePacket() {
         val player = client.player ?: return
         val startLocation = Position(startX, startY, startZ)
         val finishLocation = Position(targetX, targetY, targetZ)
-        context.movementManager.startMovement(player, startLocation, finishLocation)
+        context.movementManager.onPlayerStartMovement(player, startLocation, finishLocation)
     }
 }

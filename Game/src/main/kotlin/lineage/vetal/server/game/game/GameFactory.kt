@@ -1,6 +1,5 @@
 package lineage.vetal.server.game.game
 
-import lineage.vetal.server.core.model.AccountInfo
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.item.ArmorObject

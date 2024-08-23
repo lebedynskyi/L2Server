@@ -1,9 +1,12 @@
 package lineage.vetal.server.game.game.manager
 
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.server.CreatureSay
+
+private const val TAG = "ChatManager"
 
 class ChatManager(
     private val context: GameContext,
@@ -25,7 +28,8 @@ class ChatManager(
         }
     }
 
-    fun announce(text: String, type: SayType) {
-        context.worldManager.broadCast(CreatureSay(type, text))
+    fun announce(text: String) {
+        context.worldManager.broadCast(CreatureSay(SayType.ANNOUNCEMENT, text))
+        writeDebug(TAG, "Announce -> $text")
     }
 }

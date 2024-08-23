@@ -1,8 +1,7 @@
-package lineage.vetal.server.game
+package lineage.vetal.server.game.bridgeclient
 
 import kotlinx.coroutines.*
 import lineage.vetal.server.core.bridge.BridgeClient
-import lineage.vetal.server.game.bridgeclient.BridgeGameClientFactory
 import lineage.vetal.server.game.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.game.bridgeclient.packets.server.BridgeConnected
 import lineage.vetal.server.game.game.GameContext

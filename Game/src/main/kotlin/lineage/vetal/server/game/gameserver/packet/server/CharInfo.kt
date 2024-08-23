@@ -117,8 +117,8 @@ class CharInfo(
 
         writeC(if (player.isInPartyMatchRoom) 1 else 0)
         writeD(0)//writeD(if (canSeeInvis) _player.getAbnormalEffect() or AbnormalEffect.STEALTH.getMask() else _player.getAbnormalEffect())
-        writeC(player.recomLeft)
-        writeH(player.recomHave)
+        writeC(player.recLeft)
+        writeH(player.recHave)
         writeD(player.template.charClass.ordinal)
         writeD(player.stats.maxCp)
         writeD(player.stats.curCp.toInt())

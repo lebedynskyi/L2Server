@@ -12,9 +12,10 @@ fun main(args: Array<String>) {
     }
 
     writeInfo(TAG, "Create and load context")
-    val context = LoginContext()
     val dataFolder = args[0]
-    context.load(dataFolder)
+    val context = LoginContext().apply {
+        load(dataFolder)
+    }
 
     writeInfo(TAG, "Start login client server")
     LoginClientServer(context).startServer()
