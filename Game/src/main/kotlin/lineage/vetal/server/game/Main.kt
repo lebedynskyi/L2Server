@@ -28,5 +28,4 @@ fun main(args: Array<String>) {
     BridgeClient(gameContext).startClient()
 
     writeInfo(TAG, "Finished Game initialization")
-    writeSection("In game")
 }

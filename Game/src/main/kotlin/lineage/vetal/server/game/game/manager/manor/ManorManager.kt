@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager
+package lineage.vetal.server.game.game.manager.manor
 
 import lineage.vetal.server.game.game.GameContext
 

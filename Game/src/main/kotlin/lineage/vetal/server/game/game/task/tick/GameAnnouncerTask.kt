@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.game.task.tick
 
-import lineage.vetal.server.game.game.manager.ChatManager
+import lineage.vetal.server.game.game.manager.chat.ChatManager
 import java.time.Clock
 
 class GameAnnouncerTask(

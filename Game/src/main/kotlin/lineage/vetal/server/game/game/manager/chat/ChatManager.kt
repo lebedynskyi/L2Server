@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager
+package lineage.vetal.server.game.game.manager.chat
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext

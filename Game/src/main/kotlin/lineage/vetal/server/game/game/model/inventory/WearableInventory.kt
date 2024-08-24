@@ -138,7 +138,7 @@ class WearableInventory : CreatureInventory() {
             }
 
             else -> {
-                writeError(TAG, "Unable equip item. Required slot is '$requiredSlot'")
+                writeError(TAG, "Unable to equip item. Required slot is '$requiredSlot'")
             }
         }
 

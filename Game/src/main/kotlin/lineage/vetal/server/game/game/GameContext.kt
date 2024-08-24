@@ -7,13 +7,18 @@ import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.manager.*
+import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
+import lineage.vetal.server.game.game.manager.chat.ChatManager
 import lineage.vetal.server.game.game.manager.item.ItemManager
+import lineage.vetal.server.game.game.manager.lobby.GameLobbyManager
+import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.movement.MovementManager
+import lineage.vetal.server.game.game.manager.spawn.SpawnManager
 import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import lineage.vetal.server.game.game.task.TickTaskManager
 import lineage.vetal.server.game.game.task.tick.DeleteItemOnGroundTickTask
 import lineage.vetal.server.game.game.task.tick.GameAnnouncerTask
-import lineage.vetal.server.game.game.task.tick.MovementTickTask
+import lineage.vetal.server.game.game.task.tick.BehaviourTask
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader
 import lineage.vetal.server.game.xml.NpcXMLReader
@@ -22,14 +27,15 @@ import java.time.Clock
 import java.util.concurrent.TimeUnit
 
 private const val PATH_SERVER_CONFIG = "game/config/Server.yaml"
+
 private const val PATH_CLASSES_XML = "game/xml/classes"
 private const val NPCS_XML = "game/xml/npcs"
 private const val ITEMS_XML = "game/xml/items"
 private const val TAG = "GameContext"
 
-private val DEFAULT_ANNOUNCE_PERIOD = TimeUnit.MINUTES.toMillis(3)
-private val DEFAULT_DELETE_ITEMS_PERIOD = TimeUnit.MINUTES.toMillis(1)
-private val DEFAULT_MOVEMENT_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
+private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(3)
+private val DEFAULT_DELETE_ITEMS_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
+private val DEFAULT_BEHAVIOUR_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
 
 private val defaultAnnouncements = listOf(
     "Welcome on Vitalii Lebedynskyi server",
@@ -43,11 +49,13 @@ class GameContext {
     lateinit var spawnManager: SpawnManager
     lateinit var movementManager: MovementManager
     lateinit var itemManager: ItemManager
+    lateinit var actionManager: ActionManager
     lateinit var gameLobby: GameLobbyManager
     lateinit var gameDatabase: GameDatabase
     lateinit var gameConfig: ConfigGame
     lateinit var manorManager: ManorManager
     lateinit var chatManager: ChatManager
+    lateinit var behaviourManager: BehaviourManager
     lateinit var objectFactory: GameObjectFactory
 
     lateinit var clock: Clock
@@ -55,7 +63,7 @@ class GameContext {
     lateinit var tickTaskManager: TickTaskManager
 
     private lateinit var announceTask: GameAnnouncerTask
-    private lateinit var movementTask: MovementTickTask
+    private lateinit var behaviourTask: BehaviourTask
     private lateinit var deleteItemsTask: DeleteItemOnGroundTickTask
 
     fun load(dataFolder: String) {
@@ -97,18 +105,20 @@ class GameContext {
         gameLobby = GameLobbyManager(this)
         chatManager = ChatManager(this)
         spawnManager = SpawnManager(this)
+        behaviourManager = BehaviourManager(this)
+        actionManager = ActionManager(this)
 
         writeSection("Tasks")
         announceTask = GameAnnouncerTask(chatManager, defaultAnnouncements)
-        movementTask = MovementTickTask(movementManager)
+        behaviourTask = BehaviourTask(behaviourManager)
         deleteItemsTask = DeleteItemOnGroundTickTask(itemManager)
 
         val taskDispatcher = Dispatchers.IO
         scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
         tickTaskManager = TickTaskManager(clock, taskDispatcher)
 
-        tickTaskManager.register(announceTask, DEFAULT_ANNOUNCE_PERIOD, DEFAULT_ANNOUNCE_PERIOD)
-        tickTaskManager.register(movementTask, DEFAULT_MOVEMENT_PERIOD, DEFAULT_MOVEMENT_PERIOD)
-        tickTaskManager.register(deleteItemsTask, DEFAULT_DELETE_ITEMS_PERIOD, DEFAULT_DELETE_ITEMS_PERIOD)
+        tickTaskManager.register(announceTask, DEFAULT_ANNOUNCE_TICK_PERIOD, DEFAULT_ANNOUNCE_TICK_PERIOD)
+        tickTaskManager.register(behaviourTask, DEFAULT_BEHAVIOUR_TICK_PERIOD, DEFAULT_BEHAVIOUR_TICK_PERIOD)
+        tickTaskManager.register(deleteItemsTask, DEFAULT_DELETE_ITEMS_TICK_PERIOD, DEFAULT_DELETE_ITEMS_TICK_PERIOD)
     }
 }

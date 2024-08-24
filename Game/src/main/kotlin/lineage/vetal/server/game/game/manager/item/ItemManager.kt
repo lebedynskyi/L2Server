@@ -1,6 +1,9 @@
 package lineage.vetal.server.game.game.manager.item
 
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.manager.item.usecase.PlayerDropItemUseCase
+import lineage.vetal.server.game.game.manager.item.usecase.PlayerPickItemUseCase
+import lineage.vetal.server.game.game.manager.item.usecase.PlayerUseItemUseCase
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.onError
@@ -28,7 +31,7 @@ class ItemManager(
         UseItemValidation.validate(player, objectId, ctrlPressed).onSuccess {
             PlayerUseItemUseCase.onPlayerUseItemSuccess(context, player, it, ctrlPressed)
         }.onError {
-            PlayerUseItemUseCase.onPlayerUseIteFail(it)
+            PlayerUseItemUseCase.onPlayerUseItemFail(it)
         }
     }
 

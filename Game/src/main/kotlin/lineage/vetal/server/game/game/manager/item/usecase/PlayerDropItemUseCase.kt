@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item
+package lineage.vetal.server.game.game.manager.item.usecase
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.EquipmentObject

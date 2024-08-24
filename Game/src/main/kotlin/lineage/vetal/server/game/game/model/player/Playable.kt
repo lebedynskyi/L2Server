@@ -10,4 +10,6 @@ abstract class Playable(
     override var position: SpawnPosition,
     override val template: CreatureTemplate,
     override val behaviour: CreatureBehaviour
-) : CreatureObject(objectId, behaviour, template, position)
+) : CreatureObject(objectId, behaviour, template, position) {
+    var clientPosition: SpawnPosition? = null
+}

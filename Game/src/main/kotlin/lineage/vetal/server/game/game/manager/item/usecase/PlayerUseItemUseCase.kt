@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item
+package lineage.vetal.server.game.game.manager.item.usecase
 
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
@@ -37,7 +37,7 @@ object PlayerUseItemUseCase {
         }
     }
 
-    fun onPlayerUseIteFail(reason: ValidationError) {
+    fun onPlayerUseItemFail(reason: ValidationError) {
 
     }
 }

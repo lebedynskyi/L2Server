@@ -26,10 +26,9 @@ class PlayerObject(
     override val name get() = charName // TODO if (player.getPolymorphTemplate() != null) player.getPolymorphTemplate().getName() else player.getName()
 
     var client: GameClient? = null
-    var summon: Summon? = null
+
     var team: TeamType = TeamType.NONE
     val operateType: OperateType = OperateType.NONE
-
     var isInWorld = false
     var lastAccessTime: Long = 0
     var isGM = false
@@ -62,6 +61,9 @@ class PlayerObject(
     var enchantEffect: Int = 0
     var pledgeType = 0
     var pledgeClass = 0
+
+    var summon: Summon? = null
+    var target: CreatureObject? = null
 
     fun getCollisionRadius(): Double {
         return template.getCollisionRadiusBySex(appearance.sex)

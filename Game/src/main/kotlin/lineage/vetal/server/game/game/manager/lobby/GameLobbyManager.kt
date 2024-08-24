@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager
+package lineage.vetal.server.game.game.manager.lobby
 
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.RegisteredServer

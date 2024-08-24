@@ -1,6 +1,5 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
@@ -25,19 +24,19 @@ class RequestAction : GamePacket() {
 
     override fun executeImpl(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        val targetItem = player.region.items[actionObjectId]
-        if (targetItem != null) {
-            context.itemManager.onPlayerPickUpItem(player, targetItem, originX, originY, originZ)
+
+        player.region.items[actionObjectId]?.let {
+            context.itemManager.onPlayerPickUpItem(player, it, originX, originY, originZ)
         }
 
-        val targetNpc = player.region.npc[actionObjectId]
-        if (targetNpc != null) {
-            writeError(TAG, "Request target of NPC is not implemented")
+        player.region.npc[actionObjectId]?.let {
+            context.actionManager.onPlayerAction(player, it, originX, originY, originZ)
         }
 
-        if (player.objectId == actionObjectId) {
-            writeError(TAG, "Request SELF target is not implemented")
+        player.region.players[actionObjectId]?.let {
+            context.actionManager.onPlayerAction(player, it, originX, originY, originZ)
         }
+
 
         client.sendPacket(ActionFailed.STATIC_PACKET)
     }

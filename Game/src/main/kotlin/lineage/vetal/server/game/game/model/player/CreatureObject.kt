@@ -4,7 +4,6 @@ import lineage.vetal.server.game.game.model.GameObject
 import lineage.vetal.server.game.game.model.behaviour.CreatureBehaviour
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.status.CreatureStats
-import lineage.vetal.server.game.game.model.position.MoveData
 import lineage.vetal.server.game.game.model.template.pc.CreatureTemplate
 
 private const val TAG = "Creature"
@@ -21,5 +20,4 @@ abstract class CreatureObject(
     var isInCombat: Boolean = false
     var isAlikeDead: Boolean = false
     var isFlying = false
-    var moveData: MoveData? = null
 }
