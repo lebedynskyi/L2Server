@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item.usecase
+package lineage.vetal.server.game.game.handler.request.item.usecase
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.EquipmentObject
@@ -39,7 +39,7 @@ object PlayerDropItemUseCase {
         } else if (itemToDrop is EquipmentObject) {
             if (itemToDrop.isEquipped) {
                 player.inventory.unEquip(itemToDrop)
-                context.worldManager.broadCast(player.region, CharInfo(player))
+                context.gameWorld.broadCast(player.region, CharInfo(player))
                 player.sendPacket(InventoryList(player.inventory.items, false))
             }
             player.inventory.removeItem(itemToDrop)
@@ -54,7 +54,7 @@ object PlayerDropItemUseCase {
         itemToDrop.ownerId = null
         player.sendPacket(inventoryPacket)
         player.region.addItem(itemToDrop)
-        context.worldManager.broadCast(player.region, DropItem(itemToDrop, player.objectId))
+        context.gameWorld.broadCast(player.region, DropItem(itemToDrop, player.objectId))
         context.gameDatabase.itemsDao.saveItem(itemToDrop)
     }
 

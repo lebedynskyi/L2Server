@@ -6,14 +6,12 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.db.GameDatabase
-import lineage.vetal.server.game.game.manager.*
-import lineage.vetal.server.game.game.manager.action.ActionManager
+import lineage.vetal.server.game.game.handler.request.action.RequestActionHandler
 import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
-import lineage.vetal.server.game.game.manager.chat.ChatManager
-import lineage.vetal.server.game.game.manager.item.ItemManager
+import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
+import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
 import lineage.vetal.server.game.game.manager.lobby.GameLobbyManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
-import lineage.vetal.server.game.game.manager.movement.MovementManager
 import lineage.vetal.server.game.game.manager.spawn.SpawnManager
 import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import lineage.vetal.server.game.game.task.TickTaskManager
@@ -46,16 +44,15 @@ private val defaultAnnouncements = listOf(
 )
 
 class GameContext {
-    lateinit var worldManager: WorldManager
+    lateinit var gameWorld: GameWorld
     lateinit var spawnManager: SpawnManager
-    lateinit var movementManager: MovementManager
-    lateinit var itemManager: ItemManager
-    lateinit var actionManager: ActionManager
+    lateinit var requestItemHandler: RequestItemHandler
+    lateinit var requestActionHandler: RequestActionHandler
     lateinit var gameLobby: GameLobbyManager
     lateinit var gameDatabase: GameDatabase
     lateinit var gameConfig: ConfigGame
     lateinit var manorManager: ManorManager
-    lateinit var chatManager: ChatManager
+    lateinit var requestChatHandler: RequestChatHandler
     lateinit var behaviourManager: BehaviourManager
     lateinit var objectFactory: GameObjectFactory
 
@@ -99,20 +96,19 @@ class GameContext {
         objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
         writeSection("Managers")
-        worldManager = WorldManager(this)
+        gameWorld = GameWorld(this)
         manorManager = ManorManager(this)
-        itemManager = ItemManager(this)
-        movementManager = MovementManager(this)
+        requestItemHandler = RequestItemHandler(this)
         gameLobby = GameLobbyManager(this)
-        chatManager = ChatManager(this)
+        requestChatHandler = RequestChatHandler(this)
         spawnManager = SpawnManager(this)
         behaviourManager = BehaviourManager(this)
-        actionManager = ActionManager(this)
+        requestActionHandler = RequestActionHandler(this)
 
         writeSection("Tasks")
-        announceTask = GameAnnouncerTask(chatManager, defaultAnnouncements)
+        announceTask = GameAnnouncerTask(requestChatHandler, defaultAnnouncements)
         behaviourTask = BehaviourTask(behaviourManager)
-        deleteItemsTask = DeleteItemOnGroundTickTask(itemManager)
+        deleteItemsTask = DeleteItemOnGroundTickTask(requestItemHandler)
 
         val taskDispatcher = Dispatchers.IO
         scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)

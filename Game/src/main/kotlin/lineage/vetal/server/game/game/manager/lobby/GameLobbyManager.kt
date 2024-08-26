@@ -30,7 +30,7 @@ class GameLobbyManager(
         val blowFishKey = serverConfig.bridgeKey
         val serverStatus = ServerStatus(
             context.gameConfig.serverInfo.id,
-            context.worldManager.players.size,
+            context.gameWorld.players.size,
             true,
             context.gameConfig.serverInfo.ip
         )
@@ -214,5 +214,23 @@ class GameLobbyManager(
 
     private fun String.isValidPlayerName(): Boolean {
         return matches(playerNameRegex)
+    }
+
+    fun requestProtocolVersion(client: GameClient, version: Int) {
+        when (version) {
+            737 -> client.sendInitPacket()
+            740 -> client.sendInitPacket()
+            744 -> client.sendInitPacket()
+            746 -> client.sendInitPacket()
+            else -> {
+                writeInfo("PROTOCOL", "Unknown protocol version $version")
+                client.saveAndClose()
+            }
+        }
+    }
+
+    fun requestCharacterTemplates(client: GameClient) {
+        // TODO empty packet. Some clients handles it
+        client.sendPacket(NewCharacterSuccess(emptyList()))
     }
 }

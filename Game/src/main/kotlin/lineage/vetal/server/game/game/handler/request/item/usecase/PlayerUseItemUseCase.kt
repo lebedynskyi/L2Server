@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item.usecase
+package lineage.vetal.server.game.game.handler.request.item.usecase
 
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
@@ -24,7 +24,7 @@ object PlayerUseItemUseCase {
                 }
                 affectedItems.add(item)
 
-                context.worldManager.broadCast(player.region, UserInfo(player))
+                context.gameWorld.broadCast(player.region, UserInfo(player))
                 player.sendPacket(InventoryUpdate().apply {
                     affectedItems.forEach { onChanged(it) }
                 })

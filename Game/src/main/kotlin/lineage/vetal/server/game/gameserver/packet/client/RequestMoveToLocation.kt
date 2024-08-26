@@ -1,17 +1,14 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 
 class RequestMoveToLocation : GamePacket() {
-    private var targetX = 0
-    private var targetY = 0
-    private var targetZ = 0
-    private var startX = 0
-    private var startY = 0
-    private var startZ = 0
+    var targetX = 0
+    var targetY = 0
+    var targetZ = 0
+    var startX = 0
+    var startY = 0
+    var startZ = 0
 
     override fun read() {
         targetX = readD()
@@ -20,11 +17,5 @@ class RequestMoveToLocation : GamePacket() {
         startX = readD()
         startY = readD()
         startZ = readD()
-    }
-
-    override fun executeImpl(client: GameClient, context: GameContext) {
-        val player = client.player ?: return
-        val destination = Position(targetX, targetY, targetZ)
-        context.behaviourManager.onPlayerStartMovement(player, destination)
     }
 }

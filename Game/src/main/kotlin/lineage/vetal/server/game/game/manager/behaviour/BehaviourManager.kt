@@ -33,7 +33,7 @@ class BehaviourManager(
         MovementValidation.validate(player, destination)
             .onSuccess {
                 startMoveToTask(player, destination, intention)
-                context.worldManager.broadCast(player.region, MoveToLocation(player, destination))
+                context.gameWorld.broadCast(player.region, MoveToLocation(player, destination))
             }.onError {
                 writeDebug(TAG, "Start move error -> $it")
             }

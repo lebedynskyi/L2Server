@@ -12,7 +12,7 @@ class SpawnManager(
         val spawnList = context.gameDatabase.spawnDao.getSpawnList()
         for (spawnData in spawnList) {
             val npc = context.objectFactory.createNpcObject(spawnData.npcTemplateId, spawnData.spawnPosition)
-            context.worldManager.onNpcAdded(npc)
+            context.gameWorld.onNpcAdded(npc)
         }
         writeInfo(TAG, "Loaded ${spawnList.size} NPC")
     }

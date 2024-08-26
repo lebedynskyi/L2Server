@@ -21,7 +21,7 @@ object BehaviourAttackUseCase {
         val target = currentIntention.data.target
         writeDebug(TAG, "${creature.name} attacks ${target.name}")
         val hit = Attack.Hit(target, 50, miss = false, crit = false, shield = false, useSS = false, ssGrade = 0)
-        context.worldManager.broadCast(creature.region, Attack(creature, listOf(hit)))
+        context.gameWorld.broadCast(creature.region, Attack(creature, listOf(hit)))
         attackData.lastTime = time
         attackData.nextTime = time + 1000
         return false

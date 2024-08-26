@@ -1,7 +1,5 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 
 class RequestAuthLogin : GamePacket() {
@@ -17,9 +15,5 @@ class RequestAuthLogin : GamePacket() {
         playKey1 = readD()
         loginKey1 = readD()
         loginKey2 = readD()
-    }
-
-    override fun executeImpl(client: GameClient, context: GameContext) {
-       context.gameLobby.requestAuthLogin(client, account, loginKey1, loginKey2, playKey1, playKey2)
     }
 }

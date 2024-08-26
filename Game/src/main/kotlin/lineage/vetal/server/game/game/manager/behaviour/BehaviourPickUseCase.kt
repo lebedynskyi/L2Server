@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 
 object BehaviourPickUseCase {
     fun onBehaviourPick(context: GameContext, creature: PlayerObject, currentIntention: Intention.PICK): Boolean {
-        context.itemManager.onPlayerPickUpItem(creature, currentIntention.itemObject)
+        context.requestItemHandler.onPlayerPickUpItem(creature, currentIntention.itemObject)
         return true
     }
 }

@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item.validation
+package lineage.vetal.server.game.game.handler.request.item.validation
 
 import lineage.vetal.server.game.game.Validation
 import lineage.vetal.server.game.game.ValidationError

@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.action
+package lineage.vetal.server.game.game.handler.request.action.usecase
 
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject

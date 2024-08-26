@@ -1,7 +1,5 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 
 
@@ -34,9 +32,5 @@ class RequestCreateCharacter : GamePacket() {
         hairStyle = readD()
         hairColor = readD()
         face = readD()
-    }
-
-    override fun executeImpl(client: GameClient, context: GameContext) {
-        context.gameLobby.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
     }
 }

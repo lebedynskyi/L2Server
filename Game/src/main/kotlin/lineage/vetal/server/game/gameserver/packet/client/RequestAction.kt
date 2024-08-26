@@ -1,18 +1,14 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.gameserver.GameClient
-import lineage.vetal.server.game.gameserver.packet.GamePacket
-import lineage.vetal.server.game.gameserver.packet.server.ActionFailed
 
-private const val TAG = "RequestAction"
+import lineage.vetal.server.game.gameserver.packet.GamePacket
 
 class RequestAction : GamePacket() {
-    private var actionObjectId: Int = 0
-    private var originX: Int = 0
-    private var originY: Int = 0
-    private var originZ: Int = 0
-    private var isShiftAction: Boolean = false
+    var actionObjectId: Int = 0
+    var originX: Int = 0
+    var originY: Int = 0
+    var originZ: Int = 0
+    var isShiftAction: Boolean = false
 
     override fun read() {
         actionObjectId = readD()
@@ -20,12 +16,5 @@ class RequestAction : GamePacket() {
         originY = readD()
         originZ = readD()
         isShiftAction = readC() != 0
-    }
-
-    override fun executeImpl(client: GameClient, context: GameContext) {
-        val player = client.player ?: return
-
-        context.actionManager.onPlayerAction(player, actionObjectId)
-        client.sendPacket(ActionFailed.STATIC_PACKET)
     }
 }

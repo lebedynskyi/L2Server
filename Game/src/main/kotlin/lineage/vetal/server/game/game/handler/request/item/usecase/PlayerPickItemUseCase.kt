@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.item.usecase
+package lineage.vetal.server.game.game.handler.request.item.usecase
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.item.ItemObject
@@ -28,7 +28,7 @@ object PlayerPickItemUseCase {
         }
 
         player.region.removeItem(item)
-        context.worldManager.broadCast(player.region, DeleteObject(item))
+        context.gameWorld.broadCast(player.region, DeleteObject(item))
         player.sendPacket(inventoryUpdate)
     }
 }

@@ -36,7 +36,7 @@ object BehaviourMoveToUseCase {
 
         // TODO where to put this logic
         if (creature is PlayerObject) {
-            context.worldManager.onPlayerPositionChanged(creature, creature.position)
+            context.gameWorld.onPlayerPositionChanged(creature, creature.position)
             writeDebug(TAG, "${creature.name} validate server pos=${creature.position}")
 //             TODO how often save position ?
 //            context.gameDatabase.charactersDao.updateCoordinates(creature.objectId, creature.position)

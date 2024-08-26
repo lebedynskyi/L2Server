@@ -1,23 +1,23 @@
-package lineage.vetal.server.game.game.manager.item
+package lineage.vetal.server.game.game.handler.request.item
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.manager.item.usecase.PlayerDropItemUseCase
-import lineage.vetal.server.game.game.manager.item.usecase.PlayerPickItemUseCase
-import lineage.vetal.server.game.game.manager.item.usecase.PlayerUseItemUseCase
+import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerDropItemUseCase
+import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerPickItemUseCase
+import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerUseItemUseCase
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.onError
 import lineage.vetal.server.game.game.onSuccess
-import lineage.vetal.server.game.game.manager.item.validation.DropItemValidation
-import lineage.vetal.server.game.game.manager.item.validation.PickUpValidation
-import lineage.vetal.server.game.game.manager.item.validation.PickUpValidationError
-import lineage.vetal.server.game.game.manager.item.validation.UseItemValidation
+import lineage.vetal.server.game.game.handler.request.item.validation.DropItemValidation
+import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidation
+import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidationError
+import lineage.vetal.server.game.game.handler.request.item.validation.UseItemValidation
 import lineage.vetal.server.game.game.model.intenttion.Intention
 
 private const val TAG = "ItemManager"
 
-class ItemManager(
+class RequestItemHandler(
     private val context: GameContext
 ) {
     fun onPlayerDropItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {

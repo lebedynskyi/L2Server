@@ -1,6 +1,10 @@
-package lineage.vetal.server.game.game.manager.action
+package lineage.vetal.server.game.game.handler.request.action
 
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.handler.request.action.usecase.InteractFailUseCase
+import lineage.vetal.server.game.game.handler.request.action.validation.InteractionValidation
+import lineage.vetal.server.game.game.handler.request.action.usecase.SelectTargetSuccessUseCase
+import lineage.vetal.server.game.game.handler.request.action.validation.SelectTargetValidation
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.onError
 import lineage.vetal.server.game.game.onSuccess
@@ -8,13 +12,13 @@ import lineage.vetal.server.game.gameserver.packet.server.TargetUnSelected
 
 private const val TAG = "ActionManager"
 
-class ActionManager(
+class RequestActionHandler(
     private val context: GameContext
 ) {
     fun onPlayerAction(player: PlayerObject, objectId: Int) {
         val item = player.region.getVisibleItem(objectId)
         if (item != null) {
-            context.itemManager.onPlayerPickUpItem(player, item)
+            context.requestItemHandler.onPlayerPickUpItem(player, item)
             return
         }
 
