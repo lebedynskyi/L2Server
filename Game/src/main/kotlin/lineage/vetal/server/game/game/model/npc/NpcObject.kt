@@ -5,13 +5,16 @@ import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.template.npc.NpcTemplate
 
-class NpcObject(
+open class NpcObject(
     objectId: Int,
-    override val template: NpcTemplate,
+    private val npcTemplate: NpcTemplate,
     override var position: SpawnPosition,
-    override val name: String = template.name,
+    override val name: String = npcTemplate.name,
     override val behaviour: NPCBehaviour = NPCBehaviour(),
-) : CreatureObject(objectId, behaviour, template, position) {
+) : CreatureObject(objectId, behaviour, npcTemplate, position) {
 
-    override val stats: NpcStatus = NpcStatus(template)
+    override val template: NpcTemplate = npcTemplate
+
+    override val stats: NpcStatus = NpcStatus(npcTemplate)
+    open val isAutoAttackable: Boolean = false
 }

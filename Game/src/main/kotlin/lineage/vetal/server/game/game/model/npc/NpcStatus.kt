@@ -6,5 +6,7 @@ import lineage.vetal.server.game.game.model.template.npc.NpcTemplate
 class NpcStatus(
     private val npcTemplate: NpcTemplate
 ) : CreatureStats(npcTemplate) {
-
+    init {
+        npcTemplate.idTemplate
+    }
 }

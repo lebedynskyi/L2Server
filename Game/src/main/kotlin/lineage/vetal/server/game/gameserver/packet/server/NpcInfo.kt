@@ -11,7 +11,7 @@ class NpcInfo(
     override fun write() {
         writeD(npc.objectId)
         writeD(npc.template.idTemplate + 1000000)
-        writeD(if (true) 1 else 0) // writeD(_isAttackable ? 1 : 0);
+        writeD(if (npc.isAutoAttackable) 1  else 0);
 
         writeD(npc.position.x)
         writeD(npc.position.y)

@@ -28,11 +28,12 @@ class ItemManager(
     }
 
     fun onPlayerUseItem(player: PlayerObject, objectId: Int, ctrlPressed: Boolean) {
-        UseItemValidation.validate(player, objectId, ctrlPressed).onSuccess {
-            PlayerUseItemUseCase.onPlayerUseItemSuccess(context, player, it, ctrlPressed)
-        }.onError {
-            PlayerUseItemUseCase.onPlayerUseItemFail(it)
-        }
+        UseItemValidation.validate(player, objectId, ctrlPressed)
+            .onSuccess {
+                PlayerUseItemUseCase.onPlayerUseItemSuccess(context, player, it, ctrlPressed)
+            }.onError {
+                PlayerUseItemUseCase.onPlayerUseItemFail(it)
+            }
     }
 
     fun onNpcDropItem() {

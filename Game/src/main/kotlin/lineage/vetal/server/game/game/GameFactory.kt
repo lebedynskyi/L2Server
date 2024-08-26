@@ -6,6 +6,7 @@ import lineage.vetal.server.game.game.model.item.ArmorObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.item.WeaponObject
+import lineage.vetal.server.game.game.model.npc.NpcMonsterObject
 import lineage.vetal.server.game.game.model.npc.NpcObject
 import lineage.vetal.server.game.game.model.player.Appearance
 import lineage.vetal.server.game.game.model.player.CharacterSex
@@ -80,7 +81,7 @@ class GameObjectFactory(
         hairStyle: Int, hairColor: Int, face: Int, sex: Byte, isNewbie: Boolean
     ): PlayerObject {
         val template =
-            charTemplates[templateId] ?: throw IllegalArgumentException("Cannot find char template for id $templateId")
+            charTemplates[templateId] ?: throw IllegalArgumentException("No char template for id $templateId")
         if (isNewbie && template.classBaseLevel > 1) {
             throw IllegalArgumentException("Cannot create newbie char for template $templateId")
         }
@@ -103,15 +104,18 @@ class GameObjectFactory(
     }
 
     fun createNpcObject(templateId: Int, position: SpawnPosition): NpcObject {
-        val template =
-            npcTemplates[templateId] ?: throw IllegalArgumentException("Cannot find NPC template for id $templateId")
+        val template = npcTemplates[templateId] ?: throw IllegalArgumentException("No NPC template for id $templateId")
         val objectId = idFactory.createId()
-        return NpcObject(objectId, template, position)
+        val npcType = template.type
+        return when (npcType) {
+            "Monster" -> NpcMonsterObject(objectId, template, position)
+            else -> NpcObject(objectId, template, position)
+        }
     }
 
     fun createItemObject(templateId: Int, count: Int = 1): ItemObject {
         val template =
-            itemTemplates[templateId] ?: throw IllegalArgumentException("Cannot find item template for id $templateId")
+            itemTemplates[templateId] ?: throw IllegalArgumentException("No item template for id $templateId")
         val objectId = idFactory.createId()
 
         return when (template) {

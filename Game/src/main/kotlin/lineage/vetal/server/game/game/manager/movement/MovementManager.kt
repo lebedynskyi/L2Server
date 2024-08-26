@@ -18,7 +18,7 @@ class MovementManager(
 ) {
     private val movementValidation = MovementValidation()
 
-    fun onPlayerStartMovement(player: PlayerObject, start: Position, destination: Position) {
+    fun onPlayerStartMovement(player: PlayerObject, destination: Position) {
         movementValidation.validate(player, destination)
             .onSuccess {
                 context.behaviourManager.moveTo(player, destination)

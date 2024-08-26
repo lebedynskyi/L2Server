@@ -17,7 +17,7 @@ inline fun <T, E : ValidationError> ValidationResult<T, E>.onSuccess(block: (T) 
     return this
 }
 
-fun <T, E : ValidationError> ValidationResult<T, E>.onError(block: (E) -> Unit): ValidationResult<T, E> {
+inline fun <T, E : ValidationError> ValidationResult<T, E>.onError(block: (E) -> Unit): ValidationResult<T, E> {
     if (this is Error) block.invoke(error)
     return this
 }

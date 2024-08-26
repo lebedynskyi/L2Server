@@ -53,6 +53,7 @@ class BridgeLobby(
         val serverId = client.serverInfo?.config?.id ?: -1
         val server = findServer(serverId)
         if (server != null) {
+            server.status?.isOnline = false
             writeInfo(TAG, "Server with id $serverId disconnected")
         } else {
             writeInfo(TAG, "Unknown server with id $serverId onClientDisconnected. Nothing to do")
