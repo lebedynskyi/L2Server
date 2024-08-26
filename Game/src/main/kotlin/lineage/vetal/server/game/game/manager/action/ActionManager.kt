@@ -11,19 +11,19 @@ private const val TAG = "ActionManager"
 class ActionManager(
     private val context: GameContext
 ) {
-    fun onPlayerAction(player: PlayerObject, objectId: Int, originX: Int, originY: Int, originZ: Int) {
-        val item = player.region.items[objectId]
+    fun onPlayerAction(player: PlayerObject, objectId: Int) {
+        val item = player.region.getVisibleItem(objectId)
         if (item != null) {
-            context.itemManager.onPlayerPickUpItem(player, item, originX, originY, originZ)
+            context.itemManager.onPlayerPickUpItem(player, item)
             return
         }
 
-        val actionTarget = player.region.npc[objectId] ?: player.region.players[objectId]
+        val actionTarget = player.region.getVisibleNpc(objectId) ?: player.region.getVisiblePlayer(objectId)
         if (actionTarget?.objectId == player.target?.objectId) {
             // interact with creature
             InteractionValidation.validate(player, actionTarget)
                 .onSuccess {
-                    InteractFailUseCase.onInteractionSuccess(player, actionTarget)
+                    InteractFailUseCase.onInteractionSuccess(context, player, it)
                 }.onError {
                     InteractFailUseCase.onInteractionError(context, player, it)
                 }

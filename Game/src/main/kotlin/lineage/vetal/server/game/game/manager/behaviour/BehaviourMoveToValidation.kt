@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.movement
+package lineage.vetal.server.game.game.manager.behaviour
 
 import lineage.vetal.server.game.game.Validation
 import lineage.vetal.server.game.game.ValidationError
@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.ValidationResult
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 
-class MovementValidation : Validation() {
+object MovementValidation : Validation() {
     fun validate(
         playerObject: PlayerObject,
         destination: Position

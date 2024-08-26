@@ -8,10 +8,8 @@ abstract class CreatureStats(
     private val template: CreatureTemplate
 ) {
     var isRunning = true
-
-    // Multipliers are used by game client ot display animation
-    fun getMovementSpeedMultiplier() = getMoveSpeed() / getBaseMoveSpeed().toDouble()
-    fun getAttackSpeedMultiplier() = 1.1 * getPAtkSpd() / template.basePAtkSpd
+    var curHp: Double = template.baseHpMax
+    var curMp: Double = template.baseMpMax
 
     // Stats
     open fun getINT() = template.baseINT
@@ -21,6 +19,10 @@ abstract class CreatureStats(
     open fun getDEX() = template.baseDEX
     open fun getWIT() = template.baseWIT
 
+    // Multipliers are used by game client ot display animation
+    fun getMovementSpeedMultiplier() = getMoveSpeed() / getBaseMoveSpeed().toDouble()
+    fun getAttackSpeedMultiplier() = 1.1 * getPAtkSpd() / template.basePAtkSpd
+
     open fun getBaseRunSpeed(): Int = template.baseRunSpeed
     open fun getBaseWalkSpeed(): Int = template.baseWalkSpeed
     open fun getBaseMoveSpeed(): Int = if (isRunning) getBaseRunSpeed() else getBaseWalkSpeed()
@@ -28,6 +30,14 @@ abstract class CreatureStats(
     // TODO list of hennas, Buffs, passive skills
 
     // -------------     Calculation zone    --------------
+    open fun getMaxHp(): Double {
+        return template.baseHpMax
+    }
+
+    open fun getMaxMp(): Double {
+        return template.baseMpMax
+    }
+
     open fun getMoveSpeed(): Double {
         return getBaseMoveSpeed().toDouble()
     }

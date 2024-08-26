@@ -1,9 +1,12 @@
 package lineage.vetal.server.game.gameserver
 
 import kotlinx.coroutines.*
+import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 import vetalll.server.sock.SelectorThread
+
+private const val TAG = "GameServer"
 
 class GameServer(
     private val context: GameContext
@@ -19,6 +22,12 @@ class GameServer(
 
     fun startServer() {
         gameSelector.startSelector()
+
+        gameCoroutineScope.launch {
+            gameSelector.connectionAcceptFlow.collect {
+                // TODO Introduce some game lobby. protection. Timer
+            }
+        }
 
         gameCoroutineScope.launch {
             gameSelector.connectionReadFlow.collect {

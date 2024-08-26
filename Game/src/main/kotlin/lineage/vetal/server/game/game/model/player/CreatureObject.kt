@@ -16,6 +16,8 @@ abstract class CreatureObject(
 ) : GameObject(objectId, position, template, behaviour) {
     abstract val stats: CreatureStats
 
+    open val isAutoAttackable: Boolean = false
+
     var title: String? = null
     var isInCombat: Boolean = false
     var isAlikeDead: Boolean = false

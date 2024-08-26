@@ -45,13 +45,14 @@ class PlayerObject(
     var allyId: Int = 0
     var allyCrestId: Int = 0
 
-    var isOnlineInt = 0
+    var isOnline = false
     var isIn7sDungeon = false
     var isInPartyMatchRoom = false
     var clanPrivileges = 0
 
     var isNoble = false
     var isHero = false
+    var isOnOlympiad = false
 
     var recLeft: Int = 0
     var recHave: Int = 0

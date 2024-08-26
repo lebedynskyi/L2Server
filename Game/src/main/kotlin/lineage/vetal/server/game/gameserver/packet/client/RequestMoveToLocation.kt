@@ -24,8 +24,7 @@ class RequestMoveToLocation : GamePacket() {
 
     override fun executeImpl(client: GameClient, context: GameContext) {
         val player = client.player ?: return
-        val startLocation = Position(startX, startY, startZ)
         val destination = Position(targetX, targetY, targetZ)
-        context.movementManager.onPlayerStartMovement(player, destination)
+        context.behaviourManager.onPlayerStartMovement(player, destination)
     }
 }

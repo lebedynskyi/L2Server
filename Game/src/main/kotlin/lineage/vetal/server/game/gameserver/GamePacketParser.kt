@@ -18,6 +18,7 @@ class GamePacketParser : SockPacketFactory {
             0x04 -> RequestAction()
             0x08 -> RequestAuthLogin()
             0x09 -> RequestQuit()
+            0x0a -> RequestAttack()
             0x0F -> RequestItemList()
             0x0e -> RequestCharacterTemplates()
             0x0b -> RequestCreateCharacter()

@@ -18,7 +18,7 @@ object InteractionValidation {
             return ValidationResult.Error(InteractionValidationError.PlayerDead)
         }
 
-        if (!MathUtils.isWithinRadius(player.position, actionTarget.position, 50.0)) {
+        if (!MathUtils.isWithinRadius(player.position, actionTarget.position, 100.0)) {
             return ValidationResult.Error(InteractionValidationError.ToFar(actionTarget))
         }
 

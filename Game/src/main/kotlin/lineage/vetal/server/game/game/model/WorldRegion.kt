@@ -40,7 +40,52 @@ data class WorldRegion(
     }
 
     override fun toString(): String {
-        return "Region ($tileX,$tileY). Players=${players.count()}, NPCs=${npc.count()}"
+        return "Region ($tileX,$tileY). Players=${players.count()}, NPCs=${npc.count()}, Items=${items.count()}"
+    }
+
+    fun getVisibleNpc(objectId: Int): NpcObject? {
+        var npc = npc[objectId]
+        if (npc != null) {
+            return npc
+        }
+
+        surround.forEach {
+            npc = it.npc[objectId]
+            if (npc != null) {
+                return npc
+            }
+        }
+        return null
+    }
+
+    fun getVisiblePlayer(objectId: Int): PlayerObject? {
+        var player = players[objectId]
+        if (player != null) {
+            return player
+        }
+
+        surround.forEach {
+            player = it.players[objectId]
+            if (player != null) {
+                return player
+            }
+        }
+        return null
+    }
+
+    fun getVisibleItem(objectId: Int): ItemObject? {
+        var item = items[objectId]
+        if (item != null) {
+            return item
+        }
+
+        surround.forEach {
+            item = it.items[objectId]
+            if (item != null) {
+                return item
+            }
+        }
+        return null
     }
 
     fun slice(another: WorldRegion): List<WorldRegion> {

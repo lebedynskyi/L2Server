@@ -39,7 +39,7 @@ object DropItemValidation : Validation() {
             return ValidationResult.Error(DropItemValidationError.PlayerAlikeDead)
         }
 
-        if (!MathUtils.isWithinRadius(player.position, Position(x, y, z), 50.0)) {
+        if (!MathUtils.isWithinRadius(player.position, Position(x, y, z), 100.0)) {
             return ValidationResult.Error(DropItemValidationError.ToFar)
         }
 

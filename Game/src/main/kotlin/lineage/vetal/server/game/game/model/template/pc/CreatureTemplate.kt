@@ -23,14 +23,9 @@ open class CreatureTemplate(set: StatSet) : GameObjectTemplate(set){
     val collisionRadius = set.getDouble("radius")
     val collisionHeight = set.getDouble("height")
 
-    private val _baseMpMax = set.getDouble("mp", 0.0)
-    private val _baseHpMax = set.getDouble("hp", 0.0)
+    val baseMpMax = set.getDouble("mp", 0.0)
+    val baseHpMax = set.getDouble("hp", 0.0)
 
-    open fun getBaseHpMax(level: Int): Double {
-        return _baseHpMax
-    }
-
-    open fun getBaseMpMax(level: Int): Double {
-        return _baseMpMax
-    }
+    open fun getBaseHpMax(level: Int) = baseMpMax
+    open fun getBaseMpMax(level: Int) = baseMpMax
 }

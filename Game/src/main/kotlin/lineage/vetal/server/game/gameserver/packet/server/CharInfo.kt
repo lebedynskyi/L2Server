@@ -120,7 +120,7 @@ class CharInfo(
         writeC(player.recLeft)
         writeH(player.recHave)
         writeD(player.template.charClass.ordinal)
-        writeD(player.stats.maxCp)
+        writeD(player.stats.getMaxCp().toInt())
         writeD(player.stats.curCp.toInt())
         writeC(if (player.stats.isMounted) 0 else player.enchantEffect)
         writeC(player.team.id)

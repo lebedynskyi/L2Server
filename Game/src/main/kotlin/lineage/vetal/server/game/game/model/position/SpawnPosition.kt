@@ -3,6 +3,7 @@ package lineage.vetal.server.game.game.model.position
 
 class SpawnPosition(
     x: Int, y: Int, z: Int,
+    @Deprecated("This field is deprecated. Should be part of position")
     val heading: Int = 0
 ) : Position(x, y, z) {
     constructor(pos: Position, heading: Int = 0) : this(pos.x, pos.y, pos.z, heading)

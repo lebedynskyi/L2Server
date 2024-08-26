@@ -16,5 +16,4 @@ open class NpcObject(
     override val template: NpcTemplate = npcTemplate
 
     override val stats: NpcStatus = NpcStatus(npcTemplate)
-    open val isAutoAttackable: Boolean = false
 }

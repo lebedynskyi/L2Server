@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.manager.item
 
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.manager.item.usecase.PlayerDropItemUseCase
 import lineage.vetal.server.game.game.manager.item.usecase.PlayerPickItemUseCase
@@ -9,7 +10,12 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.onError
 import lineage.vetal.server.game.game.onSuccess
 import lineage.vetal.server.game.game.manager.item.validation.DropItemValidation
+import lineage.vetal.server.game.game.manager.item.validation.PickUpValidation
+import lineage.vetal.server.game.game.manager.item.validation.PickUpValidationError
 import lineage.vetal.server.game.game.manager.item.validation.UseItemValidation
+import lineage.vetal.server.game.game.model.intenttion.Intention
+
+private const val TAG = "ItemManager"
 
 class ItemManager(
     private val context: GameContext
@@ -23,8 +29,20 @@ class ItemManager(
             }
     }
 
-    fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject, x: Int, y: Int, z: Int) {
-        PlayerPickItemUseCase.onPlayerPickUpItemSuccess(context, player, item, x, y, z)
+    fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject) {
+        PickUpValidation.validate(player, item).onSuccess {
+            PlayerPickItemUseCase.onPlayerPickUpItemSuccess(context, player, item)
+        }.onError {
+            when (it) {
+                is PickUpValidationError.ToFar -> {
+                    context.behaviourManager.onPlayerStartMovement(player, it.targetItem.position, Intention.PICK(it.targetItem))
+                }
+
+                else -> {
+                    writeDebug(TAG, "Not handle pickup fail with reason -> $it")
+                }
+            }
+        }
     }
 
     fun onPlayerUseItem(player: PlayerObject, objectId: Int, ctrlPressed: Boolean) {

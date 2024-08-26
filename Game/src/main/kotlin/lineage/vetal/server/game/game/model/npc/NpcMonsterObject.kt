@@ -9,5 +9,6 @@ class NpcMonsterObject(
     override var position: SpawnPosition,
     override val name: String = template.name,
 ) : NpcObject(objectId, template, position, name) {
+
     override val isAutoAttackable: Boolean = true
 }

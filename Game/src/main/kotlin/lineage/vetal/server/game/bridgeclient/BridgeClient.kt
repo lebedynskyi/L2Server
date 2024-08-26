@@ -6,6 +6,7 @@ import lineage.vetal.server.game.bridgeclient.packets.BridgeGamePacket
 import lineage.vetal.server.game.bridgeclient.packets.server.BridgeConnected
 import lineage.vetal.server.game.game.GameContext
 import vetalll.server.sock.SelectorThread
+import java.util.concurrent.TimeUnit
 
 class BridgeClient(
     private val context: GameContext
@@ -15,6 +16,7 @@ class BridgeClient(
         context.gameConfig.bridgeServer.hostname,
         context.gameConfig.bridgeServer.port,
         BridgeGameClientFactory(),
+        clientReconnectDelay = TimeUnit.SECONDS.toMillis(3),
         isServer = false,
         TAG = "BridgeClientSelector"
     )
