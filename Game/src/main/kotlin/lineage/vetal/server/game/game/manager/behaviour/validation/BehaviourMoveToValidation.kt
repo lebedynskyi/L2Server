@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.behaviour
+package lineage.vetal.server.game.game.manager.behaviour.validation
 
 import lineage.vetal.server.game.game.Validation
 import lineage.vetal.server.game.game.ValidationError
@@ -6,13 +6,13 @@ import lineage.vetal.server.game.game.ValidationResult
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 
-object MovementValidation : Validation() {
+class BehaviourMoveToValidation : Validation() {
     fun validate(
         playerObject: PlayerObject,
         destination: Position
-    ): ValidationResult<List<Position>, MovementValidationError> {
+    ): ValidationResult<List<Position>, BehaviourMoveToValidationError> {
         if (playerObject.stats.getMoveSpeed() <= 0) {
-            return ValidationResult.Error(MovementValidationError.DISABLED)
+            return ValidationResult.Error(BehaviourMoveToValidationError.DISABLED)
         }
 
         // TODO path finding, zones, buildings etc
@@ -20,7 +20,6 @@ object MovementValidation : Validation() {
     }
 }
 
-
-sealed class MovementValidationError : ValidationError {
-    data object DISABLED : MovementValidationError()
+sealed class BehaviourMoveToValidationError : ValidationError {
+    data object DISABLED : BehaviourMoveToValidationError()
 }

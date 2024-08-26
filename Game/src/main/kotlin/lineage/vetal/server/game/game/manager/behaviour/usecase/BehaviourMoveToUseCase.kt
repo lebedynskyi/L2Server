@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.behaviour
+package lineage.vetal.server.game.game.manager.behaviour.usecase
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
@@ -13,7 +13,7 @@ import kotlin.math.sqrt
 
 private const val TAG = "BehaviourMoveToUseCase"
 
-object BehaviourMoveToUseCase {
+class BehaviourMoveToUseCase {
     fun onBehaviourMoveTo(context: GameContext, creature: CreatureObject, intention: Intention.MOVE_TO): Boolean {
         return updatePosition(context, creature, intention.moveData)
     }

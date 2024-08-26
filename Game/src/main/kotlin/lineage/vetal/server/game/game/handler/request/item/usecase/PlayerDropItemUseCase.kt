@@ -10,7 +10,7 @@ import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.ValidationError
 import lineage.vetal.server.game.gameserver.packet.server.*
 
-object PlayerDropItemUseCase {
+class PlayerDropItemUseCase {
     fun onDropItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject, count: Int, x: Int, y: Int, z: Int) {
         var itemToDrop = item
         val inventoryPacket = InventoryUpdate()

@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.lobby
+package lineage.vetal.server.game.game.manager
 
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.RegisteredServer
@@ -17,7 +17,7 @@ import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
 
-private const val TAG = "GameLobby"
+private const val TAG = "GameLobbyManager"
 
 class GameLobbyManager(
     private val context: GameContext,

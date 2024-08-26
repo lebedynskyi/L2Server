@@ -2,6 +2,7 @@ package lineage.vetal.server.game.game.handler.request.action
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.handler.request.action.usecase.InteractFailUseCase
+import lineage.vetal.server.game.game.handler.request.action.usecase.InteractSuccessUseCase
 import lineage.vetal.server.game.game.handler.request.action.validation.InteractionValidation
 import lineage.vetal.server.game.game.handler.request.action.usecase.SelectTargetSuccessUseCase
 import lineage.vetal.server.game.game.handler.request.action.validation.SelectTargetValidation
@@ -10,10 +11,15 @@ import lineage.vetal.server.game.game.onError
 import lineage.vetal.server.game.game.onSuccess
 import lineage.vetal.server.game.gameserver.packet.server.TargetUnSelected
 
-private const val TAG = "ActionManager"
+private const val TAG = "RequestActionHandler"
 
 class RequestActionHandler(
-    private val context: GameContext
+    private val context: GameContext,
+    private val interactionValidation: InteractionValidation = InteractionValidation(),
+    private val selectTargetValidation: SelectTargetValidation = SelectTargetValidation(),
+    private val interactFailUseCase: InteractFailUseCase = InteractFailUseCase(),
+    private val interactSuccessUseCase: InteractSuccessUseCase = InteractSuccessUseCase(),
+    private val selectTargetSuccessUseCase: SelectTargetSuccessUseCase = SelectTargetSuccessUseCase(),
 ) {
     fun onPlayerAction(player: PlayerObject, objectId: Int) {
         val item = player.region.getVisibleItem(objectId)
@@ -25,16 +31,16 @@ class RequestActionHandler(
         val actionTarget = player.region.getVisibleNpc(objectId) ?: player.region.getVisiblePlayer(objectId)
         if (actionTarget?.objectId == player.target?.objectId) {
             // interact with creature
-            InteractionValidation.validate(player, actionTarget)
+            interactionValidation.validate(player, actionTarget)
                 .onSuccess {
-                    InteractFailUseCase.onInteractionSuccess(context, player, it)
+                    interactFailUseCase.onInteractionSuccess(context, player, it)
                 }.onError {
-                    InteractFailUseCase.onInteractionError(context, player, it)
+                    interactFailUseCase.onInteractionError(context, player, it)
                 }
         } else {
-            SelectTargetValidation.validate(player, actionTarget)
+            selectTargetValidation.validate(player, actionTarget)
                 .onSuccess {
-                    SelectTargetSuccessUseCase.onSelectTargetSuccess(player, it)
+                    selectTargetSuccessUseCase.onSelectTargetSuccess(player, it)
                 }
         }
     }

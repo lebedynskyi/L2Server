@@ -10,7 +10,7 @@ import lineage.vetal.server.game.game.handler.request.action.RequestActionHandle
 import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
 import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
-import lineage.vetal.server.game.game.manager.lobby.GameLobbyManager
+import lineage.vetal.server.game.game.manager.GameLobbyManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.spawn.SpawnManager
 import lineage.vetal.server.game.game.task.ScheduleTaskManager

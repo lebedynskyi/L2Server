@@ -2,6 +2,10 @@ package lineage.vetal.server.game.game.manager.behaviour
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourAttackUseCase
+import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourMoveToUseCase
+import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourPickUseCase
+import lineage.vetal.server.game.game.manager.behaviour.validation.BehaviourMoveToValidation
 import lineage.vetal.server.game.game.model.behaviour.CreatureBehaviour
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
@@ -16,7 +20,11 @@ import java.util.concurrent.ConcurrentHashMap
 private const val TAG = "BehaviourManager"
 
 class BehaviourManager(
-    private val context: GameContext
+    private val context: GameContext,
+    private val behaviourAttackUseCase: BehaviourAttackUseCase = BehaviourAttackUseCase(),
+    private val behaviourMoveToUseCase: BehaviourMoveToUseCase = BehaviourMoveToUseCase(),
+    private val behaviourMoveToValidation: BehaviourMoveToValidation = BehaviourMoveToValidation(),
+    private val behaviourPickUseCase: BehaviourPickUseCase = BehaviourPickUseCase(),
 ) {
     private val activeCreatures: ConcurrentHashMap<Int, CreatureObject> = ConcurrentHashMap<Int, CreatureObject>()
 
@@ -30,7 +38,7 @@ class BehaviourManager(
     }
 
     fun onPlayerStartMovement(player: PlayerObject, destination: Position, intention: Intention? = null) {
-        MovementValidation.validate(player, destination)
+        behaviourMoveToValidation.validate(player, destination)
             .onSuccess {
                 startMoveToTask(player, destination, intention)
                 context.gameWorld.broadCast(player.region, MoveToLocation(player, destination))
@@ -56,11 +64,11 @@ class BehaviourManager(
         return when (val currentIntention = behaviour.current) {
             is Intention.ACTIVE -> false
             is Intention.REST -> false
-            is Intention.MOVE_TO -> BehaviourMoveToUseCase.onBehaviourMoveTo(context, creature, currentIntention)
+            is Intention.MOVE_TO -> behaviourMoveToUseCase.onBehaviourMoveTo(context, creature, currentIntention)
             is Intention.CAST -> false
-            // TODO cast workround
-            is Intention.PICK -> BehaviourPickUseCase.onBehaviourPick(context, creature as PlayerObject, currentIntention)
-            is Intention.ATTACK -> BehaviourAttackUseCase.onBehaviourAttack(context, creature, currentIntention)
+            // TODO cast workround. Neeed investigate somehow
+            is Intention.PICK -> behaviourPickUseCase.onBehaviourPick(context, creature as PlayerObject, currentIntention)
+            is Intention.ATTACK -> behaviourAttackUseCase.onBehaviourAttack(context, creature, currentIntention)
             is Intention.FOLLOW -> false
             is Intention.INTERACT -> false
             is Intention.MOVE_TO_IN_A_BOAT -> false

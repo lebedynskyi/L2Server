@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.server.CreatureSay
 
-private const val TAG = "ChatManager"
+private const val TAG = "RequestChatHandler"
 
 class RequestChatHandler(
     private val context: GameContext,

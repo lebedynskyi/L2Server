@@ -12,7 +12,7 @@ import lineage.vetal.server.game.gameserver.packet.server.UserInfo
 
 private const val TAG = "PlayerUseItemUseCase"
 
-object PlayerUseItemUseCase {
+class PlayerUseItemUseCase {
     fun onPlayerUseItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject, ctrlPressed: Boolean) {
         when (item) {
             is EquipmentObject -> {

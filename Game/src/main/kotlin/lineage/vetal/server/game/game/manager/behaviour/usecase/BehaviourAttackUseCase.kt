@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.behaviour
+package lineage.vetal.server.game.game.manager.behaviour.usecase
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
@@ -8,7 +8,7 @@ import lineage.vetal.server.game.gameserver.packet.server.Attack
 
 private const val TAG = "BehaviourAttackUseCase"
 
-object BehaviourAttackUseCase {
+class BehaviourAttackUseCase {
     fun onBehaviourAttack(context: GameContext, creature: CreatureObject, currentIntention: Intention.ATTACK): Boolean {
         val attackData = currentIntention.data
         val time = context.clock.millis()

@@ -9,7 +9,6 @@ import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GamePacket
 import lineage.vetal.server.game.gameserver.packet.client.*
 import lineage.vetal.server.game.gameserver.packet.server.ActionFailed
-import lineage.vetal.server.game.gameserver.packet.server.NewCharacterSuccess
 import lineage.vetal.server.game.gameserver.packet.server.QuestList
 
 private const val TAG = "PacketHandler"

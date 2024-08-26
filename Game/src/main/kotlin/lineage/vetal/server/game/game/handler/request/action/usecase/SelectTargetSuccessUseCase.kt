@@ -6,7 +6,7 @@ import lineage.vetal.server.game.gameserver.packet.server.StatusAttribute
 import lineage.vetal.server.game.gameserver.packet.server.StatusUpdate
 import lineage.vetal.server.game.gameserver.packet.server.TargetSelected
 
-object SelectTargetSuccessUseCase {
+class SelectTargetSuccessUseCase {
     fun onSelectTargetSuccess(player: PlayerObject, actionTarget: CreatureObject) {
         player.target = actionTarget
         val playerPos = player.position

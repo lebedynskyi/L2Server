@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.utils.MathUtils
 
-object InteractionValidation {
+class InteractionValidation {
     fun validate(
         player: PlayerObject,
         actionTarget: CreatureObject?

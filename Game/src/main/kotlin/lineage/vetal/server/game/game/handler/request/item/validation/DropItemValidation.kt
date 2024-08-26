@@ -8,7 +8,7 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.utils.MathUtils
 
-object DropItemValidation : Validation() {
+class DropItemValidation : Validation() {
     fun validate(
         player: PlayerObject,
         objectId: Int,

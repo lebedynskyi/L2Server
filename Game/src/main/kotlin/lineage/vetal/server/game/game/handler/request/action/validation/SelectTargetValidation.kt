@@ -6,8 +6,7 @@ import lineage.vetal.server.game.game.ValidationResult
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
-
-object SelectTargetValidation : Validation() {
+class SelectTargetValidation : Validation() {
     fun validate(player: PlayerObject, requestedTarget: CreatureObject?): ValidationResult<CreatureObject, SelectTargetValidationError> {
         if (requestedTarget == null) {
             return ValidationResult.Error(SelectTargetValidationError.NotExist)

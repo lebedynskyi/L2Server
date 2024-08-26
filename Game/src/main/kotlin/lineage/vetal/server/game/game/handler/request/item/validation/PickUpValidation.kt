@@ -6,7 +6,7 @@ import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.utils.MathUtils
 
-object PickUpValidation {
+class PickUpValidation {
     fun validate(
         playerObject: CreatureObject,
         itemObject: ItemObject?

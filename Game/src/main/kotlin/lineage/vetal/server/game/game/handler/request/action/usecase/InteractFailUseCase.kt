@@ -12,38 +12,36 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 private const val TAG = "InteractFailUseCase"
 
 class InteractFailUseCase {
-    companion object {
-        fun onInteractionError(
-            context: GameContext,
-            player: PlayerObject,
-            reason: InteractionValidationError
-        ) {
-            when (reason) {
-                is InteractionValidationError.PlayerDead -> {}
-                is InteractionValidationError.ToFar -> {
-                    val intention = if (reason.target.isAutoAttackable) {
-                        Intention.ATTACK(AttackData(reason.target))
-                    } else {
-                        Intention.INTERACT(TargetData(reason.target))
-                    }
-
-                    context.behaviourManager.onPlayerStartMovement(player, reason.target.position, intention)
+    fun onInteractionError(
+        context: GameContext,
+        player: PlayerObject,
+        reason: InteractionValidationError
+    ) {
+        when (reason) {
+            is InteractionValidationError.PlayerDead -> {}
+            is InteractionValidationError.ToFar -> {
+                val intention = if (reason.target.isAutoAttackable) {
+                    Intention.ATTACK(AttackData(reason.target))
+                } else {
+                    Intention.INTERACT(TargetData(reason.target))
                 }
 
-                else -> {
-                    writeError(TAG, "Not handling onInteractionError with reason $reason")
-                }
-            }
-        }
-
-        fun onInteractionSuccess(context: GameContext, player: PlayerObject, actionTarget: CreatureObject) {
-            val intention = if (actionTarget.isAutoAttackable) {
-                Intention.ATTACK(AttackData(actionTarget, context.clock.millis()))
-            } else {
-                Intention.INTERACT(TargetData(actionTarget, context.clock.millis()))
+                context.behaviourManager.onPlayerStartMovement(player, reason.target.position, intention)
             }
 
-            context.behaviourManager.onPlayerIntention(player, intention)
+            else -> {
+                writeError(TAG, "Not handling onInteractionError with reason $reason")
+            }
         }
+    }
+
+    fun onInteractionSuccess(context: GameContext, player: PlayerObject, actionTarget: CreatureObject) {
+        val intention = if (actionTarget.isAutoAttackable) {
+            Intention.ATTACK(AttackData(actionTarget, context.clock.millis()))
+        } else {
+            Intention.INTERACT(TargetData(actionTarget, context.clock.millis()))
+        }
+
+        context.behaviourManager.onPlayerIntention(player, intention)
     }
 }
