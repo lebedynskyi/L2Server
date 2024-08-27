@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.spawn
+package lineage.vetal.server.game.game.handler.tick.spawn
 
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.GameContext

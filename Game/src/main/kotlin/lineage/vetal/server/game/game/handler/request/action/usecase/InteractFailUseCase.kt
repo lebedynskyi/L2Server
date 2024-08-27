@@ -34,14 +34,4 @@ class InteractFailUseCase {
             }
         }
     }
-
-    fun onInteractionSuccess(context: GameContext, player: PlayerObject, actionTarget: CreatureObject) {
-        val intention = if (actionTarget.isAutoAttackable) {
-            Intention.ATTACK(AttackData(actionTarget, context.clock.millis()))
-        } else {
-            Intention.INTERACT(TargetData(actionTarget, context.clock.millis()))
-        }
-
-        context.behaviourManager.onPlayerIntention(player, intention)
-    }
 }

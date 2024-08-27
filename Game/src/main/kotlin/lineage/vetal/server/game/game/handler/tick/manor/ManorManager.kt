@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.manor
+package lineage.vetal.server.game.game.handler.tick.manor
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.PlayerObject

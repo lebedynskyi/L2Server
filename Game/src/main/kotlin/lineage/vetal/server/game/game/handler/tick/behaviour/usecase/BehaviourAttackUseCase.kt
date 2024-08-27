@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.manager.behaviour.usecase
+package lineage.vetal.server.game.game.handler.tick.behaviour.usecase
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext

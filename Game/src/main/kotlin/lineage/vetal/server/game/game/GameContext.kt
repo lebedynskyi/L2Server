@@ -7,12 +7,12 @@ import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.ConfigGame
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.handler.request.action.RequestActionHandler
-import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
+import lineage.vetal.server.game.game.handler.tick.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
 import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
-import lineage.vetal.server.game.game.manager.GameLobbyManager
-import lineage.vetal.server.game.game.manager.manor.ManorManager
-import lineage.vetal.server.game.game.manager.spawn.SpawnManager
+import lineage.vetal.server.game.game.handler.tick.GameLobbyManager
+import lineage.vetal.server.game.game.handler.tick.manor.ManorManager
+import lineage.vetal.server.game.game.handler.tick.spawn.SpawnManager
 import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import lineage.vetal.server.game.game.task.TickTaskManager
 import lineage.vetal.server.game.game.task.tick.DeleteItemOnGroundTickTask

@@ -47,6 +47,11 @@ class PacketHandler(
                     }
 
                     when (this) {
+                        is RequestEnterWorld -> {
+                            //TODO what ?
+                            context.gameWorld.onPlayerEnterWorld(client, player)
+                        }
+
                         is RequestAction -> {
                             context.requestActionHandler.onPlayerAction(player, actionObjectId)
                             client.sendPacket(ActionFailed.STATIC_PACKET)
@@ -63,11 +68,6 @@ class PacketHandler(
 
                         is RequestDropItem -> {
                             context.requestItemHandler.onPlayerDropItem(player, objectId, count, x, y, z)
-                        }
-
-                        is RequestEnterWorld -> {
-                            //TODO what ?
-                            context.gameWorld.onPlayerEnterWorld(client, player)
                         }
 
                         is RequestItemList -> {
@@ -96,7 +96,7 @@ class PacketHandler(
                         }
 
                         is RequestSay2 -> {
-                            context.requestChatHandler.playerSay(client, text, typeId, targetName)
+                            context.requestChatHandler.playerSay(player, text, typeId, targetName)
                         }
 
                         is RequestUseItem -> {

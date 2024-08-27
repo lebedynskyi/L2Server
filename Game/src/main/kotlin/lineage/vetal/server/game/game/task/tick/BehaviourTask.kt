@@ -1,6 +1,6 @@
 package lineage.vetal.server.game.game.task.tick
 
-import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
+import lineage.vetal.server.game.game.handler.tick.behaviour.BehaviourManager
 import java.time.Clock
 
 class BehaviourTask(

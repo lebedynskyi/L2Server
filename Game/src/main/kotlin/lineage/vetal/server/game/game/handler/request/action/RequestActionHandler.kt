@@ -33,7 +33,7 @@ class RequestActionHandler(
             // interact with creature
             interactionValidation.validate(player, actionTarget)
                 .onSuccess {
-                    interactFailUseCase.onInteractionSuccess(context, player, it)
+                    interactSuccessUseCase.onInteractionSuccess(context, player, it)
                 }.onError {
                     interactFailUseCase.onInteractionError(context, player, it)
                 }

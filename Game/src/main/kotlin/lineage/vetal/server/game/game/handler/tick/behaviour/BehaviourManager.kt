@@ -1,11 +1,11 @@
-package lineage.vetal.server.game.game.manager.behaviour
+package lineage.vetal.server.game.game.handler.tick.behaviour
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourAttackUseCase
-import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourMoveToUseCase
-import lineage.vetal.server.game.game.manager.behaviour.usecase.BehaviourPickUseCase
-import lineage.vetal.server.game.game.manager.behaviour.validation.BehaviourMoveToValidation
+import lineage.vetal.server.game.game.handler.tick.behaviour.usecase.BehaviourAttackUseCase
+import lineage.vetal.server.game.game.handler.tick.behaviour.usecase.BehaviourMoveToUseCase
+import lineage.vetal.server.game.game.handler.tick.behaviour.usecase.BehaviourPickUseCase
+import lineage.vetal.server.game.game.handler.tick.behaviour.validation.BehaviourMoveToValidation
 import lineage.vetal.server.game.game.model.behaviour.CreatureBehaviour
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
