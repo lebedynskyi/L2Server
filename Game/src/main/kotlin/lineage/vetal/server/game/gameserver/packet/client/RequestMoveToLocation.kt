@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestMoveToLocation : GamePacket() {
+class RequestMoveToLocation : GameClientPacket() {
     var targetX = 0
     var targetY = 0
     var targetZ = 0

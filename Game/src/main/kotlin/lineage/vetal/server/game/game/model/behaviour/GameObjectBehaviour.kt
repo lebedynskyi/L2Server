@@ -15,7 +15,7 @@ abstract class GameObjectBehaviour {
     }
 
     open fun setNextIntention(intention: Intention?) {
-        if ((current == Intention.IDLE || current == Intention.ACTIVE) && intention != null) {
+        if ((current == Intention.IDLE) && intention != null) {
             current = intention
         } else {
             next = intention

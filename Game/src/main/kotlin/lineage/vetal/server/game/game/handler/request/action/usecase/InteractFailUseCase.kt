@@ -6,7 +6,6 @@ import lineage.vetal.server.game.game.handler.request.action.validation.Interact
 import lineage.vetal.server.game.game.model.behaviour.data.AttackData
 import lineage.vetal.server.game.game.model.behaviour.data.TargetData
 import lineage.vetal.server.game.game.model.intenttion.Intention
-import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
 private const val TAG = "InteractFailUseCase"
@@ -26,7 +25,7 @@ class InteractFailUseCase {
                     Intention.INTERACT(TargetData(reason.target))
                 }
 
-                context.behaviourManager.onPlayerStartMovement(player, reason.target.position, intention)
+                context.movementManager.startMoveToTask(player, reason.target.position, intention)
             }
 
             else -> {

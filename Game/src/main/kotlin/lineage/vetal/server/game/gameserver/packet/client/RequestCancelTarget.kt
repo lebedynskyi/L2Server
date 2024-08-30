@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestCancelTarget : GamePacket() {
+class RequestCancelTarget : GameClientPacket() {
     var unselect = 0
 
     override fun read() {

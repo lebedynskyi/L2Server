@@ -1,15 +1,16 @@
-package lineage.vetal.server.game.game.handler.tick.manor
+package lineage.vetal.server.game.game.manager.manor
 
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.PlayerObject
+import lineage.vetal.server.game.game.task.TickTask
 import lineage.vetal.server.game.gameserver.packet.server.ManorList
 
 private const val TAG = "ManorManager"
 
 class ManorManager(
     private val context: GameContext
-) {
-    val manorList: Array<String> get() = MANORS
+) : TickTask() {
+    private val manorList: Array<String> get() = MANORS
 
     fun onPlayerRequestList(player: PlayerObject) {
         player.sendPacket(ManorList(manorList))

@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.handler.tick
+package lineage.vetal.server.game.game.handler.request
 
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.RegisteredServer
@@ -19,7 +19,7 @@ import lineage.vetal.server.game.gameserver.packet.server.*
 
 private const val TAG = "GameLobbyManager"
 
-class GameLobbyManager(
+class AuthRequestHandler(
     private val context: GameContext,
 ) {
     private val playerNameRegex = "^[a-zA-Z0-9]{3,16}$".toRegex()
@@ -31,7 +31,7 @@ class GameLobbyManager(
         val serverStatus = ServerStatus(
             context.gameConfig.serverInfo.id,
             context.gameWorld.players.size,
-            true,
+            isOnline = true,
             context.gameConfig.serverInfo.ip
         )
 
@@ -49,6 +49,14 @@ class GameLobbyManager(
         }
 
         client.sendPacket(RequestAuth(serverStatus))
+    }
+
+    fun onPlayerConnected(client: GameClient) {
+        writeError(TAG, "onPlayerConnected not implemented")
+    }
+
+    fun onPlayerDisconnected(client: GameClient) {
+        writeError(TAG, "onPlayerDisconnected not implemented")
     }
 
     fun requestAuthLogin(
@@ -177,16 +185,13 @@ class GameLobbyManager(
     fun requestSelectChar(client: GameClient, slotIndex: Int) {
         val slot = client.characterSlots.getOrNull(slotIndex)
         if (slot == null) {
-            writeError(TAG, "Unable to select character for account ${client.account.account}")
+            writeError(TAG, "Unable to select character for account ${client.account.account}. No slot found")
             client.saveAndClose()
             return
         }
 
         if (client.player != null) {
-            writeError(
-                TAG,
-                "Unable to select character for account ${client.account.account}. Player is already attached"
-            )
+            writeError(TAG, "Unable to select character for account ${client.account.account}. Player is already attached")
             return
         }
 

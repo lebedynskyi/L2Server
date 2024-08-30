@@ -1,7 +1,7 @@
-package lineage.vetal.server.game.game
+package lineage.vetal.server.game.game.validation
 
-import lineage.vetal.server.game.game.ValidationResult.Error
-import lineage.vetal.server.game.game.ValidationResult.Success
+import lineage.vetal.server.game.game.validation.ValidationResult.Error
+import lineage.vetal.server.game.game.validation.ValidationResult.Success
 
 abstract class Validation
 

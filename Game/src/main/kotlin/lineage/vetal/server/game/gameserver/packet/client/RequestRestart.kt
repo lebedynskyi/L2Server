@@ -1,5 +1,5 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestRestart : GamePacket()
+class RequestRestart : GameClientPacket()

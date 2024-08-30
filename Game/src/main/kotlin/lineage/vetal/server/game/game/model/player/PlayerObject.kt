@@ -1,7 +1,6 @@
 package lineage.vetal.server.game.game.model.player
 
 import lineage.vetal.server.game.game.model.behaviour.PlayerBehaviour
-import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.player.status.PlayerStatus
 import lineage.vetal.server.game.game.model.template.pc.CharTemplate
@@ -19,7 +18,6 @@ class PlayerObject(
     override var position: SpawnPosition,
     override val behaviour: PlayerBehaviour = PlayerBehaviour(),
 ) : Playable(objectId, position, template, behaviour) {
-    lateinit var inventory: WearableInventory
 
     override var stats: PlayerStatus = PlayerStatus(template)
 

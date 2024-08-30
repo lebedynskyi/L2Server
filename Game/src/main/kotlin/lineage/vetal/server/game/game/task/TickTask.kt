@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.task.tick
+package lineage.vetal.server.game.game.task
 
 import java.time.Clock
 import java.util.UUID

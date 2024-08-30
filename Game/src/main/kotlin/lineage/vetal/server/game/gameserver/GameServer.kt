@@ -1,21 +1,23 @@
 package lineage.vetal.server.game.gameserver
 
 import kotlinx.coroutines.*
-import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.ConfigGameServer
 import lineage.vetal.server.game.game.handler.PacketHandler
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
+import lineage.vetal.server.game.gameserver.packet.client.Connected
+import lineage.vetal.server.game.gameserver.packet.client.Disconnected
 import vetalll.server.sock.SelectorThread
 
 private const val TAG = "GameServer"
 
 class GameServer(
-    private val context: GameContext,
+    gameConfig: ConfigGameServer,
     private val packetHandler: PacketHandler
 ) {
     private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
     private val gameSelector: SelectorThread<GameClient> = SelectorThread(
-        context.gameConfig.serverInfo.ip,
-        context.gameConfig.serverInfo.port,
+        gameConfig.serverInfo.ip,
+        gameConfig.serverInfo.port,
         GameClientFactory(),
         isServer = true,
         TAG = "GameServerSelector"
@@ -26,23 +28,21 @@ class GameServer(
 
         gameCoroutineScope.launch {
             gameSelector.connectionAcceptFlow.collect {
-                // TODO Introduce some game lobby. protection. Timer
+               packetHandler.handlePacket(it, Connected)
             }
         }
 
         gameCoroutineScope.launch {
             gameSelector.connectionReadFlow.collect {
                 val client = it.first
-                val packet = it.second as GamePacket?
+                val packet = it.second as GameClientPacket
                 packetHandler.handlePacket(client, packet)
             }
         }
 
         gameCoroutineScope.launch {
             gameSelector.connectionCloseFlow.collect { client ->
-                client.player?.let {
-                    context.gameWorld.onPlayerQuit(client, it)
-                }
+                packetHandler.handlePacket(client, Disconnected)
             }
         }
     }

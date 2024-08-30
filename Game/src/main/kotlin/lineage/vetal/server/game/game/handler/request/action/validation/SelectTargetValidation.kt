@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.game.handler.request.action.validation
 
-import lineage.vetal.server.game.game.Validation
-import lineage.vetal.server.game.game.ValidationError
-import lineage.vetal.server.game.game.ValidationResult
+import lineage.vetal.server.game.game.validation.Validation
+import lineage.vetal.server.game.game.validation.ValidationError
+import lineage.vetal.server.game.game.validation.ValidationResult
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
@@ -20,7 +20,7 @@ class SelectTargetValidation : Validation() {
     }
 }
 
-sealed class SelectTargetValidationError : ValidationError {
-    data object NotExist: SelectTargetValidationError()
-    data object PlayerDead: SelectTargetValidationError()
+sealed interface SelectTargetValidationError : ValidationError {
+    data object NotExist: SelectTargetValidationError
+    data object PlayerDead: SelectTargetValidationError
 }

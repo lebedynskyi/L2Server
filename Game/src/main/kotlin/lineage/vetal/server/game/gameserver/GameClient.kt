@@ -26,11 +26,7 @@ class GameClient(
     }
 
     override fun saveAndClose(reason: WriteablePacket?) {
-        if (reason == null) {
-            super.saveAndClose(ServerClose.STATIC_PACKET)
-        } else {
-            super.saveAndClose(reason)
-        }
+        super.saveAndClose(reason ?: ServerClose.STATIC_PACKET)
     }
 }
 

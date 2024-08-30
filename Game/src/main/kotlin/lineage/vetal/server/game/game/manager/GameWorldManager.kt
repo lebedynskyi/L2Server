@@ -1,8 +1,9 @@
-package lineage.vetal.server.game.game
+package lineage.vetal.server.game.game.manager
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
+import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.WorldRegion
 import lineage.vetal.server.game.game.model.npc.NpcObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
@@ -35,7 +36,7 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 
 private const val TAG = "WorldManager"
 
-class GameWorld(
+class GameWorldManager(
     private val context: GameContext
 ) {
     val players: List<PlayerObject> get() = regions.flatten().map { it.players.values }.flatten()
@@ -67,10 +68,14 @@ class GameWorld(
         player.stats.isRunning = true
         player.region = region
 
+        // could be done by another managers..
         player.sendPacket(UserInfo(player))
-        player.sendPacket(InventoryList(player.inventory.items, true))
+        context.requestItemHandler.onPlayerRequestInventory(player)
+        player.sendPacket(QuestList())
+
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
 
+        // TODO move to function to use it here.. visiblePlayers, visibleItems etc.
         player.sendPacket(region.surround.map { it.players.values }.flatten().plus(region.players.values).map { CharInfo(it) })
         player.sendPacket(region.surround.map { it.npc.values }.flatten().plus(region.npc.values).map { NpcInfo(it) })
         player.sendPacket(region.surround.map { it.items.values }.flatten().plus(region.items.values).map { SpawnItem(it) })
@@ -92,7 +97,7 @@ class GameWorld(
 
         client.clientState = GameClientState.LOBBY
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
-        context.gameLobby.onCharSlotSelection(client)
+        context.authHandler.onCharSlotSelection(client)
     }
 
     fun onPlayerQuit(client: GameClient, player: PlayerObject) {

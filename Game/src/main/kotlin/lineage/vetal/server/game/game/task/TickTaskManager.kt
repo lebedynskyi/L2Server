@@ -1,9 +1,7 @@
 package lineage.vetal.server.game.game.task
 
 import kotlinx.coroutines.*
-import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.core.utils.logs.writeInfo
-import lineage.vetal.server.game.game.task.tick.TickTask
 import java.time.Clock
 import java.util.UUID
 
@@ -16,7 +14,7 @@ class TickTaskManager(
     private val scope = CoroutineScope(dispatcher + Job())
     private val tasks = mutableMapOf<UUID, Job>()
 
-    fun register(task: TickTask, period: Long, delay: Long = 0) {
+    fun register(task: TickTask, period: Long, delay: Long = period) {
         writeInfo(TAG, "Registered a task '${task::class.java.name}' with period $period and delayed by $delay")
 
         val job = scope.launch {

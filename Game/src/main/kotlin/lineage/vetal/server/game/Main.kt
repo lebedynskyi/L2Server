@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 
     writeSection("Servers")
     writeInfo(TAG, "Start Game client server")
-    GameServer(gameContext, gamePacketHandler).startServer()
+    GameServer(gameContext.gameConfig, gamePacketHandler).startServer()
 
     writeInfo(TAG, "Start Bridge client")
     BridgeClient(gameContext).startClient()

@@ -4,20 +4,21 @@ import kotlinx.coroutines.Dispatchers
 import lineage.vetal.server.core.db.HikariDBConnection
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
-import lineage.vetal.server.game.ConfigGame
+import lineage.vetal.server.game.ConfigGameServer
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.handler.request.action.RequestActionHandler
-import lineage.vetal.server.game.game.handler.tick.behaviour.BehaviourManager
+import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
 import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
-import lineage.vetal.server.game.game.handler.tick.GameLobbyManager
-import lineage.vetal.server.game.game.handler.tick.manor.ManorManager
-import lineage.vetal.server.game.game.handler.tick.spawn.SpawnManager
-import lineage.vetal.server.game.game.task.ScheduleTaskManager
+import lineage.vetal.server.game.game.handler.request.AuthRequestHandler
+import lineage.vetal.server.game.game.handler.request.movement.RequestMovementHandler
+import lineage.vetal.server.game.game.manager.AnnounceManager
+import lineage.vetal.server.game.game.manager.GameWorldManager
+import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
+import lineage.vetal.server.game.game.manager.manor.ManorManager
+import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
+import lineage.vetal.server.game.game.manager.spawn.SpawnManager
 import lineage.vetal.server.game.game.task.TickTaskManager
-import lineage.vetal.server.game.game.task.tick.DeleteItemOnGroundTickTask
-import lineage.vetal.server.game.game.task.tick.GameAnnouncerTask
-import lineage.vetal.server.game.game.task.tick.BehaviourTask
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader
 import lineage.vetal.server.game.xml.NpcXMLReader
@@ -32,9 +33,9 @@ private const val NPCS_XML = "game/xml/npcs"
 private const val ITEMS_XML = "game/xml/items"
 private const val TAG = "GameContext"
 
-private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(3)
-private val DEFAULT_DELETE_ITEMS_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
-private val DEFAULT_BEHAVIOUR_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
+private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
+private val DEFAULT_ATTACK_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
+private val DEFAULT_MOVEMENT_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
 
 private val defaultAnnouncements = listOf(
     "Welcome on Vitalii Lebedynskyi server",
@@ -44,25 +45,32 @@ private val defaultAnnouncements = listOf(
 )
 
 class GameContext {
-    lateinit var gameWorld: GameWorld
+    // Data
+    lateinit var gameConfig: ConfigGameServer
+    lateinit var gameDatabase: GameDatabase
+
+    // Managers
+    lateinit var gameWorld: GameWorldManager
     lateinit var spawnManager: SpawnManager
+    lateinit var manorManager: ManorManager
+    lateinit var behaviourManager: BehaviourManager
+    lateinit var movementManager: MovementManager
+    lateinit var attackManager: AttackManager
+    lateinit var announceManager: AnnounceManager
+
+    // Handlers
     lateinit var requestItemHandler: RequestItemHandler
     lateinit var requestActionHandler: RequestActionHandler
-    lateinit var gameLobby: GameLobbyManager
-    lateinit var gameDatabase: GameDatabase
-    lateinit var gameConfig: ConfigGame
-    lateinit var manorManager: ManorManager
+    lateinit var authHandler: AuthRequestHandler
     lateinit var requestChatHandler: RequestChatHandler
-    lateinit var behaviourManager: BehaviourManager
+    lateinit var requestMovementHandler: RequestMovementHandler
+
+    // Misc
+    lateinit var clock: Clock
     lateinit var objectFactory: GameObjectFactory
 
-    lateinit var clock: Clock
-    lateinit var scheduleTaskManager: ScheduleTaskManager
+    // Tasks
     lateinit var tickTaskManager: TickTaskManager
-
-    private lateinit var announceTask: GameAnnouncerTask
-    private lateinit var behaviourTask: BehaviourTask
-    private lateinit var deleteItemsTask: DeleteItemOnGroundTickTask
 
     fun load(dataFolder: String) {
         writeSection(TAG)
@@ -70,7 +78,7 @@ class GameContext {
 
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
-        gameConfig = ConfigGame.read(serverConfigFile)
+        gameConfig = ConfigGameServer.read(serverConfigFile)
         clock = Clock.systemUTC()
 
         val itemsXmlFolder = File(dataFolder, ITEMS_XML)
@@ -95,27 +103,27 @@ class GameContext {
 
         objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
-        writeSection("Managers")
-        gameWorld = GameWorld(this)
-        manorManager = ManorManager(this)
+        writeSection("Handlers")
         requestItemHandler = RequestItemHandler(this)
-        gameLobby = GameLobbyManager(this)
+        authHandler = AuthRequestHandler(this)
         requestChatHandler = RequestChatHandler(this)
-        spawnManager = SpawnManager(this)
-        behaviourManager = BehaviourManager(this)
         requestActionHandler = RequestActionHandler(this)
+        requestMovementHandler = RequestMovementHandler(this)
+
+        writeSection("Managers")
+        gameWorld = GameWorldManager(this)
+        manorManager = ManorManager(this)
+        spawnManager = SpawnManager(this)
+        movementManager = MovementManager(this)
+        attackManager = AttackManager(this)
+        announceManager = AnnounceManager(requestChatHandler, defaultAnnouncements)
 
         writeSection("Tasks")
-        announceTask = GameAnnouncerTask(requestChatHandler, defaultAnnouncements)
-        behaviourTask = BehaviourTask(behaviourManager)
-        deleteItemsTask = DeleteItemOnGroundTickTask(requestItemHandler)
-
         val taskDispatcher = Dispatchers.IO
-        scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
-        tickTaskManager = TickTaskManager(clock, taskDispatcher)
-
-        tickTaskManager.register(announceTask, DEFAULT_ANNOUNCE_TICK_PERIOD, DEFAULT_ANNOUNCE_TICK_PERIOD)
-        tickTaskManager.register(behaviourTask, DEFAULT_BEHAVIOUR_TICK_PERIOD, DEFAULT_BEHAVIOUR_TICK_PERIOD)
-        tickTaskManager.register(deleteItemsTask, DEFAULT_DELETE_ITEMS_TICK_PERIOD, DEFAULT_DELETE_ITEMS_TICK_PERIOD)
+        tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
+            register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
+            register(movementManager, DEFAULT_MOVEMENT_TICK_PERIOD)
+            register(attackManager, DEFAULT_ATTACK_TICK_PERIOD)
+        }
     }
 }

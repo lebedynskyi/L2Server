@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestDropItem : GamePacket() {
+class RequestDropItem : GameClientPacket() {
     var objectId = 0
     var count = 0
     var x = 0

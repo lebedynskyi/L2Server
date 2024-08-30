@@ -11,7 +11,7 @@ private const val PATH_SERVER_CONFIG = "login/config/Server.yaml"
 private const val TAG = "LoginContext"
 
 class LoginContext {
-    lateinit var loginConfig: ConfigLogin
+    lateinit var loginConfig: ConfigLoginServer
     lateinit var loginDatabase: LoginDatabase
     lateinit var loginLobby: LoginLobby
     lateinit var bridgeLobby: BridgeLobby
@@ -22,7 +22,7 @@ class LoginContext {
 
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading login server configs from ${serverConfigFile.absolutePath}")
-        loginConfig = ConfigLogin.read(serverConfigFile)
+        loginConfig = ConfigLoginServer.read(serverConfigFile)
 
         writeInfo(TAG, "Initializing database")
         val dbConnection = HikariDBConnection(loginConfig.dataBaseConfig)

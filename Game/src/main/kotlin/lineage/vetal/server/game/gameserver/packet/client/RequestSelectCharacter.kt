@@ -1,8 +1,8 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestSelectCharacter : GamePacket() {
+class RequestSelectCharacter : GameClientPacket() {
     var slotIndex = -1
 
     override fun read() {

@@ -7,13 +7,14 @@ import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerPickIte
 import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerUseItemUseCase
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.onError
-import lineage.vetal.server.game.game.onSuccess
+import lineage.vetal.server.game.game.validation.onError
+import lineage.vetal.server.game.game.validation.onSuccess
 import lineage.vetal.server.game.game.handler.request.item.validation.DropItemValidation
 import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidation
 import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidationError
 import lineage.vetal.server.game.game.handler.request.item.validation.UseItemValidation
 import lineage.vetal.server.game.game.model.intenttion.Intention
+import lineage.vetal.server.game.gameserver.packet.server.InventoryList
 
 private const val TAG = "RequestItemHandler"
 
@@ -26,6 +27,10 @@ class RequestItemHandler(
     private val playerPickItemUseCase: PlayerPickItemUseCase = PlayerPickItemUseCase(),
     private val playerUseItemUseCase: PlayerUseItemUseCase = PlayerUseItemUseCase(),
 ) {
+    fun onPlayerRequestInventory(player: PlayerObject) {
+        player.sendPacket(InventoryList(player.inventory.items, false))
+    }
+
     fun onPlayerDropItem(player: PlayerObject, objectId: Int, count: Int, x: Int, y: Int, z: Int) {
         dropItemValidation.validate(player, objectId, count, x, y, z)
             .onSuccess {
@@ -41,11 +46,7 @@ class RequestItemHandler(
         }.onError {
             when (it) {
                 is PickUpValidationError.ToFar -> {
-                    context.behaviourManager.onPlayerStartMovement(
-                        player,
-                        it.targetItem.position,
-                        Intention.PICK(it.targetItem)
-                    )
+                    context.movementManager.startMoveToTask(player, it.targetItem.position, Intention.PICK(it.targetItem))
                 }
 
                 else -> {

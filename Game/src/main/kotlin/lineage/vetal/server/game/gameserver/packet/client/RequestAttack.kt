@@ -1,9 +1,9 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
 import lineage.vetal.server.core.utils.ext.toBoolean
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
-class RequestAttack : GamePacket() {
+class RequestAttack : GameClientPacket() {
     var objectId: Int = 0
     var originX: Int = 0
     var originY: Int = 0

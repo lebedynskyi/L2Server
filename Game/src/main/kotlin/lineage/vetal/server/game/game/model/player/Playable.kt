@@ -1,6 +1,7 @@
 package lineage.vetal.server.game.game.model.player
 
 import lineage.vetal.server.game.game.model.behaviour.CreatureBehaviour
+import lineage.vetal.server.game.game.model.inventory.WearableInventory
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.model.template.pc.CreatureTemplate
 
@@ -11,5 +12,7 @@ abstract class Playable(
     override val template: CreatureTemplate,
     override val behaviour: CreatureBehaviour
 ) : CreatureObject(objectId, behaviour, template, position) {
+    lateinit var inventory: WearableInventory
+
     var clientPosition: SpawnPosition? = null
 }

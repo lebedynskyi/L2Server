@@ -1,7 +1,7 @@
 package lineage.vetal.server.game.game.handler.request.action.validation
 
-import lineage.vetal.server.game.game.ValidationError
-import lineage.vetal.server.game.game.ValidationResult
+import lineage.vetal.server.game.game.validation.ValidationError
+import lineage.vetal.server.game.game.validation.ValidationResult
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.utils.MathUtils
@@ -26,8 +26,9 @@ class InteractionValidation {
     }
 }
 
-sealed class InteractionValidationError : ValidationError {
-    data object TargetNoExist : InteractionValidationError()
-    data class ToFar(val target: CreatureObject) : InteractionValidationError()
-    data object PlayerDead : InteractionValidationError()
+sealed interface InteractionValidationError : ValidationError {
+    data class ToFar(val target: CreatureObject) : InteractionValidationError
+
+    data object TargetNoExist : InteractionValidationError
+    data object PlayerDead : InteractionValidationError
 }

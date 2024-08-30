@@ -1,11 +1,11 @@
-package lineage.vetal.server.game.game.handler.tick.behaviour.usecase
+package lineage.vetal.server.game.game.manager.behaviour.movement
 
 import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.model.behaviour.data.MoveData
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.model.behaviour.data.MoveData
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.utils.MathUtils

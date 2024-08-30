@@ -1,9 +1,9 @@
 package lineage.vetal.server.game.gameserver.packet.client
 
-import lineage.vetal.server.game.gameserver.packet.GamePacket
+import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
 
-class RequestCreateCharacter : GamePacket() {
+class RequestCreateCharacter : GameClientPacket() {
     lateinit var name: String
     var race = -1
     var sex: Byte = -1
