@@ -10,8 +10,8 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 
 private const val TAG = "InteractFailUseCase"
 
-class InteractFailUseCase {
-    fun onInteractionError(
+class InteractUseCase {
+    internal fun onInteractionError(
         context: GameContext,
         player: PlayerObject,
         reason: InteractionValidationError

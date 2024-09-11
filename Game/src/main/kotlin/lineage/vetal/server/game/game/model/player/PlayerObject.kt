@@ -82,6 +82,12 @@ class PlayerObject(
         }
     }
 
+    fun sendPacket(vararg packets: WriteablePacket) {
+        packets.forEach {
+            client?.sendPacket(it)
+        }
+    }
+
     override fun toString(): String {
         return "$objectId - $name"
     }

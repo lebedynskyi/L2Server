@@ -20,13 +20,13 @@ class PacketHandler(
     fun handlePacket(client: GameClient, packet: GameClientPacket) {
         with(packet) {
             when (this) {
-                is Connected -> context.authHandler.onPlayerConnected(client)
-                is Disconnected -> context.authHandler.onPlayerDisconnected(client)
-                is RequestAuthLogin -> context.authHandler.requestAuthLogin(client, account, loginKey1, loginKey2, playKey1, playKey2)
-                is RequestProtocolVersion -> context.authHandler.requestProtocolVersion(client, version)
-                is RequestCharacterTemplates -> context.authHandler.requestCharacterTemplates(client)
-                is RequestCreateCharacter -> context.authHandler.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
-                is RequestSelectCharacter -> context.authHandler.requestSelectChar(client, slotIndex)
+                is Connected -> context.requestAuthHandler.onPlayerConnected(client)
+                is Disconnected -> context.requestAuthHandler.onPlayerDisconnected(client)
+                is RequestAuthLogin -> context.requestAuthHandler.requestAuthLogin(client, account, loginKey1, loginKey2, playKey1, playKey2)
+                is RequestProtocolVersion -> context.requestAuthHandler.requestProtocolVersion(client, version)
+                is RequestCharacterTemplates -> context.requestAuthHandler.requestCharacterTemplates(client)
+                is RequestCreateCharacter -> context.requestAuthHandler.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
+                is RequestSelectCharacter -> context.requestAuthHandler.requestSelectChar(client, slotIndex)
                 else -> handlePacketWithPlayer(client, packet)
             }
         }
@@ -44,14 +44,14 @@ class PacketHandler(
             when (this) {
                 //TODO. Game world should became a manager. It is good to handle these request
                 is RequestEnterWorld -> {
-                    context.gameWorld.onPlayerEnterWorld(client, player)
+                    context.requestWorldHandler.onPlayerEnterWorld(client, player)
                 }
                 is RequestQuit -> {
-                    context.gameWorld.onPlayerQuit(client, player)
+                    context.requestWorldHandler.onPlayerRequestQuit(client, player)
                 }
 
                 is RequestRestart -> {
-                    context.gameWorld.onPlayerRestart(client, player)
+                    context.requestWorldHandler.onPlayerRequestRestart(client, player)
                 }
 
                 is RequestAction -> {

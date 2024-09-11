@@ -10,6 +10,6 @@ class BridgeConnected : BridgeGamePacket() {
     }
 
     override fun execute(client: BridgeClient, context: GameContext) {
-        context.authHandler.onConnectedToBridge(client)
+        context.requestAuthHandler.onConnectedToBridge(client)
     }
 }

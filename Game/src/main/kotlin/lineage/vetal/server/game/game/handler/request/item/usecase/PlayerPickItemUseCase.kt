@@ -8,7 +8,7 @@ import lineage.vetal.server.game.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.game.gameserver.packet.server.InventoryUpdate
 
 class PlayerPickItemUseCase {
-    fun onPlayerPickUpItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject) {
+    internal fun onPlayerPickUpItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject) {
         // TODO validation of position, owner and etc etc
         // TODO a lot of conditions here. delay and Move to item
         // TODO if adena sendPacket(SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA).addNumber(count));
@@ -30,5 +30,9 @@ class PlayerPickItemUseCase {
         player.region.removeItem(item)
         context.gameWorld.broadCast(player.region, DeleteObject(item))
         player.sendPacket(inventoryUpdate)
+    }
+
+    internal fun onPlayerPickItemFailed(reason: Error) {
+
     }
 }

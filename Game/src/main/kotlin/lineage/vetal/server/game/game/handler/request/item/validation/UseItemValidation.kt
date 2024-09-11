@@ -1,27 +1,26 @@
 package lineage.vetal.server.game.game.handler.request.item.validation
 
-import lineage.vetal.server.game.game.validation.Validation
-import lineage.vetal.server.game.game.validation.ValidationError
-import lineage.vetal.server.game.game.validation.ValidationResult
+import lineage.vetal.server.game.game.validation.Error
+import lineage.vetal.server.game.game.validation.Result
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
-class UseItemValidation : Validation() {
+class UseItemValidation {
     fun validate(
         player: PlayerObject,
         objectId: Int,
         ctrlPressed: Boolean
-    ): ValidationResult<ItemObject, ValidationError> {
+    ): Result<ItemObject, Error> {
         val item = player.inventory.getItem(objectId)
 
         if (item == null) {
-            return ValidationResult.Error(UseItemValidationError.NoItem)
+            return Result.error(UseItemValidationError.NoItem)
         }
 
-        return ValidationResult.Success(item)
+        return Result.success(item)
     }
 }
 
-sealed interface UseItemValidationError : ValidationError {
+sealed interface UseItemValidationError : Error {
     data object NoItem : UseItemValidationError
 }

@@ -1,14 +1,13 @@
 package lineage.vetal.server.game.game.handler.request.item.validation
 
-import lineage.vetal.server.game.game.validation.Validation
-import lineage.vetal.server.game.game.validation.ValidationError
-import lineage.vetal.server.game.game.validation.ValidationResult
+import lineage.vetal.server.game.game.validation.Error
+import lineage.vetal.server.game.game.validation.Result
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.utils.MathUtils
 
-class DropItemValidation : Validation() {
+class DropItemValidation{
     fun validate(
         player: PlayerObject,
         objectId: Int,
@@ -16,38 +15,38 @@ class DropItemValidation : Validation() {
         x: Int,
         y: Int,
         z: Int
-    ): ValidationResult<ItemObject, ValidationError> {
+    ): Result<ItemObject, Error> {
         val item = player.inventory.getItem(objectId)
 
         if (item == null) {
-            return ValidationResult.Error(DropItemValidationError.NoItem)
+            return Result.error(DropItemValidationError.NoItem)
         }
 
         if (item.count < count || item.count - count < 0) {
-            return ValidationResult.Error(DropItemValidationError.WrongCount)
+            return Result.error(DropItemValidationError.WrongCount)
         }
 
         if (!item.template.dropable) {
-            return ValidationResult.Error(DropItemValidationError.NotDroppable)
+            return Result.error(DropItemValidationError.NotDroppable)
         }
 
         if (item.template.isHeroItem) {
-            return ValidationResult.Error(DropItemValidationError.HeroItem)
+            return Result.error(DropItemValidationError.HeroItem)
         }
 
         if (player.isAlikeDead) {
-            return ValidationResult.Error(DropItemValidationError.PlayerAlikeDead)
+            return Result.error(DropItemValidationError.PlayerAlikeDead)
         }
 
         if (!MathUtils.isWithinRadius(player.position, Position(x, y, z), 100.0)) {
-            return ValidationResult.Error(DropItemValidationError.ToFar)
+            return Result.error(DropItemValidationError.ToFar)
         }
 
-        return ValidationResult.Success(item)
+        return Result.success(item)
     }
 }
 
-sealed interface DropItemValidationError : ValidationError {
+sealed interface DropItemValidationError : Error {
     data object NoItem : DropItemValidationError
     data object WrongCount : DropItemValidationError
     data object NotDroppable : DropItemValidationError

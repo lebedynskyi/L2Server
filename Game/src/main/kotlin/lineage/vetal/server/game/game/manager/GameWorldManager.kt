@@ -51,65 +51,6 @@ class GameWorldManager(
         initializeSurroundingRegions()
     }
 
-    fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
-        val region = getRegion(player.position.x, player.position.y)
-        if (region == null) {
-            writeError(TAG, "No region found for player ${player.name} and position ${player.position}")
-            player.client?.saveAndClose(LeaveWorld())
-            return
-        }
-
-        client.clientState = GameClientState.WORLD
-        client.player = player
-
-        player.lastAccessTime = Calendar.getInstance().timeInMillis
-        player.client = client
-        player.isInWorld = true
-        player.stats.isRunning = true
-        player.region = region
-
-        // could be done by another managers..
-        player.sendPacket(UserInfo(player))
-        context.requestItemHandler.onPlayerRequestInventory(player)
-        player.sendPacket(QuestList())
-
-        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
-
-        // TODO move to function to use it here.. visiblePlayers, visibleItems etc.
-        player.sendPacket(region.surround.map { it.players.values }.flatten().plus(region.players.values).map { CharInfo(it) })
-        player.sendPacket(region.surround.map { it.npc.values }.flatten().plus(region.npc.values).map { NpcInfo(it) })
-        player.sendPacket(region.surround.map { it.items.values }.flatten().plus(region.items.values).map { SpawnItem(it) })
-
-        broadCast(region, CharInfo(player))
-
-        region.addPlayer(player)
-        context.gameDatabase.charactersDao.updateLastAccess(player.objectId, player.lastAccessTime)
-        writeDebug(TAG, "Player enter world. ${player.name} -> ${player.id}")
-    }
-
-    fun onPlayerRestart(client: GameClient, player: PlayerObject) {
-        if (!player.isInWorld) {
-            writeError(TAG, "Not active player asked for restart")
-            return
-        }
-
-        removePlayerFromWorld(client, player)
-
-        client.clientState = GameClientState.LOBBY
-        client.sendPacket(RestartResponse.STATIC_PACKET_OK)
-        context.authHandler.onCharSlotSelection(client)
-    }
-
-    fun onPlayerQuit(client: GameClient, player: PlayerObject) {
-        if (!player.isInWorld) {
-            client.saveAndClose()
-            writeError(TAG, "Not active player asked for quit. Disconnect after LeaveWorld")
-        } else {
-            removePlayerFromWorld(client, player)
-            client.saveAndClose(LeaveWorld())
-        }
-    }
-
     fun onPlayerPositionChanged(player: PlayerObject, loc: Position) {
         val oldRegion = player.region
         val newRegion = getRegion(loc)
@@ -166,7 +107,7 @@ class GameWorldManager(
         getRegion(npc.position)?.addNpc(npc)
     }
 
-    private fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
+    fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
         broadCast(player.region, DeleteObject(player))
         player.isInWorld = false
@@ -176,12 +117,13 @@ class GameWorldManager(
         context.gameDatabase.charactersDao.updateCoordinates(player.objectId, player.position)
     }
 
-    private fun isRegionExist(x: Int, y: Int): Boolean {
+    fun isRegionExist(x: Int, y: Int): Boolean {
         return x in 0..<REGIONS_X && y in 0..<REGIONS_Y
     }
 
-    private fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
-    private fun getRegion(x: Int, y: Int): WorldRegion? {
+    fun getRegion(loc: Position): WorldRegion? = getRegion(loc.x, loc.y)
+
+    fun getRegion(x: Int, y: Int): WorldRegion? {
         val regX = (x - WORLD_X_MIN) / REGION_SIZE
         val regY = (y - WORLD_Y_MIN) / REGION_SIZE
         return if (isRegionExist(regX, regY)) regions[regX][regY] else null

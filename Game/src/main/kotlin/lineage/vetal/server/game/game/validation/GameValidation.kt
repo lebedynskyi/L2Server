@@ -1,23 +1,29 @@
 package lineage.vetal.server.game.game.validation
 
-import lineage.vetal.server.game.game.validation.ValidationResult.Error
-import lineage.vetal.server.game.game.validation.ValidationResult.Success
+interface Error
 
-abstract class Validation
+class Result<out T, out E : Error> private constructor(
+    val data: T? = null,
+    val error: E? = null
+) {
+    companion object {
+        fun <T, E : Error> success(value: T): Result<T, E> {
+            return Result(data = value)
+        }
 
-interface ValidationError
-
-sealed interface ValidationResult<out T, out E : ValidationError> {
-    data class Success<out T, out E : ValidationError>(val data: T) : ValidationResult<T, E>
-    data class Error<out T, out E : ValidationError>(val error: E) : ValidationResult<T, E>
+        fun <T, E : Error> error(error: E): Result<T, E> {
+            return Result(error = error)
+        }
+    }
 }
 
-inline fun <T, E : ValidationError> ValidationResult<T, E>.onSuccess(block: (T) -> Unit): ValidationResult<T, E> {
-    if (this is Success) block.invoke(data)
+inline fun <T, E : Error> Result<T, E>.onSuccess(block: (T) -> Unit): Result<T, E> {
+    if (data != null) block.invoke(data)
     return this
 }
 
-inline fun <T, E : ValidationError> ValidationResult<T, E>.onError(block: (E) -> Unit): ValidationResult<T, E> {
-    if (this is Error) block.invoke(error)
+inline fun <T, E : Error> Result<T, E>.onError(block: (E) -> Unit): Result<T, E> {
+    if (error != null) block.invoke(error)
     return this
 }
+

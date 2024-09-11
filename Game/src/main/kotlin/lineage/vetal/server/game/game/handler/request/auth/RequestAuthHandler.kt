@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.handler.request
+package lineage.vetal.server.game.game.handler.request.auth
 
 import lineage.vetal.server.core.bridge.BridgeClient
 import lineage.vetal.server.core.model.RegisteredServer
@@ -19,7 +19,7 @@ import lineage.vetal.server.game.gameserver.packet.server.*
 
 private const val TAG = "GameLobbyManager"
 
-class AuthRequestHandler(
+class RequestAuthHandler(
     private val context: GameContext,
 ) {
     private val playerNameRegex = "^[a-zA-Z0-9]{3,16}$".toRegex()

@@ -10,6 +10,6 @@ class InitOK : BridgeGamePacket() {
     }
 
     override fun execute(client: BridgeClient, context: GameContext) {
-        context.authHandler.onBridgeInitOk(client)
+        context.requestAuthHandler.onBridgeInitOk(client)
     }
 }

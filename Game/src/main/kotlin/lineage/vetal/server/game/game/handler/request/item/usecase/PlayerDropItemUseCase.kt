@@ -7,11 +7,11 @@ import lineage.vetal.server.game.game.model.item.ItemLocation
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
-import lineage.vetal.server.game.game.validation.ValidationError
+import lineage.vetal.server.game.game.validation.Error
 import lineage.vetal.server.game.gameserver.packet.server.*
 
 class PlayerDropItemUseCase {
-    fun onDropItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject, count: Int, x: Int, y: Int, z: Int) {
+    internal fun onDropItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject, count: Int, x: Int, y: Int, z: Int) {
         var itemToDrop = item
         val inventoryPacket = InventoryUpdate()
 
@@ -58,7 +58,7 @@ class PlayerDropItemUseCase {
         context.gameDatabase.itemsDao.saveItem(itemToDrop)
     }
 
-    fun onDropItemFailed(reason: ValidationError, player: PlayerObject) {
+    internal fun onDropItemFailed(reason: Error, player: PlayerObject) {
         player.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM)
     }
 }

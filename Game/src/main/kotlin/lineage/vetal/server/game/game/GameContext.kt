@@ -10,8 +10,9 @@ import lineage.vetal.server.game.game.handler.request.action.RequestActionHandle
 import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
 import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
-import lineage.vetal.server.game.game.handler.request.AuthRequestHandler
+import lineage.vetal.server.game.game.handler.request.auth.RequestAuthHandler
 import lineage.vetal.server.game.game.handler.request.movement.RequestMovementHandler
+import lineage.vetal.server.game.game.handler.request.world.RequestWorldHandler
 import lineage.vetal.server.game.game.manager.AnnounceManager
 import lineage.vetal.server.game.game.manager.GameWorldManager
 import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
@@ -61,7 +62,8 @@ class GameContext {
     // Handlers
     lateinit var requestItemHandler: RequestItemHandler
     lateinit var requestActionHandler: RequestActionHandler
-    lateinit var authHandler: AuthRequestHandler
+    lateinit var requestAuthHandler: RequestAuthHandler
+    lateinit var requestWorldHandler: RequestWorldHandler
     lateinit var requestChatHandler: RequestChatHandler
     lateinit var requestMovementHandler: RequestMovementHandler
 
@@ -105,7 +107,8 @@ class GameContext {
 
         writeSection("Handlers")
         requestItemHandler = RequestItemHandler(this)
-        authHandler = AuthRequestHandler(this)
+        requestAuthHandler = RequestAuthHandler(this)
+        requestWorldHandler = RequestWorldHandler(this)
         requestChatHandler = RequestChatHandler(this)
         requestActionHandler = RequestActionHandler(this)
         requestMovementHandler = RequestMovementHandler(this)

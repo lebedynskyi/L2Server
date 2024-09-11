@@ -1,32 +1,34 @@
 package lineage.vetal.server.game.game.handler.request.action.validation
 
-import lineage.vetal.server.game.game.validation.ValidationError
-import lineage.vetal.server.game.game.validation.ValidationResult
+import lineage.vetal.server.game.game.validation.Error
+import lineage.vetal.server.game.game.validation.Result
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.utils.MathUtils
+
+private const val INTERACTION_RANGE = 100.0
 
 class InteractionValidation {
     fun validate(
         player: PlayerObject,
         actionTarget: CreatureObject?
-    ): ValidationResult<CreatureObject, InteractionValidationError> {
+    ): Result<CreatureObject, InteractionValidationError> {
         if (actionTarget == null) {
-            return ValidationResult.Error(InteractionValidationError.TargetNoExist)
+            return Result.error(InteractionValidationError.TargetNoExist)
         }
         if (player.isAlikeDead) {
-            return ValidationResult.Error(InteractionValidationError.PlayerDead)
+            return Result.error(InteractionValidationError.PlayerDead)
         }
 
-        if (!MathUtils.isWithinRadius(player.position, actionTarget.position, 100.0)) {
-            return ValidationResult.Error(InteractionValidationError.ToFar(actionTarget))
+        if (!MathUtils.isWithinRadius(player.position, actionTarget.position, INTERACTION_RANGE)) {
+            return Result.error(InteractionValidationError.ToFar(actionTarget))
         }
 
-        return ValidationResult.Success(actionTarget)
+        return Result.success(actionTarget)
     }
 }
 
-sealed interface InteractionValidationError : ValidationError {
+sealed interface InteractionValidationError : Error {
     data class ToFar(val target: CreatureObject) : InteractionValidationError
 
     data object TargetNoExist : InteractionValidationError
