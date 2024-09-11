@@ -15,11 +15,11 @@ class MovementManager(
 ) : BehaviourManager(context) {
 
     fun startMoveToTask(creature: CreatureObject, destination: Position, intention: Intention? = null) {
-        context.gameWorld.broadCast(creature.region, MoveToLocation(creature, destination))
         val moveData = MoveData(destination, context.clock.millis())
         val newIntent = Intention.MOVE_TO(moveData)
         creature.behaviour.setIntention(newIntent, intention)
         manageCreature(creature)
+        context.gameWorld.broadCast(creature.region, MoveToLocation(creature, destination))
     }
 
     override fun handleBehaviour(creature: CreatureObject, behaviour: CreatureBehaviour): Boolean {

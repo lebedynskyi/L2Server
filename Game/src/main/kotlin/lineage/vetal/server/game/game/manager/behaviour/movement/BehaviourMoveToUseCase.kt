@@ -15,7 +15,7 @@ private const val TAG = "BehaviourMoveToUseCase"
 
 class BehaviourMoveToUseCase {
     fun onBehaviourMoveTo(context: GameContext, creature: CreatureObject, intention: Intention.MOVE_TO): Boolean {
-        return updatePosition(context, creature, intention.moveData)
+        return updatePosition(context, creature, intention.data)
     }
 
     private fun updatePosition(context: GameContext, creature: CreatureObject, movement: MoveData): Boolean {

@@ -8,10 +8,10 @@ import lineage.vetal.server.game.game.model.item.ItemObject
 sealed class Intention {
     data object IDLE : Intention()
     data object REST : Intention()
-    data class MOVE_TO(val moveData: MoveData) : Intention()
+    data class MOVE_TO(val data: MoveData) : Intention()
     data object CAST : Intention()
-    data class PICK(val itemObject: ItemObject) : Intention()
-    data class INTERACT(val target: TargetData) : Intention()
+    data class PICK(val data: ItemObject) : Intention()
+    data class INTERACT(val data: TargetData) : Intention()
     data class ATTACK(val data: AttackData) : Intention()
     data object FOLLOW : Intention()
 }

@@ -7,7 +7,6 @@ import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.ConfigGameServer
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.handler.request.action.RequestActionHandler
-import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
 import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
 import lineage.vetal.server.game.game.handler.request.auth.RequestAuthHandler
@@ -15,6 +14,7 @@ import lineage.vetal.server.game.game.handler.request.movement.RequestMovementHa
 import lineage.vetal.server.game.game.handler.request.world.RequestWorldHandler
 import lineage.vetal.server.game.game.manager.AnnounceManager
 import lineage.vetal.server.game.game.manager.GameWorldManager
+import lineage.vetal.server.game.game.manager.InteractManager
 import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
@@ -54,10 +54,10 @@ class GameContext {
     lateinit var gameWorld: GameWorldManager
     lateinit var spawnManager: SpawnManager
     lateinit var manorManager: ManorManager
-    lateinit var behaviourManager: BehaviourManager
     lateinit var movementManager: MovementManager
     lateinit var attackManager: AttackManager
     lateinit var announceManager: AnnounceManager
+    lateinit var interactionManager: InteractManager
 
     // Handlers
     lateinit var requestItemHandler: RequestItemHandler
@@ -120,6 +120,7 @@ class GameContext {
         movementManager = MovementManager(this)
         attackManager = AttackManager(this)
         announceManager = AnnounceManager(requestChatHandler, defaultAnnouncements)
+        interactionManager = InteractManager(this)
 
         writeSection("Tasks")
         val taskDispatcher = Dispatchers.IO

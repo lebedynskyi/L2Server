@@ -36,6 +36,8 @@ private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 
 private const val TAG = "WorldManager"
 
+
+// TODO. It should be a model
 class GameWorldManager(
     private val context: GameContext
 ) {

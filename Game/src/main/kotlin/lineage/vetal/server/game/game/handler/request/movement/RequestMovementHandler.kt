@@ -15,7 +15,7 @@ class RequestMovementHandler(
     private val context: GameContext,
     private val movementValidation: MovementValidation = MovementValidation(),
 
-    private val movementUseCase: MovementUseCase = MovementUseCase()
+    private val movementUseCase: MovementUseCase = MovementUseCase(context)
 ) {
     fun onPlayerStartMovement(player: PlayerObject, destination: Position, intention: Intention? = null) {
         movementValidation.validate(player, destination)
