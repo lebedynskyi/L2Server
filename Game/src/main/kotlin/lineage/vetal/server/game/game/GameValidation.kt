@@ -1,4 +1,4 @@
-package lineage.vetal.server.game.game.validation
+package lineage.vetal.server.game.game
 
 interface Error
 

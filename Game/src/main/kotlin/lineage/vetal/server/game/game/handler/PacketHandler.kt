@@ -13,7 +13,6 @@ import lineage.vetal.server.game.gameserver.packet.server.QuestList
 private const val TAG = "PacketHandler"
 
 
-// TODO. The idea is to separate handler and manager. Packets should be handled by handler.
 class PacketHandler(
     private val context: GameContext
 ) {
@@ -27,12 +26,12 @@ class PacketHandler(
                 is RequestCharacterTemplates -> context.requestAuthHandler.requestCharacterTemplates(client)
                 is RequestCreateCharacter -> context.requestAuthHandler.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
                 is RequestSelectCharacter -> context.requestAuthHandler.requestSelectChar(client, slotIndex)
-                else -> handlePacketWithPlayer(client, packet)
+                else -> handleInGamePacket(client, packet)
             }
         }
     }
 
-    private fun handlePacketWithPlayer(client: GameClient, packet: GameClientPacket){
+    private fun handleInGamePacket(client: GameClient, packet: GameClientPacket){
         val player = client.player
         if (player == null) {
             writeError(TAG, "No player attached for client $client during handling packet $packet")
@@ -46,12 +45,13 @@ class PacketHandler(
                 is RequestEnterWorld -> {
                     context.requestWorldHandler.onPlayerEnterWorld(client, player)
                 }
-                is RequestQuit -> {
-                    context.requestWorldHandler.onPlayerRequestQuit(client, player)
-                }
 
                 is RequestRestart -> {
                     context.requestWorldHandler.onPlayerRequestRestart(client, player)
+                }
+
+                is RequestQuit -> {
+                    context.requestWorldHandler.onPlayerRequestQuit(client, player)
                 }
 
                 is RequestAction -> {
@@ -64,20 +64,20 @@ class PacketHandler(
                     player.sendPacket(ActionFailed.STATIC_PACKET)
                 }
 
-                is RequestCancelTarget -> {
+                is RequestCancelAction -> {
                     context.requestActionHandler.onPlayerCancelAction(player, unselect)
-                }
-
-                is RequestDropItem -> {
-                    context.requestItemHandler.onPlayerDropItem(player, objectId, count, x, y, z)
                 }
 
                 is RequestItemList -> {
                     context.requestItemHandler.onPlayerRequestInventory(player)
                 }
 
-                is RequestManorList -> {
-                    context.manorManager.onPlayerRequestList(player)
+                is RequestUseItem -> {
+                    context.requestItemHandler.onPlayerUseItem(player, objectId, ctrlPressed)
+                }
+
+                is RequestDropItem -> {
+                    context.requestItemHandler.onPlayerDropItem(player, objectId, count, x, y, z)
                 }
 
                 is RequestMoveToLocation -> {
@@ -85,20 +85,20 @@ class PacketHandler(
                     context.requestMovementHandler.onPlayerStartMovement(player, destination)
                 }
 
-                is RequestQuestList -> {
-                    client.sendPacket(QuestList())
+                is RequestValidatePosition -> {
+                    player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
                 }
 
                 is RequestSay2 -> {
                     context.requestChatHandler.playerSay(player, text, typeId, targetName)
                 }
 
-                is RequestUseItem -> {
-                    context.requestItemHandler.onPlayerUseItem(player, objectId, ctrlPressed)
+                is RequestQuestList -> {
+                    client.sendPacket(QuestList())
                 }
 
-                is RequestValidatePosition -> {
-                    player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
+                is RequestManorList -> {
+                    context.manorManager.onPlayerRequestList(player)
                 }
             }
         }

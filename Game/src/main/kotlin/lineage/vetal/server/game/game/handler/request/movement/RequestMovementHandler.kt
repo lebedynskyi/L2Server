@@ -6,8 +6,8 @@ import lineage.vetal.server.game.game.handler.request.movement.validation.Moveme
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.game.validation.onError
-import lineage.vetal.server.game.game.validation.onSuccess
+import lineage.vetal.server.game.game.onError
+import lineage.vetal.server.game.game.onSuccess
 
 private const val TAG = "RequestMovementHandler"
 

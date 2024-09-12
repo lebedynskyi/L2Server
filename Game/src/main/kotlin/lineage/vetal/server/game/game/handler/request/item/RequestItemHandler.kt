@@ -7,8 +7,8 @@ import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerPickIte
 import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerUseItemUseCase
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.validation.onError
-import lineage.vetal.server.game.game.validation.onSuccess
+import lineage.vetal.server.game.game.onError
+import lineage.vetal.server.game.game.onSuccess
 import lineage.vetal.server.game.game.handler.request.item.validation.DropItemValidation
 import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidation
 import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidationError

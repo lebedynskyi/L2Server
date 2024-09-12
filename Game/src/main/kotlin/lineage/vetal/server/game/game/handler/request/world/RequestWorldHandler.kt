@@ -7,8 +7,8 @@ import lineage.vetal.server.game.game.handler.request.world.usecase.RestartUseCa
 import lineage.vetal.server.game.game.handler.request.world.validation.RestartValidation
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.player.SayType
-import lineage.vetal.server.game.game.validation.onError
-import lineage.vetal.server.game.game.validation.onSuccess
+import lineage.vetal.server.game.game.onError
+import lineage.vetal.server.game.game.onSuccess
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*

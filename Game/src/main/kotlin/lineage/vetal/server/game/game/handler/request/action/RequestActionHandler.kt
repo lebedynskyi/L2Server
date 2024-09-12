@@ -6,8 +6,8 @@ import lineage.vetal.server.game.game.handler.request.action.validation.Interact
 import lineage.vetal.server.game.game.handler.request.action.usecase.SelectTargetSuccessUseCase
 import lineage.vetal.server.game.game.handler.request.action.validation.SelectTargetValidation
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.validation.onError
-import lineage.vetal.server.game.game.validation.onSuccess
+import lineage.vetal.server.game.game.onError
+import lineage.vetal.server.game.game.onSuccess
 import lineage.vetal.server.game.gameserver.packet.server.TargetUnSelected
 
 private const val TAG = "RequestActionHandler"

@@ -7,7 +7,7 @@ import lineage.vetal.server.game.game.model.item.ItemLocation
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
-import lineage.vetal.server.game.game.validation.Error
+import lineage.vetal.server.game.game.Error
 import lineage.vetal.server.game.gameserver.packet.server.*
 
 class PlayerDropItemUseCase {

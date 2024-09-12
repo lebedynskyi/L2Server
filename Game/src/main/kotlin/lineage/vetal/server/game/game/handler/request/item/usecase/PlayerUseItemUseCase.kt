@@ -2,7 +2,7 @@ package lineage.vetal.server.game.game.handler.request.item.usecase
 
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.validation.Error
+import lineage.vetal.server.game.game.Error
 import lineage.vetal.server.game.game.model.item.EquipmentObject
 import lineage.vetal.server.game.game.model.item.EtcItemObject
 import lineage.vetal.server.game.game.model.item.ItemObject

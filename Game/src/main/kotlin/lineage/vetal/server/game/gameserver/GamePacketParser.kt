@@ -30,7 +30,7 @@ class GamePacketParser : SockPacketFactory {
             0x46 -> RequestRestart()
             0x12 -> RequestDropItem()
             0x14 -> RequestUseItem()
-            0x37 -> RequestCancelTarget()
+            0x37 -> RequestCancelAction()
             0xd0 -> parsePacketFor0xD0(buffer)
             else -> {
                 writeError(TAG, "No parser for packet with opcode ${Integer.toHexString(opCodeInt)}")
