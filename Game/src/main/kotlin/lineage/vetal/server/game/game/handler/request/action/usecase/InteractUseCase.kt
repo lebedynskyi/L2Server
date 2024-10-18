@@ -16,9 +16,9 @@ class InteractUseCase(
 ) {
     internal fun onInteractionSuccess(player: PlayerObject, target: CreatureObject) {
         // TODO stop movement.
-
+        // TODO
         if (target.isAutoAttackable) {
-            context.attackManager.startAttackTask(player, target)
+            context.attackManager.onCreatureAttack(player, target)
         } else {
             context.interactionManager.onPlayerInteract(player, target)
         }
@@ -36,7 +36,7 @@ class InteractUseCase(
                     Intention.INTERACT(TargetData(reason.target))
                 }
 
-                context.movementManager.startMoveToTask(player, reason.target.position, intention)
+                context.requestMovementHandler.onPlayerStartMovement(player, reason.target.position, intention)
             }
 
             else -> {

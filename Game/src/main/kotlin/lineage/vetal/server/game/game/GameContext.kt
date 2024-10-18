@@ -19,6 +19,8 @@ import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
 import lineage.vetal.server.game.game.manager.spawn.SpawnManager
+import lineage.vetal.server.game.game.task.ScheduleTask
+import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import lineage.vetal.server.game.game.task.TickTaskManager
 import lineage.vetal.server.game.xml.CharXMLReader
 import lineage.vetal.server.game.xml.ItemXMLReader
@@ -73,6 +75,7 @@ class GameContext {
 
     // Tasks
     lateinit var tickTaskManager: TickTaskManager
+    lateinit var scheduleTaskManager: ScheduleTaskManager
 
     fun load(dataFolder: String) {
         writeSection(TAG)
@@ -124,6 +127,7 @@ class GameContext {
 
         writeSection("Tasks")
         val taskDispatcher = Dispatchers.IO
+        scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
         tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
             register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
             register(movementManager, DEFAULT_MOVEMENT_TICK_PERIOD)

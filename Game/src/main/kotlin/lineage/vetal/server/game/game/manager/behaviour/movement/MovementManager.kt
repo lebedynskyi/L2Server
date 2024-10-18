@@ -7,7 +7,6 @@ import lineage.vetal.server.game.game.model.behaviour.data.MoveData
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.gameserver.packet.server.MoveToLocation
 
 class MovementManager(
     private val context: GameContext,
@@ -19,7 +18,6 @@ class MovementManager(
         val newIntent = Intention.MOVE_TO(moveData)
         creature.behaviour.setIntention(newIntent, intention)
         manageCreature(creature)
-        context.gameWorld.broadCast(creature.region, MoveToLocation(creature, destination))
     }
 
     override fun handleBehaviour(creature: CreatureObject, behaviour: CreatureBehaviour): Boolean {

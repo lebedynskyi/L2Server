@@ -46,7 +46,7 @@ class RequestItemHandler(
         }.onError {
             when (it) {
                 is PickUpValidationError.ToFar -> {
-                    context.movementManager.startMoveToTask(player, it.targetItem.position, Intention.PICK(it.targetItem))
+                    context.requestMovementHandler.onPlayerStartMovement(player, it.targetItem.position, Intention.PICK(it.targetItem))
                 }
 
                 else -> {

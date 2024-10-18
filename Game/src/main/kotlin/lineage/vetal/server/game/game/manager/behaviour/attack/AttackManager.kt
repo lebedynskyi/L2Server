@@ -8,11 +8,12 @@ import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
+// TODO wrong. Every hit is a separate task. Hit and Skill cast it a every task!
 class AttackManager(
     private val context: GameContext,
     private val attackUseCase: BehaviourAttackUseCase = BehaviourAttackUseCase()
 ) : BehaviourManager(context) {
-    fun startAttackTask(player: PlayerObject, actionTarget: CreatureObject) {
+    fun onCreatureAttack(player: PlayerObject, actionTarget: CreatureObject) {
         val attackData = AttackData(actionTarget)
         val newIntent = Intention.ATTACK(attackData)
         player.behaviour.setIntention(newIntent)

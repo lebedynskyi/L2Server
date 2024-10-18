@@ -6,6 +6,7 @@ import lineage.vetal.server.game.game.handler.request.movement.validation.Moveme
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
+import lineage.vetal.server.game.gameserver.packet.server.MoveToLocation
 
 private const val TAG = "MovementUseCase"
 
@@ -14,6 +15,7 @@ class MovementUseCase(
 ) {
     internal fun onMovementSuccess(player: PlayerObject, destination: Position, intention: Intention?) {
         context.movementManager.startMoveToTask(player, destination, intention)
+        context.gameWorld.broadCast(player.region, MoveToLocation(player, destination))
     }
 
     internal fun onMovementFail(
