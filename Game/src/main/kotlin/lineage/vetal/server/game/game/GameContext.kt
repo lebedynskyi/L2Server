@@ -13,13 +13,13 @@ import lineage.vetal.server.game.game.handler.request.auth.RequestAuthHandler
 import lineage.vetal.server.game.game.handler.request.movement.RequestMovementHandler
 import lineage.vetal.server.game.game.handler.request.world.RequestWorldHandler
 import lineage.vetal.server.game.game.manager.AnnounceManager
-import lineage.vetal.server.game.game.manager.GameWorldManager
+import lineage.vetal.server.game.game.manager.BroadcastManager
+import lineage.vetal.server.game.game.model.GameWorld
 import lineage.vetal.server.game.game.manager.InteractManager
 import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
 import lineage.vetal.server.game.game.manager.spawn.SpawnManager
-import lineage.vetal.server.game.game.task.ScheduleTask
 import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import lineage.vetal.server.game.game.task.TickTaskManager
 import lineage.vetal.server.game.xml.CharXMLReader
@@ -53,13 +53,14 @@ class GameContext {
     lateinit var gameDatabase: GameDatabase
 
     // Managers
-    lateinit var gameWorld: GameWorldManager
+    lateinit var gameWorld: GameWorld
     lateinit var spawnManager: SpawnManager
     lateinit var manorManager: ManorManager
     lateinit var movementManager: MovementManager
     lateinit var attackManager: AttackManager
     lateinit var announceManager: AnnounceManager
     lateinit var interactionManager: InteractManager
+    lateinit var broadcaster: BroadcastManager
 
     // Handlers
     lateinit var requestItemHandler: RequestItemHandler
@@ -117,13 +118,14 @@ class GameContext {
         requestMovementHandler = RequestMovementHandler(this)
 
         writeSection("Managers")
-        gameWorld = GameWorldManager(this)
+        gameWorld = GameWorld(this)
         manorManager = ManorManager(this)
         spawnManager = SpawnManager(this)
         movementManager = MovementManager(this)
         attackManager = AttackManager(this)
         announceManager = AnnounceManager(requestChatHandler, defaultAnnouncements)
         interactionManager = InteractManager(this)
+        broadcaster = BroadcastManager(this)
 
         writeSection("Tasks")
         val taskDispatcher = Dispatchers.IO

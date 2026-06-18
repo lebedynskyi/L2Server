@@ -1,19 +1,13 @@
-package lineage.vetal.server.game.game.manager
+package lineage.vetal.server.game.game.model
 
 import lineage.vetal.server.core.utils.logs.writeDebug
-import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.model.WorldRegion
 import lineage.vetal.server.game.game.model.npc.NpcObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.gameserver.GameClient
-import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
-import vetalll.server.sock.WriteablePacket
-import java.util.*
 
 // Geodata min/max tiles
 private const val TILE_X_MIN = 16
@@ -34,14 +28,12 @@ private const val REGION_SIZE = 2048
 private const val REGIONS_X = (WORLD_X_MAX - WORLD_X_MIN + 1) / REGION_SIZE
 private const val REGIONS_Y = (WORLD_Y_MAX - WORLD_Y_MIN + 1) / REGION_SIZE
 
-private const val TAG = "WorldManager"
+private const val TAG = "GameWorld"
 
-
-// TODO. It should be a model
-class GameWorldManager(
+class GameWorld(
     private val context: GameContext
 ) {
-    val players: List<PlayerObject> get() = regions.flatten().map { it.players.values }.flatten()
+    val players: List<PlayerObject> get() = regions.flatten().flatMap { it.players.values }
 
     private val regions: Array<Array<WorldRegion>> = Array(REGIONS_X) { x ->
         Array(REGIONS_Y) { y ->
@@ -57,35 +49,38 @@ class GameWorldManager(
         val oldRegion = player.region
         val newRegion = getRegion(loc)
         if (oldRegion != newRegion && newRegion != null) {
-            writeDebug(TAG, "'${player.name}' changed region from [${oldRegion.tileX},${oldRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]")
+            writeDebug(
+                TAG,
+                "'${player.name}' changed region from [${oldRegion.tileX},${oldRegion.tileY}] to [${newRegion.tileX},${newRegion.tileY}]"
+            )
 
             val oldSlice = oldRegion.slice(newRegion)
-            oldSlice.map { it.players.values}.flatten().forEach {
+            oldSlice.flatMap { it.players.values }.forEach {
                 it.sendPacket(DeleteObject(player))
             }
 
-            oldSlice.map { it.items.values }.flatten().forEach {
+            oldSlice.flatMap { it.items.values }.forEach {
                 player.sendPacket(DeleteObject(it))
             }
 
-            oldSlice.map { it.npc.values }.flatten().forEach {
+            oldSlice.flatMap { it.npc.values }.forEach {
                 player.sendPacket(DeleteObject(it))
             }
 
             val newSlice = newRegion.slice(oldRegion)
-            newSlice.map { it.players.values}.flatten().forEach {
+            newSlice.flatMap { it.players.values }.forEach {
                 it.sendPacket(CharInfo(player))
             }
 
-            newSlice.map { it.players.values }.flatten().forEach {
+            newSlice.flatMap { it.players.values }.forEach {
                 player.sendPacket(CharInfo(it))
             }
 
-            newSlice.map { it.items.values }.flatten().forEach {
+            newSlice.flatMap { it.items.values }.forEach {
                 player.sendPacket(SpawnItem(it))
             }
 
-            newSlice.map { it.npc.values }.flatten().forEach {
+            newSlice.flatMap { it.npc.values }.forEach {
                 player.sendPacket(NpcInfo(it))
             }
 
@@ -95,23 +90,13 @@ class GameWorldManager(
         }
     }
 
-    fun broadCast(packet: WriteablePacket) {
-        players.forEach { it.sendPacket(packet) }
-    }
-
-    fun broadCast(region: WorldRegion, packet: WriteablePacket) {
-        region.surround.map { it.players.values }.flatten().plus(region.players.values).forEach {
-            it.sendPacket(packet)
-        }
-    }
-
     fun onNpcAdded(npc: NpcObject) {
         getRegion(npc.position)?.addNpc(npc)
     }
 
     fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
         player.region.removePlayer(player)
-        broadCast(player.region, DeleteObject(player))
+        context.broadcaster.broadCast(player.region, DeleteObject(player))
         player.isInWorld = false
         client.player = null
 

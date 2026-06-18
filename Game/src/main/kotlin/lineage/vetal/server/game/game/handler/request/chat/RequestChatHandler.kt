@@ -4,7 +4,6 @@ import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.player.SayType
-import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.server.CreatureSay
 
 private const val TAG = "RequestChatHandler"
@@ -22,14 +21,14 @@ class RequestChatHandler(
         val sayType = SayType.entries[sayTypeId]
         val message = text.replace("\\\\n", "")
         if (sayType == SayType.HERO_VOICE) {
-            context.gameWorld.broadCast(CreatureSay(sayType, text))
+            context.broadcaster.broadCast(CreatureSay(sayType, text))
         } else {
-            context.gameWorld.broadCast(player.region, CreatureSay(player, sayType, message))
+            context.broadcaster.broadCast(player.region, CreatureSay(player, sayType, message))
         }
     }
 
     fun announce(text: String) {
-        context.gameWorld.broadCast(CreatureSay(SayType.ANNOUNCEMENT, text))
+        context.broadcaster.broadCast(CreatureSay(SayType.ANNOUNCEMENT, text))
         writeDebug(TAG, "Announce -> $text")
     }
 }

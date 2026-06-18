@@ -15,7 +15,7 @@ class MovementUseCase(
 ) {
     internal fun onMovementSuccess(player: PlayerObject, destination: Position, intention: Intention?) {
         context.movementManager.startMoveToTask(player, destination, intention)
-        context.gameWorld.broadCast(player.region, MoveToLocation(player, destination))
+        context.broadcaster.broadCast(player.region, MoveToLocation(player, destination))
     }
 
     internal fun onMovementFail(

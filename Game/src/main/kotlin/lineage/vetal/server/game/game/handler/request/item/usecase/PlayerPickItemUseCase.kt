@@ -28,7 +28,7 @@ class PlayerPickItemUseCase {
         }
 
         player.region.removeItem(item)
-        context.gameWorld.broadCast(player.region, DeleteObject(item))
+        context.broadcaster.broadCast(player.region, DeleteObject(item))
         player.sendPacket(inventoryUpdate)
     }
 

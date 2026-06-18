@@ -24,7 +24,7 @@ class PlayerUseItemUseCase {
                 }
                 affectedItems.add(item)
 
-                context.gameWorld.broadCast(player.region, UserInfo(player))
+                context.broadcaster.broadCast(player.region, UserInfo(player))
                 player.sendPacket(InventoryUpdate().apply {
                     affectedItems.forEach { onChanged(it) }
                 })

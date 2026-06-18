@@ -51,7 +51,7 @@ class RequestWorldHandler(
         player.sendPacket(region.surround.map { it.npc.values }.flatten().plus(region.npc.values).map { NpcInfo(it) })
         player.sendPacket(region.surround.map { it.items.values }.flatten().plus(region.items.values).map { SpawnItem(it) })
 
-        context.gameWorld.broadCast(region, CharInfo(player))
+        context.broadcaster.broadCast(region, CharInfo(player))
 
         region.addPlayer(player)
         context.gameDatabase.charactersDao.updateLastAccess(player.objectId, player.lastAccessTime)

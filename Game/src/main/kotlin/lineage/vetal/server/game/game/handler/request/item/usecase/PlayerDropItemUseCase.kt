@@ -39,7 +39,7 @@ class PlayerDropItemUseCase {
         } else if (itemToDrop is EquipmentObject) {
             if (itemToDrop.isEquipped) {
                 player.inventory.unEquip(itemToDrop)
-                context.gameWorld.broadCast(player.region, CharInfo(player))
+                context.broadcaster.broadCast(player.region, CharInfo(player))
                 player.sendPacket(InventoryList(player.inventory.items, false))
             }
             player.inventory.removeItem(itemToDrop)
@@ -54,7 +54,7 @@ class PlayerDropItemUseCase {
         itemToDrop.ownerId = null
         player.sendPacket(inventoryPacket)
         player.region.addItem(itemToDrop)
-        context.gameWorld.broadCast(player.region, DropItem(itemToDrop, player.objectId))
+        context.broadcaster.broadCast(player.region, DropItem(itemToDrop, player.objectId))
         context.gameDatabase.itemsDao.saveItem(itemToDrop)
     }
 

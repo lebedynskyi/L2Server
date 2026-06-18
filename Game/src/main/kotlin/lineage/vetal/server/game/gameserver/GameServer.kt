@@ -24,8 +24,6 @@ class GameServer(
     )
 
     fun startServer() {
-        gameSelector.startSelector()
-
         gameCoroutineScope.launch {
             gameSelector.connectionAcceptFlow.collect {
                packetHandler.handlePacket(it, Connected)
@@ -45,5 +43,7 @@ class GameServer(
                 packetHandler.handlePacket(client, Disconnected)
             }
         }
+
+        gameSelector.startSelector()
     }
 }
