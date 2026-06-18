@@ -17,7 +17,7 @@ class Result<out T, out E : Error> private constructor(
     }
 }
 
-inline fun <T, E : Error> Result<T, E>.onSuccess(block: (T) -> Unit): Result<T, E> {
+inline fun <T, E : Error> Result<T, E>.onValid(block: (T) -> Unit): Result<T, E> {
     if (data != null) block.invoke(data)
     return this
 }
@@ -26,4 +26,3 @@ inline fun <T, E : Error> Result<T, E>.onError(block: (E) -> Unit): Result<T, E>
     if (error != null) block.invoke(error)
     return this
 }
-

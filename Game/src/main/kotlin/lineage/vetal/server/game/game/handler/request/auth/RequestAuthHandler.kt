@@ -75,6 +75,7 @@ class RequestAuthHandler(
             return
         }
 
+        // TODO loginKey2 not used or it is wrong???
         val sessionKey = SessionKey(playKey1, playKey2, loginKey1, loginKey1)
         client.sessionKey = sessionKey
         client.account = accountInfo

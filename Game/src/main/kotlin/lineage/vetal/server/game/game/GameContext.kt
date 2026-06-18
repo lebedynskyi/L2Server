@@ -8,7 +8,7 @@ import lineage.vetal.server.game.ConfigGameServer
 import lineage.vetal.server.game.db.GameDatabase
 import lineage.vetal.server.game.game.handler.request.action.RequestActionHandler
 import lineage.vetal.server.game.game.handler.request.chat.RequestChatHandler
-import lineage.vetal.server.game.game.handler.request.item.RequestItemHandler
+import lineage.vetal.server.game.game.handler.request.item.RequestInventoryHandler
 import lineage.vetal.server.game.game.handler.request.auth.RequestAuthHandler
 import lineage.vetal.server.game.game.handler.request.movement.RequestMovementHandler
 import lineage.vetal.server.game.game.handler.request.world.RequestWorldHandler
@@ -63,7 +63,7 @@ class GameContext {
     lateinit var broadcaster: BroadcastManager
 
     // Handlers
-    lateinit var requestItemHandler: RequestItemHandler
+    lateinit var requestInventoryHandler: RequestInventoryHandler
     lateinit var requestActionHandler: RequestActionHandler
     lateinit var requestAuthHandler: RequestAuthHandler
     lateinit var requestWorldHandler: RequestWorldHandler
@@ -110,7 +110,7 @@ class GameContext {
         objectFactory = GameObjectFactory(idFactory, itemTemplates, npcTemplates, charTemplates)
 
         writeSection("Handlers")
-        requestItemHandler = RequestItemHandler(this)
+        requestInventoryHandler = RequestInventoryHandler(this)
         requestAuthHandler = RequestAuthHandler(this)
         requestWorldHandler = RequestWorldHandler(this)
         requestChatHandler = RequestChatHandler(this)

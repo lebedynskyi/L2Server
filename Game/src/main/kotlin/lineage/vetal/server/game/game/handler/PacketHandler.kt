@@ -3,7 +3,6 @@ package lineage.vetal.server.game.game.handler
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 import lineage.vetal.server.game.gameserver.packet.client.*
@@ -11,7 +10,6 @@ import lineage.vetal.server.game.gameserver.packet.server.ActionFailed
 import lineage.vetal.server.game.gameserver.packet.server.QuestList
 
 private const val TAG = "PacketHandler"
-
 
 class PacketHandler(
     private val context: GameContext
@@ -21,17 +19,23 @@ class PacketHandler(
             when (this) {
                 is Connected -> context.requestAuthHandler.onPlayerConnected(client)
                 is Disconnected -> context.requestAuthHandler.onPlayerDisconnected(client)
-                is RequestAuthLogin -> context.requestAuthHandler.requestAuthLogin(client, account, loginKey1, loginKey2, playKey1, playKey2)
+                is RequestAuthLogin -> context.requestAuthHandler.requestAuthLogin(
+                    client, account, loginKey1, loginKey2, playKey1, playKey2
+                )
+
                 is RequestProtocolVersion -> context.requestAuthHandler.requestProtocolVersion(client, version)
                 is RequestCharacterTemplates -> context.requestAuthHandler.requestCharacterTemplates(client)
-                is RequestCreateCharacter -> context.requestAuthHandler.requestCreateChar(client, name, classId, race, sex, hairStyle, hairColor, face)
+                is RequestCreateCharacter -> context.requestAuthHandler.requestCreateChar(
+                    client, name, classId, race, sex, hairStyle, hairColor, face
+                )
+
                 is RequestSelectCharacter -> context.requestAuthHandler.requestSelectChar(client, slotIndex)
                 else -> handleInGamePacket(client, packet)
             }
         }
     }
 
-    private fun handleInGamePacket(client: GameClient, packet: GameClientPacket){
+    private fun handleInGamePacket(client: GameClient, packet: GameClientPacket) {
         val player = client.player
         if (player == null) {
             writeError(TAG, "No player attached for client $client during handling packet $packet")
@@ -68,16 +72,16 @@ class PacketHandler(
                     context.requestActionHandler.onPlayerCancelAction(player, unselect)
                 }
 
-                is RequestItemList -> {
-                    context.requestItemHandler.onPlayerRequestInventory(player)
+                is RequestInventoryList -> {
+                    context.requestInventoryHandler.onPlayerRequestInventoryList(player)
                 }
 
                 is RequestUseItem -> {
-                    context.requestItemHandler.onPlayerUseItem(player, objectId, ctrlPressed)
+                    context.requestInventoryHandler.onPlayerUseItem(player, objectId, ctrlPressed)
                 }
 
                 is RequestDropItem -> {
-                    context.requestItemHandler.onPlayerDropItem(player, objectId, count, x, y, z)
+                    context.requestInventoryHandler.onPlayerDropItem(player, objectId, count, x, y, z)
                 }
 
                 is RequestMoveToLocation -> {
@@ -86,11 +90,13 @@ class PacketHandler(
                 }
 
                 is RequestValidatePosition -> {
-                    player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
+                    context.requestMovementHandler.onPlayerValidatePosition(
+                        player, currentX, currentY, currentZ, heading,
+                    )
                 }
 
                 is RequestSay2 -> {
-                    context.requestChatHandler.playerSay(player, text, typeId, targetName)
+                    context.requestChatHandler.playerSay(player, text, sayTypeId, targetName)
                 }
 
                 is RequestQuestList -> {

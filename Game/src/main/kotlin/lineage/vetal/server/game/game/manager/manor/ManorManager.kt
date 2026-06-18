@@ -10,10 +10,8 @@ private const val TAG = "ManorManager"
 class ManorManager(
     private val context: GameContext
 ) : TickTask() {
-    private val manorList: Array<String> get() = MANORS
-
     fun onPlayerRequestList(player: PlayerObject) {
-        player.sendPacket(ManorList(manorList))
+        player.sendPacket(ManorList(MANORS))
     }
 
     companion object {

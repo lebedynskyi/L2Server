@@ -1,6 +1,5 @@
 package lineage.vetal.server.game.gameserver.packet.server
 
-import jdk.jshell.Snippet.Status
 import lineage.vetal.server.game.gameserver.packet.GameServerPacket
 
 class StatusUpdate(

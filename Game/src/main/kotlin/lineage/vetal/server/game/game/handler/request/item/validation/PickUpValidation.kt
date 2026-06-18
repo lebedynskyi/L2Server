@@ -6,16 +6,14 @@ import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.utils.MathUtils
 
+private const val MAX_PICKUP_DISTANCE = 100.0
+
 class PickUpValidation {
     fun validate(
         playerObject: CreatureObject,
-        itemObject: ItemObject?
+        itemObject: ItemObject
     ): Result<ItemObject, PickUpValidationError> {
-        if (itemObject == null) {
-            return Result.error(PickUpValidationError.NotExist)
-        }
-
-        if (!MathUtils.isWithinRadius(playerObject.position, itemObject.position, 100.0)) {
+        if (!MathUtils.isWithinRadius(playerObject.position, itemObject.position, MAX_PICKUP_DISTANCE)) {
             return Result.error(PickUpValidationError.ToFar(itemObject))
         }
         return Result.success(itemObject)
@@ -23,6 +21,5 @@ class PickUpValidation {
 }
 
 sealed interface PickUpValidationError : Error {
-    data object NotExist : PickUpValidationError
     data class ToFar(val targetItem: ItemObject) : PickUpValidationError
 }

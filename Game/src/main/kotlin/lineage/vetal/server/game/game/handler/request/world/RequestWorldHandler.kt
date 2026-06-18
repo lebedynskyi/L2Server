@@ -8,7 +8,7 @@ import lineage.vetal.server.game.game.handler.request.world.validation.RestartVa
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.player.SayType
 import lineage.vetal.server.game.game.onError
-import lineage.vetal.server.game.game.onSuccess
+import lineage.vetal.server.game.game.onValid
 import lineage.vetal.server.game.gameserver.GameClient
 import lineage.vetal.server.game.gameserver.GameClientState
 import lineage.vetal.server.game.gameserver.packet.server.*
@@ -19,7 +19,6 @@ private const val TAG = "RequestWorldHandler"
 class RequestWorldHandler(
     private val context: GameContext,
     private val restartValidation: RestartValidation = RestartValidation(),
-
     private val restartUseCase: RestartUseCase = RestartUseCase(context)
 ) {
     fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
@@ -41,7 +40,7 @@ class RequestWorldHandler(
 
         // could be done by another managers..
         player.sendPacket(UserInfo(player))
-        context.requestItemHandler.onPlayerRequestInventory(player)
+        context.requestInventoryHandler.onPlayerRequestInventoryList(player)
         player.sendPacket(QuestList())
 
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
@@ -59,7 +58,7 @@ class RequestWorldHandler(
     }
 
     fun onPlayerRequestRestart(client: GameClient, player: PlayerObject) {
-        restartValidation.validate(player).onSuccess {
+        restartValidation.validate(player).onValid {
             restartUseCase.onRestartSuccess(player, client)
         }.onError {
             restartUseCase.onRestartFailed(player, client, it)

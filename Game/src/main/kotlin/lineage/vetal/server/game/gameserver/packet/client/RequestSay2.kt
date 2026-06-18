@@ -5,13 +5,13 @@ import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 
 class RequestSay2 : GameClientPacket() {
     lateinit var text: String
-    var typeId: Int = -1
+    var sayTypeId: Int = -1
     var targetName: String? = null
 
     override fun read() {
         text = readS()
-        typeId = readD()
-        if (typeId == SayType.TELL.ordinal) {
+        sayTypeId = readD()
+        if (sayTypeId == SayType.TELL.ordinal) {
             targetName = readS()
         }
     }

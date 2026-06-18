@@ -14,7 +14,7 @@ class MovementUseCase(
     private val context: GameContext
 ) {
     internal fun onMovementSuccess(player: PlayerObject, destination: Position, intention: Intention?) {
-        context.movementManager.startMoveToTask(player, destination, intention)
+        context.movementManager.startMovement(player, destination, intention)
         context.broadcaster.broadCast(player.region, MoveToLocation(player, destination))
     }
 

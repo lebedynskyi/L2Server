@@ -30,7 +30,6 @@ class InteractionValidation {
 
 sealed interface InteractionValidationError : Error {
     data class ToFar(val target: CreatureObject) : InteractionValidationError
-
     data object TargetNoExist : InteractionValidationError
     data object PlayerDead : InteractionValidationError
 }

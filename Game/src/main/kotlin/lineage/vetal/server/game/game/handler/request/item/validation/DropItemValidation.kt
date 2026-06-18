@@ -7,7 +7,9 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.utils.MathUtils
 
-class DropItemValidation{
+private const val MAX_DROP_DISTANCE = 100.0
+
+class DropItemValidation {
     fun validate(
         player: PlayerObject,
         objectId: Int,
@@ -38,7 +40,7 @@ class DropItemValidation{
             return Result.error(DropItemValidationError.PlayerAlikeDead)
         }
 
-        if (!MathUtils.isWithinRadius(player.position, Position(x, y, z), 100.0)) {
+        if (!MathUtils.isWithinRadius(player.position, Position(x, y, z), MAX_DROP_DISTANCE)) {
             return Result.error(DropItemValidationError.ToFar)
         }
 

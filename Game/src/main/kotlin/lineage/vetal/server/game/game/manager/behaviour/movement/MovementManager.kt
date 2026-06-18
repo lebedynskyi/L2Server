@@ -12,8 +12,7 @@ class MovementManager(
     private val context: GameContext,
     private val moveToUseCase: BehaviourMoveToUseCase = BehaviourMoveToUseCase()
 ) : BehaviourManager(context) {
-
-    fun startMoveToTask(creature: CreatureObject, destination: Position, intention: Intention? = null) {
+    fun startMovement(creature: CreatureObject, destination: Position, intention: Intention? = null) {
         val moveData = MoveData(destination, context.clock.millis())
         val newIntent = Intention.MOVE_TO(moveData)
         creature.behaviour.setIntention(newIntent, intention)

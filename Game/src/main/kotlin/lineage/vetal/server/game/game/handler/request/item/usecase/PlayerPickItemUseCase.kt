@@ -1,13 +1,20 @@
 package lineage.vetal.server.game.game.handler.request.item.usecase
 
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
+import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidationError
+import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.gameserver.packet.server.DeleteObject
 import lineage.vetal.server.game.gameserver.packet.server.InventoryUpdate
 
-class PlayerPickItemUseCase {
+private const val TAG = "PlayerPickItemUseCase"
+
+class PlayerPickItemUseCase(
+    private val gameContext: GameContext,
+) {
     internal fun onPlayerPickUpItemSuccess(context: GameContext, player: PlayerObject, item: ItemObject) {
         // TODO validation of position, owner and etc etc
         // TODO a lot of conditions here. delay and Move to item
@@ -32,7 +39,19 @@ class PlayerPickItemUseCase {
         player.sendPacket(inventoryUpdate)
     }
 
-    internal fun onPlayerPickItemFailed(reason: Error) {
+    internal fun onPlayerPickItemFailed(reason: PickUpValidationError, player: PlayerObject) {
+        when (reason) {
+            is PickUpValidationError.ToFar -> {
+                gameContext.requestMovementHandler.onPlayerStartMovement(
+                    player,
+                    reason.targetItem.position,
+                    Intention.PICK(reason.targetItem)
+                )
+            }
 
+            else -> {
+                writeDebug(TAG, "Not handle pickup fail with reason -> $reason")
+            }
+        }
     }
 }

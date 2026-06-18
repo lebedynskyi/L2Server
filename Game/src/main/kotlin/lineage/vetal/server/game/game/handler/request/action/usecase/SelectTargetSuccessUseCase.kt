@@ -9,9 +9,9 @@ import lineage.vetal.server.game.gameserver.packet.server.TargetSelected
 
 class SelectTargetSuccessUseCase {
     internal fun onSelectTargetSuccess(player: PlayerObject, target: CreatureObject) {
-        val playerPos = player.position
         player.target = target
 
+        val playerPos = player.position
         val targetSelection = TargetSelected(player.objectId, target.objectId, playerPos.x, playerPos.y, playerPos.z)
         val targetStatus = StatusUpdate(
             target.objectId,
