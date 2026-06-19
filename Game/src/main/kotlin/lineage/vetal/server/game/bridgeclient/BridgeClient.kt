@@ -18,7 +18,7 @@ class BridgeClient(
         BridgeGameClientFactory(),
         clientReconnectDelay = TimeUnit.SECONDS.toMillis(3),
         isServer = false,
-        TAG = "BridgeClientSelector"
+        tag = "BridgeClientSelector"
     )
 
     fun startClient() {

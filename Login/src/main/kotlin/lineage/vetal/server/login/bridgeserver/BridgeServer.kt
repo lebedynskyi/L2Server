@@ -16,7 +16,7 @@ class BridgeServer(
         context.loginConfig.bridgeServer.port,
         BridgeFactory(),
         isServer = true,
-        TAG = "BridgeServerSelector"
+        tag = "BridgeServerSelector"
     )
 
     fun startServer() {

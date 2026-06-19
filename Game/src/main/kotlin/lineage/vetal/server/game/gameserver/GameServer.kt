@@ -20,7 +20,7 @@ class GameServer(
         gameConfig.serverInfo.port,
         GameClientFactory(),
         isServer = true,
-        TAG = "GameServerSelector"
+        tag = "GameServerSelector"
     )
 
     fun startServer() {
