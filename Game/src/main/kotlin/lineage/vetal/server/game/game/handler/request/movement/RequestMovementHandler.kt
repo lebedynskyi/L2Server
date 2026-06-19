@@ -30,6 +30,6 @@ class RequestMovementHandler(
 
     fun onPlayerValidatePosition(player: PlayerObject, currentX: Int, currentY: Int, currentZ: Int, heading: Int) {
         writeDebug(TAG, "${player.name} Client pos={x=$currentX, y=$currentY, z=$currentZ, h=$heading}")
-        player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
+//        player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
     }
 }

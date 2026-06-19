@@ -1,9 +1,24 @@
 package lineage.vetal.server.game.game.utils
 
 import lineage.vetal.server.game.game.model.position.Position
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
+// 65536 / 360 - converts degrees into the client's 16 bit heading space
+private const val HEADINGS_IN_DEGREE = 182.04444444444444
+
 object MathUtils {
+    /**
+     * Calculates the client heading (0..65535) pointing from [from] towards [to].
+     */
+    fun calculateHeadingFrom(from: Position, to: Position): Int {
+        var angle = Math.toDegrees(atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble()))
+        if (angle < 0) {
+            angle += 360.0
+        }
+        return (angle * HEADINGS_IN_DEGREE).toInt()
+    }
+
     fun isWithinRadius(position: Position, destination: Position, radius: Double): Boolean {
         // Calculate the Euclidean distance between position and destination
         val distance = sqrt(

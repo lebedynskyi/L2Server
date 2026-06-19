@@ -6,10 +6,9 @@ import lineage.vetal.server.game.game.model.behaviour.data.MoveData
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.model.position.Position
 import lineage.vetal.server.game.game.model.position.SpawnPosition
-import lineage.vetal.server.game.game.utils.MathUtils
-import kotlin.math.sqrt
+import lineage.vetal.server.game.gameserver.packet.server.ValidateLocation
+import kotlin.math.roundToInt
 
 private const val TAG = "BehaviourMoveToUseCase"
 
@@ -19,72 +18,63 @@ class BehaviourMoveToUseCase {
     }
 
     private fun updatePosition(context: GameContext, creature: CreatureObject, movement: MoveData): Boolean {
-        val ms = creature.stats.getMoveSpeed()
-        val previous = creature.position
-        val destination = movement.destination
-        // TODO in Lucera originally delta time is 360 millis
         val time = context.clock.millis()
-        val current = calculatePosition(previous, destination, ms, (time - movement.lastTime))
-        // TODO heading calculation..
-        creature.position = SpawnPosition(current.x, current.y, current.z, creature.position.heading)
-
-        if (current == destination) {
-            return true
-        } else {
-            movement.lastTime = time
-        }
+        val arrived = isArrived(creature, movement, time)
+        creature.position = calculatePosition(creature, movement, time, arrived)
 
         // TODO where to put this logic
         if (creature is PlayerObject) {
             context.gameWorld.onPlayerPositionChanged(creature, creature.position)
             writeDebug(TAG, "${creature.name} Server pos=${creature.position}")
-//             TODO how often save position ?
-//            context.gameDatabase.charactersDao.updateCoordinates(creature.objectId, creature.position)
-//             TODO how often validate position ?
-//            creature.sendPacket(ValidateLocation(creature))
+            // TODO how often save position ?
+            // context.gameDatabase.charactersDao.updateCoordinates(creature.objectId, creature.position)
         }
-        return false
+
+        // Re-sync everyone (including the moving client) to the authoritative position once the
+        // move is finished, so any client side prediction drift collapses without rubber-banding
+        // the player mid-move.
+        if (arrived) {
+            context.broadcaster.broadCast(creature.region, ValidateLocation(creature))
+        }
+        return arrived
     }
 
+    private fun isArrived(creature: CreatureObject, movement: MoveData, time: Long): Boolean {
+        if (movement.totalDistance <= 0.0) {
+            return true
+        }
+        val speed = creature.stats.getMoveSpeed()
+        val distancePassed = speed * (time - movement.moveStartTime) / 1000.0
+        return distancePassed >= movement.totalDistance
+    }
+
+    /**
+     * Computes the absolute position by interpolating from the fixed [MoveData.origin] using the
+     * total elapsed time since the move started. Because it always interpolates from the unchanging
+     * origin, sub-unit rounding is applied fresh each tick and never accumulates into drift, so the
+     * server keeps pace with the client instead of slowly falling behind.
+     */
     private fun calculatePosition(
-        current: Position,
-        destination: Position,
-        speed: Double,
-        deltaTimeMillis: Long
-    ): Position {
-        val dx: Int = (destination.x - current.x)
-        val dy: Int = (destination.y - current.y)
-        val dz: Int = (destination.z - current.z)
-
-        var delta: Double = (dx * dx + dy * dy) * 1.0
-
-        // close enough, allows error between client and server geodata if it cannot be avoided
-        // should not be applied on vertical movements in water or during flight. Add check for water and
-        delta = if (delta < 10000 && (dz * dz > 2500)) sqrt(delta) else sqrt(delta + dz * dz)
-
-        var distFraction = Double.MAX_VALUE
-        if (delta > 1) {
-            val distPassed: Double = (speed * deltaTimeMillis) / 1000
-            distFraction = distPassed / delta
+        creature: CreatureObject,
+        movement: MoveData,
+        time: Long,
+        arrived: Boolean
+    ): SpawnPosition {
+        val destination = movement.destination
+        if (arrived) {
+            return SpawnPosition(destination.x, destination.y, destination.z, movement.heading)
         }
 
-        // already there, Set the position of the Creature to the destination
-        if (distFraction > 1) {
-            return destination
-        }
+        val origin = movement.origin
+        val speed = creature.stats.getMoveSpeed()
+        val distancePassed = speed * (time - movement.moveStartTime) / 1000.0
+        val fraction = distancePassed / movement.totalDistance
 
-        val newPos = Position(
-            current.x + ((dx * distFraction)).toInt(),
-            current.y + ((dy * distFraction)).toInt(),
-            current.z + ((dz * distFraction) + 0.5).toInt()
+        return SpawnPosition(
+            origin.x + ((destination.x - origin.x) * fraction).roundToInt(),
+            origin.y + ((destination.y - origin.y) * fraction).roundToInt(),
+            origin.z + ((destination.z - origin.z) * fraction).roundToInt(),
+            movement.heading
         )
-
-        return if (MathUtils.isWithinRadius(current, destination, 10.0)) {
-            destination
-        } else if (MathUtils.hasExceededDestination(current, destination, newPos)) {
-            destination
-        } else {
-            newPos
-        }
     }
 }
