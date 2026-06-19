@@ -45,58 +45,56 @@ class GamePacketHandler(
 
         with(packet) {
             when (this) {
-                //TODO. Game world should became a manager. It is good to handle these request
                 is RequestEnterWorld -> {
-                    context.requestWorldHandler.onPlayerEnterWorld(client, player)
+                    context.requestWorldHandler.onRequestEnterWorld(client, player)
                 }
 
                 is RequestRestart -> {
-                    context.requestWorldHandler.onPlayerRequestRestart(client, player)
+                    context.requestWorldHandler.onRequestRestart(client, player)
                 }
 
                 is RequestQuit -> {
-                    context.requestWorldHandler.onPlayerRequestQuit(client, player)
+                    context.requestWorldHandler.onRequestQuit(client, player)
                 }
 
                 is RequestAction -> {
-                    context.requestActionHandler.onPlayerAction(player, actionObjectId)
+                    context.requestActionHandler.onRequestAction(player, actionObjectId)
                     client.sendPacket(ActionFailed.STATIC_PACKET)
                 }
 
                 is RequestAttack -> {
-                    context.requestActionHandler.onPlayerAction(player, objectId)
+                    context.requestActionHandler.onRequestAction(player, objectId)
                     player.sendPacket(ActionFailed.STATIC_PACKET)
                 }
 
                 is RequestCancelAction -> {
-                    context.requestActionHandler.onPlayerCancelAction(player, unselect)
+                    context.requestActionHandler.onRequestCancelAction(player, unselect)
                 }
 
                 is RequestInventoryList -> {
-                    context.requestInventoryHandler.onPlayerRequestInventoryList(player)
+                    context.requestInventoryHandler.onRequestInventoryList(player)
                 }
 
                 is RequestUseItem -> {
-                    context.requestInventoryHandler.onPlayerUseItem(player, objectId, ctrlPressed)
+                    context.requestInventoryHandler.onRequestUseItem(player, objectId, ctrlPressed)
                 }
 
                 is RequestDropItem -> {
-                    context.requestInventoryHandler.onPlayerDropItem(player, objectId, count, x, y, z)
+                    context.requestInventoryHandler.onRequestDropItem(player, objectId, count, x, y, z)
                 }
 
                 is RequestMoveToLocation -> {
-                    val destination = Position(targetX, targetY, targetZ)
-                    context.requestMovementHandler.onPlayerStartMovement(player, destination)
+                    context.requestMovementHandler.onRequestMoveTo(player, Position(targetX, targetY, targetZ))
                 }
 
                 is RequestValidatePosition -> {
-                    context.requestMovementHandler.onPlayerValidatePosition(
-                        player, currentX, currentY, currentZ, heading,
+                    context.requestMovementHandler.onRequestValidatePosition(
+                        player, Position(currentX, currentY, currentZ), heading,
                     )
                 }
 
                 is RequestSay2 -> {
-                    context.requestChatHandler.playerSay(player, text, sayTypeId, targetName)
+                    context.requestChatHandler.onRequestSay(player, text, sayTypeId, targetName)
                 }
 
                 is RequestQuestList -> {
@@ -104,7 +102,7 @@ class GamePacketHandler(
                 }
 
                 is RequestManorList -> {
-                    context.manorManager.onPlayerRequestList(player)
+                    context.manorManager.onRequestManorList(player)
                 }
             }
         }

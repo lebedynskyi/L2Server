@@ -24,16 +24,16 @@ class RequestActionHandler(
     private val selectTargetSuccessUseCase: SelectTargetSuccessUseCase = SelectTargetSuccessUseCase(),
     private val playerPickItemUseCase: PlayerPickItemUseCase = PlayerPickItemUseCase(context),
 ) {
-    fun onPlayerAction(player: PlayerObject, objectId: Int) {
+    fun onRequestAction(player: PlayerObject, objectId: Int) {
         val item = player.region.getVisibleItem(objectId)
         if (item != null) {
-            onPlayerPickUpItem(player, item)
+            onRequestPickUp(player, item)
         } else {
             onPlayerSelect(player, objectId)
         }
     }
 
-    fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject) {
+    fun onRequestPickUp(player: PlayerObject, item: ItemObject) {
         pickUpValidation.validate(player, item)
             .onValid {
                 playerPickItemUseCase.onPlayerPickUpItemSuccess(context, player, item)
@@ -42,7 +42,7 @@ class RequestActionHandler(
             }
     }
 
-    fun onPlayerCancelAction(player: PlayerObject, unselect: Int) {
+    fun onRequestCancelAction(player: PlayerObject, unselect: Int) {
         // TODO check unselect and check cast. trade and etc
         if (player.target != null) {
             player.target = null

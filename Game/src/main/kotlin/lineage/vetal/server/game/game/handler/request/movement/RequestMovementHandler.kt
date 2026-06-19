@@ -7,7 +7,6 @@ import lineage.vetal.server.game.game.handler.request.movement.validation.Moveme
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.model.position.Position
-import lineage.vetal.server.game.game.model.position.SpawnPosition
 import lineage.vetal.server.game.game.onError
 import lineage.vetal.server.game.game.onValid
 
@@ -19,7 +18,7 @@ class RequestMovementHandler(
 
     private val movementUseCase: MovementUseCase = MovementUseCase(context)
 ) {
-    fun onPlayerStartMovement(player: PlayerObject, destination: Position, intention: Intention? = null) {
+    fun onRequestMoveTo(player: PlayerObject, destination: Position, intention: Intention? = null) {
         movementValidation.validate(player, destination)
             .onValid {
                 movementUseCase.onMovementSuccess(player, destination, intention)
@@ -28,8 +27,7 @@ class RequestMovementHandler(
             }
     }
 
-    fun onPlayerValidatePosition(player: PlayerObject, currentX: Int, currentY: Int, currentZ: Int, heading: Int) {
-        writeDebug(TAG, "${player.name} Client pos={x=$currentX, y=$currentY, z=$currentZ, h=$heading}")
-//        player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
+    fun onRequestValidatePosition(player: PlayerObject, position: Position, heading: Int) {
+        writeDebug(TAG, "${player.name} Client pos={x=${position.x}, y=${position.y}, z=${position.z}, h=$heading}")
     }
 }

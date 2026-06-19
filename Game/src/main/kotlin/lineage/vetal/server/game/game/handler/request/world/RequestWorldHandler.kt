@@ -21,7 +21,7 @@ class RequestWorldHandler(
     private val restartValidation: RestartValidation = RestartValidation(),
     private val restartUseCase: RestartUseCase = RestartUseCase(context)
 ) {
-    fun onPlayerEnterWorld(client: GameClient, player: PlayerObject) {
+    fun onRequestEnterWorld(client: GameClient, player: PlayerObject) {
         val region = context.gameWorld.getRegion(player.position.x, player.position.y)
         if (region == null) {
             writeError(TAG, "No region found for player ${player.name} and position ${player.position}")
@@ -40,15 +40,15 @@ class RequestWorldHandler(
 
         // could be done by another managers..
         player.sendPacket(UserInfo(player))
-        context.requestInventoryHandler.onPlayerRequestInventoryList(player)
+        context.requestInventoryHandler.onRequestInventoryList(player)
         player.sendPacket(QuestList())
 
         player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
 
         // TODO move to function to use it here.. visiblePlayers, visibleItems etc.
-        player.sendPacket(region.surround.map { it.players.values }.flatten().plus(region.players.values).map { CharInfo(it) })
-        player.sendPacket(region.surround.map { it.npc.values }.flatten().plus(region.npc.values).map { NpcInfo(it) })
-        player.sendPacket(region.surround.map { it.items.values }.flatten().plus(region.items.values).map { SpawnItem(it) })
+        player.sendPacket(region.surround.flatMap { it.players.values }.plus(region.players.values).map { CharInfo(it) })
+        player.sendPacket(region.surround.flatMap { it.npc.values }.plus(region.npc.values).map { NpcInfo(it) })
+        player.sendPacket(region.surround.flatMap { it.items.values }.plus(region.items.values).map { SpawnItem(it) })
 
         context.broadcaster.broadCast(region, CharInfo(player))
 
@@ -57,7 +57,9 @@ class RequestWorldHandler(
         writeDebug(TAG, "Player enter world. ${player.name} -> ${player.id}")
     }
 
-    fun onPlayerRequestRestart(client: GameClient, player: PlayerObject) {
+    fun onRequestRestart(client: GameClient, player: PlayerObject) {
+        writeDebug(TAG, "${player.name} request restart")
+
         restartValidation.validate(player).onValid {
             restartUseCase.onRestartSuccess(player, client)
         }.onError {
@@ -65,14 +67,16 @@ class RequestWorldHandler(
         }
     }
 
-    fun onPlayerRequestQuit(client: GameClient, player: PlayerObject) {
+    fun onRequestQuit(client: GameClient, player: PlayerObject) {
+        writeDebug(TAG, "${player.name} request quit")
+
         if (!player.isInWorld) {
             client.saveAndClose()
             writeError(TAG, "Not active player asked for quit. Disconnect after LeaveWorld")
         } else {
             context.gameWorld.removePlayerFromWorld(client, player)
-            client.saveAndClose(Logout(player.name))
-//            client.saveAndClose(LeaveWorld())
+            client.sendPacket(Logout(player.name))
+            client.saveAndClose(LeaveWorld())
         }
     }
 

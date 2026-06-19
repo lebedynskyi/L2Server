@@ -11,7 +11,7 @@ private const val TAG = "RequestChatHandler"
 class RequestChatHandler(
     private val context: GameContext,
 ) {
-    fun playerSay(player: PlayerObject, text: String, sayTypeId: Int, targetName: String?) {
+    fun onRequestSay(player: PlayerObject, text: String, sayTypeId: Int, targetName: String?) {
         if (sayTypeId < 0 || sayTypeId > SayType.entries.size) return
         if (text.isBlank() || text.length > 100) return
 

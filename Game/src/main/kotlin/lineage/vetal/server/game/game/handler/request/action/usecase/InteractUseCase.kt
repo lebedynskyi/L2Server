@@ -35,7 +35,7 @@ class InteractUseCase(
                     Intention.INTERACT(TargetData(reason.target))
                 }
 
-                context.requestMovementHandler.onPlayerStartMovement(player, reason.target.position, intention)
+                context.requestMovementHandler.onRequestMoveTo(player, reason.target.position, intention)
             }
 
             else -> {

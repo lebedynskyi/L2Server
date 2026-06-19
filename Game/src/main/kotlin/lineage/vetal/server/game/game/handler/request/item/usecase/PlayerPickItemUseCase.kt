@@ -42,7 +42,7 @@ class PlayerPickItemUseCase(
     internal fun onPlayerPickItemFailed(reason: PickUpValidationError, player: PlayerObject) {
         when (reason) {
             is PickUpValidationError.ToFar -> {
-                gameContext.requestMovementHandler.onPlayerStartMovement(
+                gameContext.requestMovementHandler.onRequestMoveTo(
                     player,
                     reason.targetItem.position,
                     Intention.PICK(reason.targetItem)

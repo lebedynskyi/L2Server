@@ -43,9 +43,9 @@ abstract class BehaviourManager(
         when (intention) {
             is Intention.REST -> {}
             is Intention.CAST -> {}
-            is Intention.PICK -> context.requestActionHandler.onPlayerPickUpItem(player, intention.data)
-            is Intention.ATTACK -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
-            is Intention.INTERACT -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
+            is Intention.PICK -> context.requestActionHandler.onRequestPickUp(player, intention.data)
+            is Intention.ATTACK -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
+            is Intention.INTERACT -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
             is Intention.FOLLOW -> {}
             else -> {}
         }

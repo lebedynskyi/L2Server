@@ -1,6 +1,7 @@
 package lineage.vetal.server.game.game.model
 
 import lineage.vetal.server.core.utils.logs.writeDebug
+import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.model.npc.NpcObject
@@ -91,7 +92,12 @@ class GameWorld(
     }
 
     fun onNpcAdded(npc: NpcObject) {
-        getRegion(npc.position)?.addNpc(npc)
+        val region = getRegion(npc.position)
+        if (region != null) {
+            region.addNpc(npc)
+        }else {
+            writeError(TAG, "Npc ${npc.name} is unknown region for position ${npc.position}")
+        }
     }
 
     fun removePlayerFromWorld(client: GameClient, player: PlayerObject) {
