@@ -39,7 +39,7 @@ class GamePacketHandler(
         val player = client.player
         if (player == null) {
             writeError(TAG, "No player attached for client $client during handling packet $packet")
-            client.saveAndClose()
+            client.close()
             return
         }
 

@@ -28,7 +28,7 @@ class LoginLobby(
             client.sendInitPacket()
         } else {
             writeInfo(TAG, "Lobby is full. reject client")
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+            client.close(LoginFail.REASON_ACCESS_FAILED)
         }
     }
 
@@ -42,13 +42,13 @@ class LoginLobby(
             client.sendPacket(GGAuth(client.sessionId))
         } else {
             removeConnectedClient(client)
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+            client.close(LoginFail.REASON_ACCESS_FAILED)
         }
     }
 
     fun requestLoginAuth(client: LoginClient, login: String, password: String) {
         if (client.loginState != LoginState.AUTH_GG) {
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+            client.close(LoginFail.REASON_ACCESS_FAILED)
             removeConnectedClient(client)
             return
         }
@@ -61,15 +61,15 @@ class LoginLobby(
         }
 
         if (accountInfo?.account != login || accountInfo.password != password) {
-            client.saveAndClose(LoginFail.REASON_USER_OR_PASS_WRONG)
+            client.close(LoginFail.REASON_USER_OR_PASS_WRONG)
             removeConnectedClient(client)
             return
         }
 
         if (hasConnectedClient(accountInfo)) {
             writeDebug(TAG, "Account already in use $accountInfo")
-            client.saveAndClose(LoginFail.REASON_ACCOUNT_IN_USE)
-            client.saveAndClose()
+            client.close(LoginFail.REASON_ACCOUNT_IN_USE)
+            client.close()
             return
         }
 
@@ -88,7 +88,7 @@ class LoginLobby(
 
     fun requestServerList(client: LoginClient, sessionKey1: Int, sessionKey2: Int) {
         if (client.sessionKey?.loginOkID1 != sessionKey1 || client.sessionKey?.loginOkID2 != sessionKey2) {
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+            client.close(LoginFail.REASON_ACCESS_FAILED)
             removeConnectedClient(client)
             return
         }
@@ -101,7 +101,7 @@ class LoginLobby(
         if (key != null) {
             client.sendPacket(PlayOk(key.playOkID1, key.playOkID2))
         } else {
-            client.saveAndClose(LoginFail.REASON_ACCESS_FAILED)
+            client.close(LoginFail.REASON_ACCESS_FAILED)
         }
     }
 

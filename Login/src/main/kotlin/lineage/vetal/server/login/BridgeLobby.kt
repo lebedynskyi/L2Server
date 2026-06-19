@@ -21,7 +21,7 @@ class BridgeLobby(
             client.sendPacket(InitOK())
         } else {
             writeInfo(TAG, "Unknown server in requestInit. Close connection")
-            client.saveAndClose()
+            client.close()
         }
     }
 
@@ -33,7 +33,7 @@ class BridgeLobby(
             writeInfo(TAG, "Server status updated $serverStatus")
         } else {
             writeInfo(TAG, "Unknown server in requestUpdate. Close connection")
-            client.saveAndClose()
+            client.close()
         }
     }
 
@@ -45,7 +45,7 @@ class BridgeLobby(
             writeInfo(TAG, "Server with id ${serverStatus.id} status updated $serverStatus")
         } else {
             writeInfo(TAG, "Unknown server in requestUpdate. Close connection")
-            client.saveAndClose()
+            client.close()
         }
     }
 

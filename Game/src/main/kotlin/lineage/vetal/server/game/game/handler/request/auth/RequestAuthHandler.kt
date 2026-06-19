@@ -43,7 +43,7 @@ class RequestAuthHandler(
     fun onBridgeInitOk(client: BridgeClient) {
         val serverStatus = client.serverInfo?.status
         if (serverStatus == null) {
-            client.saveAndClose()
+            client.close()
             writeInfo("InitOK", "Status is null. Close connection")
             return
         }
@@ -71,7 +71,7 @@ class RequestAuthHandler(
         writeInfo(TAG, "Account connected $account")
         val accountInfo = context.gameDatabase.accountDao.findAccount(account)
         if (accountInfo == null) {
-            client.saveAndClose()
+            client.close()
             return
         }
 
@@ -187,7 +187,7 @@ class RequestAuthHandler(
         val slot = client.characterSlots.getOrNull(slotIndex)
         if (slot == null) {
             writeError(TAG, "Unable to select character for account ${client.account.account}. No slot found")
-            client.saveAndClose()
+            client.close()
             return
         }
 
@@ -208,7 +208,7 @@ class RequestAuthHandler(
 
         if (player == null) {
             writeError(TAG, "Unable to select character for account ${client.account.account}. Cannot find player")
-            client.saveAndClose()
+            client.close()
             return
         }
 
@@ -230,7 +230,7 @@ class RequestAuthHandler(
             746 -> client.sendInitPacket()
             else -> {
                 writeInfo("PROTOCOL", "Unknown protocol version $version")
-                client.saveAndClose()
+                client.close()
             }
         }
     }

@@ -25,8 +25,8 @@ class GameClient(
         connection.sendInitPacket()
     }
 
-    override fun saveAndClose(reason: WriteablePacket?) {
-        super.saveAndClose(reason ?: ServerClose.STATIC_PACKET)
+    override fun close(reason: WriteablePacket?) {
+        super.close(reason ?: ServerClose.STATIC_PACKET)
     }
 }
 

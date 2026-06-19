@@ -25,7 +25,7 @@ class RequestWorldHandler(
         val region = context.gameWorld.getRegion(player.position.x, player.position.y)
         if (region == null) {
             writeError(TAG, "No region found for player ${player.name} and position ${player.position}")
-            player.client?.saveAndClose(LeaveWorld())
+            player.client?.close(LeaveWorld())
             return
         }
 
@@ -71,12 +71,12 @@ class RequestWorldHandler(
         writeDebug(TAG, "${player.name} request quit")
 
         if (!player.isInWorld) {
-            client.saveAndClose()
+            client.close()
             writeError(TAG, "Not active player asked for quit. Disconnect after LeaveWorld")
         } else {
             context.gameWorld.removePlayerFromWorld(client, player)
             client.sendPacket(Logout(player.name))
-            client.saveAndClose(LeaveWorld())
+            client.close(LeaveWorld())
         }
     }
 
