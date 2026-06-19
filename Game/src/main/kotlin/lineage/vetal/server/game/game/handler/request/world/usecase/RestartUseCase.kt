@@ -13,8 +13,8 @@ class RestartUseCase(
     internal fun onRestartSuccess(player: PlayerObject, client: GameClient) {
         client.clientState = GameClientState.LOBBY
         client.sendPacket(RestartResponse.STATIC_PACKET_OK)
-        context.requestAuthHandler.onCharSlotSelection(client)
         context.gameWorld.removePlayerFromWorld(client, player)
+        context.requestAuthHandler.onCharSlotSelection(client)
     }
 
     internal fun onRestartFailed(player: PlayerObject, client: GameClient, reason: RestartValidationError) {

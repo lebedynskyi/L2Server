@@ -15,6 +15,7 @@ import lineage.vetal.server.game.gameserver.packet.server.*
 import java.util.*
 
 private const val TAG = "RequestWorldHandler"
+private const val HELLO_WORLD_MSG = "Welcome in Vetalll L2 World"
 
 class RequestWorldHandler(
     private val context: GameContext,
@@ -38,12 +39,12 @@ class RequestWorldHandler(
         player.stats.isRunning = true
         player.region = region
 
-        // could be done by another managers..
+        // could be done by another managers.
         player.sendPacket(UserInfo(player))
         context.requestInventoryHandler.onRequestInventoryList(player)
         player.sendPacket(QuestList())
 
-        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, "Welcome in Vetalll L2 World"))
+        player.sendPacket(CreatureSay(SayType.ANNOUNCEMENT, HELLO_WORLD_MSG))
 
         // TODO move to function to use it here.. visiblePlayers, visibleItems etc.
         player.sendPacket(region.surround.flatMap { it.players.values }.plus(region.players.values).map { CharInfo(it) })
