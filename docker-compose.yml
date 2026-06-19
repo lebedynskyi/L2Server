@@ -1,0 +1,26 @@
+services:
+  l2db:
+    image: mariadb:10.11
+    container_name: l2db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: det4Deb5
+      MARIADB_DATABASE: l2db
+      MARIADB_USER: l2
+      MARIADB_PASSWORD: l2pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - l2db-data:/var/lib/mysql
+      - ./data/sql/login/accounts.sql:/docker-entrypoint-initdb.d/00-accounts.sql
+      - ./data/sql/game/characters.sql:/docker-entrypoint-initdb.d/01-characters.sql
+      - ./data/sql/game/items.sql:/docker-entrypoint-initdb.d/02-items.sql
+      - ./data/sql/game/spawnlist.sql:/docker-entrypoint-initdb.d/03-spawnlist.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  l2db-data:

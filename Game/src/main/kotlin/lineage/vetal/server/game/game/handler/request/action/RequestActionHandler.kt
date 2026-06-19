@@ -5,6 +5,8 @@ import lineage.vetal.server.game.game.handler.request.action.usecase.InteractUse
 import lineage.vetal.server.game.game.handler.request.action.validation.InteractionValidation
 import lineage.vetal.server.game.game.handler.request.action.usecase.SelectTargetSuccessUseCase
 import lineage.vetal.server.game.game.handler.request.action.validation.SelectTargetValidation
+import lineage.vetal.server.game.game.handler.request.item.usecase.PlayerPickItemUseCase
+import lineage.vetal.server.game.game.handler.request.item.validation.PickUpValidation
 import lineage.vetal.server.game.game.model.item.ItemObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 import lineage.vetal.server.game.game.onError
@@ -17,8 +19,10 @@ class RequestActionHandler(
     private val context: GameContext,
     private val interactionValidation: InteractionValidation = InteractionValidation(),
     private val selectTargetValidation: SelectTargetValidation = SelectTargetValidation(),
+    private val pickUpValidation: PickUpValidation = PickUpValidation(),
     private val interactUseCase: InteractUseCase = InteractUseCase(context),
     private val selectTargetSuccessUseCase: SelectTargetSuccessUseCase = SelectTargetSuccessUseCase(),
+    private val playerPickItemUseCase: PlayerPickItemUseCase = PlayerPickItemUseCase(context),
 ) {
     fun onPlayerAction(player: PlayerObject, objectId: Int) {
         val item = player.region.getVisibleItem(objectId)
@@ -27,6 +31,15 @@ class RequestActionHandler(
         } else {
             onPlayerSelect(player, objectId)
         }
+    }
+
+    fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject) {
+        pickUpValidation.validate(player, item)
+            .onValid {
+                playerPickItemUseCase.onPlayerPickUpItemSuccess(context, player, item)
+            }.onError {
+                playerPickItemUseCase.onPlayerPickItemFailed(it, player)
+            }
     }
 
     fun onPlayerCancelAction(player: PlayerObject, unselect: Int) {
@@ -42,10 +55,6 @@ class RequestActionHandler(
                 )
             )
         }
-    }
-
-    private fun onPlayerPickUpItem(player: PlayerObject, item: ItemObject) {
-        context.requestInventoryHandler.onPlayerPickUpItem(player, item)
     }
 
     private fun onPlayerSelect(player: PlayerObject, objectId: Int) {

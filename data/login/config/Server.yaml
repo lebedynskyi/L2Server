@@ -4,7 +4,7 @@ lobbyConfig:
   autoRegistration: true
 
 clientServer:
-  hostname: "127.0.0.1"
+  hostname: "*" # hostname: "127.0.0.1"
   port: 2106
 
 bridgeServer:

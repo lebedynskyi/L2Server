@@ -1,6 +1,6 @@
 serverInfo:
   id: 2
-  ip: "127.0.0.1"
+  ip: "*" #ip: "127.0.0.1"
   port: 7777
   ageLimit: 18
   isPvp: false
@@ -13,7 +13,7 @@ bridgeServer:
 
 dataBaseConfig:  # MariaDB
   driver: "org.mariadb.jdbc.Driver"
-  url: "jdbc:mariadb://127.0.0.1/l2db"
-  user: "root"
-  password: "det4Deb5"
+  url: "jdbc:mariadb://127.0.0.1/l2db?useSSL=false&allowPublicKeyRetrieval=true"
+  user: "l2"
+  password: "l2pass"
   timeOut: 5000
