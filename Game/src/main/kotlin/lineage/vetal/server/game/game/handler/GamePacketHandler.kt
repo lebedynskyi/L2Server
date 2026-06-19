@@ -11,7 +11,7 @@ import lineage.vetal.server.game.gameserver.packet.server.QuestList
 
 private const val TAG = "PacketHandler"
 
-class PacketHandler(
+class GamePacketHandler(
     private val context: GameContext
 ) {
     fun handlePacket(client: GameClient, packet: GameClientPacket) {

@@ -8,8 +8,10 @@ import lineage.vetal.server.game.gameserver.packet.server.Attack
 
 private const val TAG = "BehaviourAttackUseCase"
 
-class BehaviourAttackUseCase {
-    fun onBehaviourAttack(context: GameContext, creature: CreatureObject, currentIntention: Intention.ATTACK): Boolean {
+class BehaviourAttackUseCase(
+    private val context: GameContext
+) {
+    fun onBehaviourAttack(creature: CreatureObject, currentIntention: Intention.ATTACK): Boolean {
         val attackData = currentIntention.data
         val time = context.clock.millis()
 

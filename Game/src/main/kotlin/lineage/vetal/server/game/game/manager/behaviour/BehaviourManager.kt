@@ -22,7 +22,7 @@ abstract class BehaviourManager(
         activeCreatures.forEach { (key, creature) ->
             val behaviour = creature.behaviour
             if (handleBehaviour(creature, behaviour)) {
-                activeCreatures.remove(key)
+                removeCreature(creature)
 
                 if (behaviour.endCurrent()) {
                     onPlayerIntention(creature as PlayerObject, behaviour.current)

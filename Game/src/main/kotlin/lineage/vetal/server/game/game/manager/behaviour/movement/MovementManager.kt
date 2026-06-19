@@ -14,8 +14,8 @@ class MovementManager(
 ) : BehaviourManager(context) {
     fun startMovement(creature: CreatureObject, destination: Position, intention: Intention? = null) {
         val moveData = MoveData(destination, context.clock.millis())
-        val newIntent = Intention.MOVE_TO(moveData)
-        creature.behaviour.setIntention(newIntent, intention)
+        val movement = Intention.MOVE_TO(moveData)
+        creature.behaviour.setIntention(movement, intention)
         manageCreature(creature)
     }
 

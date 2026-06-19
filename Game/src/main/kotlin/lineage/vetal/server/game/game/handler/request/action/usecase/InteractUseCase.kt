@@ -16,7 +16,6 @@ class InteractUseCase(
 ) {
     internal fun onInteractionSuccess(player: PlayerObject, target: CreatureObject) {
         // TODO stop movement.
-        // TODO
         if (target.isAutoAttackable) {
             context.attackManager.onCreatureAttack(player, target)
         } else {

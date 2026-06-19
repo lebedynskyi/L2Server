@@ -29,14 +29,14 @@ import java.io.File
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
-private const val PATH_SERVER_CONFIG = "game/config/Server.yaml"
-
-private const val PATH_CLASSES_XML = "game/xml/classes"
-private const val NPCS_XML = "game/xml/npcs"
-private const val ITEMS_XML = "game/xml/items"
 private const val TAG = "GameContext"
 
-private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
+private const val DATA_PATH_SERVER_CONFIG = "game/config/Server.yaml"
+private const val DATA_PATH_CLASSES_XML = "game/xml/classes"
+private const val DATA_NPCS_XML = "game/xml/npcs"
+private const val DATA_ITEMS_XML = "game/xml/items"
+
+private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(10)
 private val DEFAULT_ATTACK_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
 private val DEFAULT_MOVEMENT_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
 
@@ -75,27 +75,27 @@ class GameContext {
     lateinit var objectFactory: GameObjectFactory
 
     // Tasks
-    lateinit var tickTaskManager: TickTaskManager
+    lateinit var tickManager: TickTaskManager
     lateinit var scheduleTaskManager: ScheduleTaskManager
 
     fun load(dataFolder: String) {
         writeSection(TAG)
         writeInfo(TAG, "Loading context. Data folder is $dataFolder")
 
-        val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
+        val serverConfigFile = File(dataFolder, DATA_PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
         gameConfig = ConfigGameServer.read(serverConfigFile)
         clock = Clock.systemUTC()
 
-        val itemsXmlFolder = File(dataFolder, ITEMS_XML)
+        val itemsXmlFolder = File(dataFolder, DATA_ITEMS_XML)
         val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${itemTemplates.size} items.")
 
-        val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
+        val charsXmlFolder = File(dataFolder, DATA_PATH_CLASSES_XML)
         val charTemplates = CharXMLReader(charsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${charTemplates.size} player classes templates.")
 
-        val npcXmlFolder = File(dataFolder, NPCS_XML)
+        val npcXmlFolder = File(dataFolder, DATA_NPCS_XML)
         val npcTemplates = NpcXMLReader(npcXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${npcTemplates.size} npcs.")
 
@@ -130,7 +130,7 @@ class GameContext {
         writeSection("Tasks")
         val taskDispatcher = Dispatchers.IO
         scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
-        tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
+        tickManager = TickTaskManager(clock, taskDispatcher).apply {
             register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
             register(movementManager, DEFAULT_MOVEMENT_TICK_PERIOD)
             register(attackManager, DEFAULT_ATTACK_TICK_PERIOD)

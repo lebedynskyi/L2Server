@@ -1,5 +1,6 @@
 package lineage.vetal.server.game.game.handler.request.movement
 
+import lineage.vetal.server.core.utils.logs.writeDebug
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.handler.request.movement.usecase.MovementUseCase
 import lineage.vetal.server.game.game.handler.request.movement.validation.MovementValidation
@@ -28,6 +29,7 @@ class RequestMovementHandler(
     }
 
     fun onPlayerValidatePosition(player: PlayerObject, currentX: Int, currentY: Int, currentZ: Int, heading: Int) {
+        writeDebug(TAG, "${player.name} Client pos={x=$currentX, y=$currentY, z=$currentZ, h=$heading}")
         player.clientPosition = SpawnPosition(currentX, currentY, currentZ, heading)
     }
 }

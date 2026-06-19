@@ -9,8 +9,8 @@ abstract class GameObjectBehaviour {
     var current: Intention = Intention.IDLE
     var next: Intention? = null
 
-    open fun setIntention(intention: Intention, nextIntention: Intention? = null) {
-        current = intention
+    open fun setIntention(currentAction: Intention, nextIntention: Intention? = null) {
+        current = currentAction
         next = nextIntention
     }
 

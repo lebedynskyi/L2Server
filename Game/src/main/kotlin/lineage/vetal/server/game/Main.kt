@@ -4,7 +4,7 @@ import lineage.vetal.server.core.utils.logs.writeInfo
 import lineage.vetal.server.core.utils.logs.writeSection
 import lineage.vetal.server.game.bridgeclient.BridgeClient
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.handler.PacketHandler
+import lineage.vetal.server.game.game.handler.GamePacketHandler
 import lineage.vetal.server.game.gameserver.GameServer
 
 private const val TAG = "LoginMain"
@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
         load(dataFolder)
     }
 
-    val gamePacketHandler = PacketHandler(gameContext)
+    val gamePacketHandler = GamePacketHandler(gameContext)
 
     writeSection("Servers")
     writeInfo(TAG, "Start Game client server")

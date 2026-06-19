@@ -2,7 +2,7 @@ package lineage.vetal.server.game.gameserver
 
 import kotlinx.coroutines.*
 import lineage.vetal.server.game.ConfigGameServer
-import lineage.vetal.server.game.game.handler.PacketHandler
+import lineage.vetal.server.game.game.handler.GamePacketHandler
 import lineage.vetal.server.game.gameserver.packet.GameClientPacket
 import lineage.vetal.server.game.gameserver.packet.client.Connected
 import lineage.vetal.server.game.gameserver.packet.client.Disconnected
@@ -12,7 +12,7 @@ private const val TAG = "GameServer"
 
 class GameServer(
     gameConfig: ConfigGameServer,
-    private val packetHandler: PacketHandler
+    private val packetHandler: GamePacketHandler
 ) {
     private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
     private val gameSelector: SelectorThread<GameClient> = SelectorThread(
