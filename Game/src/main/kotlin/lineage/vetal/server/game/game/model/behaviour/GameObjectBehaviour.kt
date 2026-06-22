@@ -6,29 +6,29 @@ import lineage.vetal.server.game.game.model.intenttion.Intention
 private const val TAG = "GameObjectBehaviour"
 
 abstract class GameObjectBehaviour {
-    var current: Intention = Intention.IDLE
-    var next: Intention? = null
+    var action: Intention = Intention.IDLE; private set
+    var intention: Intention? = null; private set
 
-    open fun setIntention(currentAction: Intention, nextIntention: Intention? = null) {
-        current = currentAction
-        next = nextIntention
+    open fun setAction(action: Intention, intention: Intention? = null) {
+        this.action = action
+        this.intention = intention
     }
 
-    open fun setNextIntention(intention: Intention?) {
-        if ((current == Intention.IDLE) && intention != null) {
-            current = intention
+    open fun setIntention(intention: Intention?) {
+        if ((action == Intention.IDLE) && intention != null) {
+            this.action = intention
         } else {
-            next = intention
+            this.intention = intention
         }
     }
 
     open fun endCurrent(): Boolean {
-        writeDebug(TAG, "Current $current is finished")
-        val nextIntention = next
+        writeDebug(TAG, "Current $action is finished")
+        val nextIntention = intention
 
         return if (nextIntention != null) {
-            current = nextIntention
-            next = null
+            action = nextIntention
+            intention = null
             writeDebug(TAG, "Next $nextIntention is started")
             true
         } else {

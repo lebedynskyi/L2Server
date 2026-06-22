@@ -14,10 +14,6 @@ class BehaviourAttackUseCase {
         return PAttackFormula.calcHitDelay(creature, creature.stats.getPAtkSpd().toDouble())
     }
 
-    fun isStillAttacking(creature: CreatureObject, attack: Intention.ATTACK): Boolean {
-        return creature.behaviour.current === attack
-    }
-
     fun resolveHit(context: GameContext, creature: CreatureObject, attack: Intention.ATTACK) {
         val target = attack.data.target
         val time = context.clock.millis()

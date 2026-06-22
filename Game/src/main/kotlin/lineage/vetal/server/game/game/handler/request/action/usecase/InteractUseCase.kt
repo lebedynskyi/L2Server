@@ -11,7 +11,7 @@ import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
 
-private const val TAG = "InteractFailUseCase"
+private const val TAG = "InteractUseCase"
 
 class InteractUseCase(
     private val context: GameContext,
@@ -20,10 +20,10 @@ class InteractUseCase(
     internal fun onInteractionSuccess(player: PlayerObject, target: CreatureObject) {
         if (target.isAutoAttackable) {
             val attack = Intention.ATTACK(AttackData(target))
-            val task = AttackTask(context, attackUseCase, attack, player)
-            context.behaviourManager.start(player, attack, task)
+            val attackTask = AttackTask(context, attackUseCase, attack, player)
+            context.behaviourManager.startTask(player, attack, attackTask)
         } else {
-            context.htmlManager.onPlayerInteract(player, target)
+            context.htmlManager.openHtml(player, target)
         }
     }
 

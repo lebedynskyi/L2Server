@@ -40,7 +40,7 @@ class MovementManager(
     }
 
     private fun handleBehaviour(creature: CreatureObject): BehaviourResult {
-        val currentIntention = creature.behaviour.current
+        val currentIntention = creature.behaviour.action
         return if (currentIntention !is Intention.MOVE_TO) {
             BehaviourResult.INTERRUPTED
         } else if (moveToUseCase.onBehaviourMoveTo(context, creature, currentIntention)) {

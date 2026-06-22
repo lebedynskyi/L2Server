@@ -13,13 +13,13 @@ class AttackTask(
     creature: CreatureObject,
 ) : BehaviourTask(creature) {
     override suspend fun step(): BehaviourResult {
-        if (!attackUseCase.isStillAttacking(creature, attack)) {
+        if (!isStillAttacking(creature, attack)) {
             return BehaviourResult.INTERRUPTED
         }
 
         attackUseCase.resolveHit(context, creature, attack)
 
-        return if (attackUseCase.isStillAttacking(creature, attack)) {
+        return if (isStillAttacking(creature, attack)) {
             BehaviourResult.IN_PROGRESS
         } else {
             BehaviourResult.FINISHED
@@ -28,5 +28,9 @@ class AttackTask(
 
     override fun nextDelay(): Long {
         return attackUseCase.calculateHitDelay(creature).toLong()
+    }
+
+    private fun isStillAttacking(creature: CreatureObject, attack: Intention.ATTACK): Boolean {
+        return creature.behaviour.action === attack
     }
 }

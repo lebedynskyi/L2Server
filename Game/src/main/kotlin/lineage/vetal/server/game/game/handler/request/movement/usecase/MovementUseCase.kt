@@ -19,7 +19,8 @@ class MovementUseCase(
     }
 
     internal fun onMovementFail(
-        player: PlayerObject, reason: MovementValidationValidationError
+        player: PlayerObject,
+        reason: MovementValidationValidationError
     ) {
         writeDebug(TAG, "Start move error -> $reason")
     }

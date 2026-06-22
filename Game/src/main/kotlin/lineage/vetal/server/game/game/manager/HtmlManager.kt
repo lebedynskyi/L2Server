@@ -10,7 +10,7 @@ private const val DUMMY_HTML = "<html><body><br>This is dummy html. It works!</b
 class HtmlManager(
     private val gameContext: GameContext
 ) {
-    fun onPlayerInteract(playerObject: PlayerObject, creatureObject: CreatureObject) {
-        playerObject.sendPacket(HtmlMessage(creatureObject.objectId, DUMMY_HTML))
+    fun openHtml(player: PlayerObject, creature: CreatureObject) {
+        player.sendPacket(HtmlMessage(creature.objectId, DUMMY_HTML))
     }
 }

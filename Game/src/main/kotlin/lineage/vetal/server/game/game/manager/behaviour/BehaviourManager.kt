@@ -21,9 +21,9 @@ class BehaviourManager(
 ) : ScheduleTaskManager(clock, dispatcher) {
     private val activeJobs = ConcurrentHashMap<Int, Job>()
 
-    fun start(creature: CreatureObject, intention: Intention, task: BehaviourTask) {
+    fun startTask(creature: CreatureObject, intention: Intention, task: BehaviourTask) {
         cancelCurrent(creature)
-        creature.behaviour.setIntention(intention)
+        creature.behaviour.setAction(intention)
         activeJobs[creature.objectId] = schedule(TaskWrapper(task), task.nextDelay())
     }
 
@@ -31,8 +31,8 @@ class BehaviourManager(
         cancelCurrent(creature)
 
         val moveData = MoveData(destination, context.clock.millis())
-        val newIntent = Intention.MOVE_TO(moveData)
-        creature.behaviour.setIntention(newIntent, intention)
+        val movement = Intention.MOVE_TO(moveData)
+        creature.behaviour.setAction(movement, intention)
         context.movementManager.manageCreature(creature)
     }
 
@@ -45,8 +45,9 @@ class BehaviourManager(
 
     // The only place that advances behaviour.next -> current. Only call on natural completion.
     fun advanceQueue(creature: CreatureObject) {
+        // TODO could be any creature
         if (creature.behaviour.endCurrent() && creature is PlayerObject) {
-            onPlayerIntention(creature, creature.behaviour.current)
+            onPlayerIntention(creature, creature.behaviour.action)
         }
     }
 
