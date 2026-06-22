@@ -30,7 +30,7 @@ class BehaviourManager(
     fun startMovement(creature: CreatureObject, destination: Position, intention: Intention? = null) {
         cancelCurrent(creature)
 
-        val moveData = MoveData(destination, context.clock.millis())
+        val moveData = MoveData(creature.position, destination, context.clock.millis())
         val movement = Intention.MOVE_TO(moveData)
         creature.behaviour.setAction(movement, intention)
         context.movementManager.manageCreature(creature)
@@ -55,9 +55,9 @@ class BehaviourManager(
         when (intention) {
             is Intention.REST -> {}
             is Intention.CAST -> {}
-            is Intention.PICK -> context.requestActionHandler.onPlayerPickUpItem(player, intention.data)
-            is Intention.ATTACK -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
-            is Intention.INTERACT -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
+            is Intention.PICK -> context.requestActionHandler.onRequestPickUp(player, intention.data)
+            is Intention.ATTACK -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
+            is Intention.INTERACT -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
             is Intention.FOLLOW -> {}
             else -> {}
         }
