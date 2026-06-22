@@ -1,53 +1,83 @@
 package lineage.vetal.server.game.game.manager.behaviour
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import lineage.vetal.server.game.game.GameContext
-import lineage.vetal.server.game.game.model.behaviour.CreatureBehaviour
+import lineage.vetal.server.game.game.model.behaviour.BehaviourResult
+import lineage.vetal.server.game.game.model.behaviour.data.MoveData
 import lineage.vetal.server.game.game.model.intenttion.Intention
 import lineage.vetal.server.game.game.model.player.CreatureObject
 import lineage.vetal.server.game.game.model.player.PlayerObject
-import lineage.vetal.server.game.game.task.TickTask
+import lineage.vetal.server.game.game.model.position.Position
+import lineage.vetal.server.game.game.task.ScheduleTask
+import lineage.vetal.server.game.game.task.ScheduleTaskManager
 import java.time.Clock
 import java.util.concurrent.ConcurrentHashMap
 
-private const val TAG = "BehaviourManager"
-
-abstract class BehaviourManager(
+class BehaviourManager(
     private val context: GameContext,
-) : TickTask() {
-    private val activeCreatures: ConcurrentHashMap<Int, CreatureObject> = ConcurrentHashMap<Int, CreatureObject>()
+    clock: Clock,
+    dispatcher: CoroutineDispatcher
+) : ScheduleTaskManager(clock, dispatcher) {
+    private val activeJobs = ConcurrentHashMap<Int, Job>()
 
-    protected abstract fun handleBehaviour(creature: CreatureObject, behaviour: CreatureBehaviour): Boolean
+    fun start(creature: CreatureObject, intention: Intention, task: BehaviourTask) {
+        cancelCurrent(creature)
+        creature.behaviour.setIntention(intention)
+        activeJobs[creature.objectId] = schedule(TaskWrapper(task), task.nextDelay())
+    }
 
-    override suspend fun onTick(clock: Clock) {
-        activeCreatures.forEach { (key, creature) ->
-            val behaviour = creature.behaviour
-            if (handleBehaviour(creature, behaviour)) {
-                removeCreature(creature)
+    fun startMovement(creature: CreatureObject, destination: Position, intention: Intention? = null) {
+        cancelCurrent(creature)
 
-                if (behaviour.endCurrent()) {
-                    onPlayerIntention(creature as PlayerObject, behaviour.current)
-                }
-            }
+        val moveData = MoveData(destination, context.clock.millis())
+        val newIntent = Intention.MOVE_TO(moveData)
+        creature.behaviour.setIntention(newIntent, intention)
+        context.movementManager.manageCreature(creature)
+    }
+
+    // Single cancellation point: cancels whatever schedule-based or tick-based action
+    // was previously running for this creature, regardless of which one it was.
+    fun cancelCurrent(creature: CreatureObject) {
+        activeJobs.remove(creature.objectId)?.cancel()
+        context.movementManager.removeCreature(creature)
+    }
+
+    // The only place that advances behaviour.next -> current. Only call on natural completion.
+    fun advanceQueue(creature: CreatureObject) {
+        if (creature.behaviour.endCurrent() && creature is PlayerObject) {
+            onPlayerIntention(creature, creature.behaviour.current)
         }
-    }
-
-    protected fun manageCreature(creature: CreatureObject) {
-        activeCreatures[creature.objectId] = creature
-    }
-
-    protected fun removeCreature(creature: CreatureObject) {
-        activeCreatures.remove(creature.objectId)
     }
 
     private fun onPlayerIntention(player: PlayerObject, intention: Intention) {
         when (intention) {
             is Intention.REST -> {}
             is Intention.CAST -> {}
-            is Intention.PICK -> context.requestActionHandler.onRequestPickUp(player, intention.data)
-            is Intention.ATTACK -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
-            is Intention.INTERACT -> context.requestActionHandler.onRequestAction(player, intention.data.target.objectId)
+            is Intention.PICK -> context.requestActionHandler.onPlayerPickUpItem(player, intention.data)
+            is Intention.ATTACK -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
+            is Intention.INTERACT -> context.requestActionHandler.onPlayerAction(player, intention.data.target.objectId)
             is Intention.FOLLOW -> {}
             else -> {}
+        }
+    }
+
+    private inner class TaskWrapper(private val task: BehaviourTask) : ScheduleTask() {
+        override suspend fun execute(clock: Clock) {
+            when (task.step()) {
+                BehaviourResult.IN_PROGRESS -> {
+                    activeJobs[task.creature.objectId] = schedule(this, task.nextDelay())
+                }
+
+                BehaviourResult.FINISHED -> {
+                    activeJobs.remove(task.creature.objectId)
+                    advanceQueue(task.creature)
+                }
+
+                BehaviourResult.INTERRUPTED -> {
+                    activeJobs.remove(task.creature.objectId)
+                }
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ package lineage.vetal.server.game.game.handler.request.action.usecase
 import lineage.vetal.server.core.utils.logs.writeError
 import lineage.vetal.server.game.game.GameContext
 import lineage.vetal.server.game.game.handler.request.action.validation.InteractionValidationError
+import lineage.vetal.server.game.game.manager.behaviour.attack.AttackTask
+import lineage.vetal.server.game.game.manager.behaviour.attack.BehaviourAttackUseCase
 import lineage.vetal.server.game.game.model.behaviour.data.AttackData
 import lineage.vetal.server.game.game.model.behaviour.data.TargetData
 import lineage.vetal.server.game.game.model.intenttion.Intention
@@ -12,12 +14,14 @@ import lineage.vetal.server.game.game.model.player.PlayerObject
 private const val TAG = "InteractFailUseCase"
 
 class InteractUseCase(
-    private val context: GameContext
+    private val context: GameContext,
+    private val attackUseCase: BehaviourAttackUseCase = BehaviourAttackUseCase()
 ) {
     internal fun onInteractionSuccess(player: PlayerObject, target: CreatureObject) {
-        // TODO stop movement. ???
         if (target.isAutoAttackable) {
-            context.attackManager.onCreatureAttack(player, target)
+            val attack = Intention.ATTACK(AttackData(target))
+            val task = AttackTask(context, attackUseCase, attack, player)
+            context.behaviourManager.start(player, attack, task)
         } else {
             context.htmlManager.onPlayerInteract(player, target)
         }

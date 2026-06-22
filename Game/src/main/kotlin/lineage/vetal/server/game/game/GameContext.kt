@@ -16,7 +16,7 @@ import lineage.vetal.server.game.game.manager.AnnounceManager
 import lineage.vetal.server.game.game.manager.BroadcastManager
 import lineage.vetal.server.game.game.model.GameWorld
 import lineage.vetal.server.game.game.manager.HtmlManager
-import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
+import lineage.vetal.server.game.game.manager.behaviour.BehaviourManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
 import lineage.vetal.server.game.game.manager.spawn.SpawnManager
@@ -62,7 +62,7 @@ class GameContext {
     lateinit var movementManager: MovementManager
 
     // Behavior Managers
-    lateinit var attackManager: AttackManager
+    lateinit var behaviourManager: BehaviourManager
     lateinit var scheduleTaskManager: ScheduleTaskManager
 
     // Handlers
@@ -126,7 +126,7 @@ class GameContext {
         broadcaster = BroadcastManager(this)
         // Single-threaded so combat-state mutation (hp/intention) never races across creatures.
         val combatDispatcher = Dispatchers.IO.limitedParallelism(1)
-        attackManager = AttackManager(this, clock = clock, dispatcher = combatDispatcher)
+        behaviourManager = BehaviourManager(this, clock = clock, dispatcher = combatDispatcher)
 
         tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
             register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
