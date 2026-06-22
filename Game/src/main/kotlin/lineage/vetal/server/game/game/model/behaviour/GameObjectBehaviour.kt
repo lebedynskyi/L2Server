@@ -23,13 +23,13 @@ abstract class GameObjectBehaviour {
     }
 
     open fun endCurrent(): Boolean {
-        writeDebug(TAG, "Current $action is finished")
+        writeDebug(TAG, "Finished $action")
         val nextIntention = intention
 
         return if (nextIntention != null) {
             action = nextIntention
             intention = null
-            writeDebug(TAG, "Next $nextIntention is started")
+            writeDebug(TAG, "Started Next $nextIntention")
             true
         } else {
             false

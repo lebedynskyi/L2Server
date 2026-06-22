@@ -38,6 +38,7 @@ private const val TAG = "GameContext"
 
 private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
 private val DEFAULT_MOVEMENT_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
+private val DEFAULT_SPAWN_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(500)
 
 class GameContext {
     // Misc
@@ -78,21 +79,20 @@ class GameContext {
         writeInfo(TAG, "Loading context. Data folder is $dataFolder")
 
         val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
-        writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
         gameConfig = ConfigGameServer.read(serverConfigFile)
         clock = Clock.systemUTC()
 
         val itemsXmlFolder = File(dataFolder, ITEMS_XML)
         val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${itemTemplates.size} items.")
+        writeInfo(TAG, "Loaded ${itemTemplates.size} items templates.")
 
         val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
         val charTemplates = CharXMLReader(charsXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${charTemplates.size} player classes templates.")
+        writeInfo(TAG, "Loaded ${charTemplates.size} classes templates.")
 
         val npcXmlFolder = File(dataFolder, NPCS_XML)
         val npcTemplates = NpcXMLReader(npcXmlFolder.absolutePath).load()
-        writeInfo(TAG, "Loaded ${npcTemplates.size} npcs.")
+        writeInfo(TAG, "Loaded ${npcTemplates.size} npc templates.")
 
         writeSection("Database")
         val dbConnection = HikariDBConnection(gameConfig.dataBaseConfig)
@@ -112,9 +112,6 @@ class GameContext {
         requestActionHandler = RequestActionHandler(this)
         requestMovementHandler = RequestMovementHandler(this)
 
-        writeSection("Tasks")
-        val taskDispatcher = Dispatchers.IO
-        scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
 
         writeSection("Managers")
         gameWorld = GameWorld(this)
@@ -124,13 +121,16 @@ class GameContext {
         announceManager = AnnounceManager(requestChatHandler)
         htmlManager = HtmlManager(this)
         broadcaster = BroadcastManager(this)
-        // Single-threaded so combat-state mutation (hp/intention) never races across creatures.
-        val combatDispatcher = Dispatchers.IO.limitedParallelism(1)
-        behaviourManager = BehaviourManager(this, clock = clock, dispatcher = combatDispatcher)
+        scheduleTaskManager = ScheduleTaskManager(clock, Dispatchers.IO)
 
-        tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
+        // Single-threaded so combat-state mutation (hp/intention) never races across creatures.
+        behaviourManager = BehaviourManager(this, clock = clock, dispatcher = Dispatchers.IO.limitedParallelism(1))
+
+        writeSection("Tasks")
+        tickTaskManager = TickTaskManager(clock, Dispatchers.IO).apply {
             register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
             register(movementManager, DEFAULT_MOVEMENT_TICK_PERIOD)
+            register(spawnManager, DEFAULT_SPAWN_TICK_PERIOD)
         }
     }
 }

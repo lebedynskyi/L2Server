@@ -24,7 +24,7 @@ class BehaviourManager(
     fun startTask(creature: CreatureObject, intention: Intention, task: BehaviourTask) {
         cancelCurrent(creature)
         creature.behaviour.setAction(intention)
-        activeJobs[creature.objectId] = schedule(TaskWrapper(task), task.nextDelay())
+        activeJobs[creature.objectId] = schedule(TaskWrapper(task))
     }
 
     fun startMovement(creature: CreatureObject, destination: Position, intention: Intention? = null) {
