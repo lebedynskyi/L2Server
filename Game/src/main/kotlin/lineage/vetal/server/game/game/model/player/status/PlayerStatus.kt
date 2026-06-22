@@ -5,11 +5,8 @@ import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 class PlayerStatus(
     private val template: CharTemplate
 ) : PlayableStatus(template) {
-    var level: Int = 1
-
-    var curCp: Double = 0.0
-    var exp: Long = 0
     var sp: Int = 0
+    var curCp: Double = getMaxCp()
 
     var isSitting = false
     var isFishing = false
@@ -21,13 +18,5 @@ class PlayerStatus(
 
     fun getMaxCp(): Double {
         return template.getBaseCpMax(level)
-    }
-
-    override fun getMaxHp(): Double {
-        return template.getBaseHpMax(level)
-    }
-
-    override fun getMaxMp(): Double {
-        return template.getBaseMpMax(level)
     }
 }

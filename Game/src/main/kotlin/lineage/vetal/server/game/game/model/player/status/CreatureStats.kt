@@ -7,9 +7,10 @@ import lineage.vetal.server.game.game.model.template.pc.CreatureTemplate
 abstract class CreatureStats(
     private val template: CreatureTemplate
 ) {
+    var level: Int = 1
     var isRunning = true
-    var curHp: Double = template.baseHpMax
-    var curMp: Double = template.baseMpMax
+    var curHp: Double = template.getBaseHpMax(level)
+    var curMp: Double = template.getBaseMpMax(level)
 
     // Stats
     open fun getINT() = template.baseINT

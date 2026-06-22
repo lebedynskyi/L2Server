@@ -4,4 +4,6 @@ import lineage.vetal.server.game.game.model.template.pc.CharTemplate
 
 abstract class PlayableStatus(
     template: CharTemplate
-) : CreatureStats(template)
+) : CreatureStats(template) {
+    var exp: Long = 0
+}

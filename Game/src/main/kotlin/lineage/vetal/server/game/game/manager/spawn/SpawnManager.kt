@@ -17,6 +17,6 @@ class SpawnManager(
             val npc = context.objectFactory.createNpcObject(spawnData.npcTemplateId, spawnData.spawnPosition)
             context.gameWorld.onNpcAdded(npc)
         }
-        writeInfo(TAG, "Loaded ${spawnList.size} NPC")
+        writeInfo(TAG, "Spawned ${spawnList.size} NPC")
     }
 }
