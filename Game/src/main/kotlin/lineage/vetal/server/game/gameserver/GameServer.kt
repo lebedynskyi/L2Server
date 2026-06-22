@@ -14,7 +14,7 @@ class GameServer(
     gameConfig: ConfigGameServer,
     private val packetHandler: GamePacketHandler
 ) {
-    private val gameCoroutineScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
+    private val gameServerScope = CoroutineScope(newSingleThreadContext("GameServer") + Job())
     private val gameSelector: SelectorThread<GameClient> = SelectorThread(
         gameConfig.serverInfo.ip,
         gameConfig.serverInfo.port,
@@ -24,13 +24,13 @@ class GameServer(
     )
 
     fun startServer() {
-        gameCoroutineScope.launch {
+        gameServerScope.launch {
             gameSelector.connectionAcceptFlow.collect {
                packetHandler.handlePacket(it, Connected)
             }
         }
 
-        gameCoroutineScope.launch {
+        gameServerScope.launch {
             gameSelector.connectionReadFlow.collect {
                 val client = it.first
                 val packet = it.second as GameClientPacket
@@ -38,7 +38,7 @@ class GameServer(
             }
         }
 
-        gameCoroutineScope.launch {
+        gameServerScope.launch {
             gameSelector.connectionCloseFlow.collect { client ->
                 packetHandler.handlePacket(client, Disconnected)
             }
