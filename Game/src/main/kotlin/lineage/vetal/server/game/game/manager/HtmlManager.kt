@@ -7,7 +7,7 @@ import lineage.vetal.server.game.gameserver.packet.server.HtmlMessage
 
 private const val DUMMY_HTML = "<html><body><br>This is dummy html. It works!</body></html>"
 
-class InteractManager(
+class HtmlManager(
     private val gameContext: GameContext
 ) {
     fun onPlayerInteract(playerObject: PlayerObject, creatureObject: CreatureObject) {

@@ -7,10 +7,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lineage.vetal.server.core.utils.logs.writeInfo
 import java.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val TAG = "ScheduleTaskManager"
 
-class ScheduleTaskManager(
+open class ScheduleTaskManager(
     private val clock: Clock,
     dispatcher: CoroutineDispatcher
 ) {
@@ -20,7 +21,7 @@ class ScheduleTaskManager(
         writeInfo(TAG, "Scheduled a task '${task::class.java.name}' with delay by $delay")
 
         return scope.launch {
-            delay(delay)
+            delay(delay.milliseconds)
             task.execute(clock)
         }
     }

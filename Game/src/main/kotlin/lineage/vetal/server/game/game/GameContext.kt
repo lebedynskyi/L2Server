@@ -15,7 +15,7 @@ import lineage.vetal.server.game.game.handler.request.world.RequestWorldHandler
 import lineage.vetal.server.game.game.manager.AnnounceManager
 import lineage.vetal.server.game.game.manager.BroadcastManager
 import lineage.vetal.server.game.game.model.GameWorld
-import lineage.vetal.server.game.game.manager.InteractManager
+import lineage.vetal.server.game.game.manager.HtmlManager
 import lineage.vetal.server.game.game.manager.behaviour.attack.AttackManager
 import lineage.vetal.server.game.game.manager.manor.ManorManager
 import lineage.vetal.server.game.game.manager.behaviour.movement.MovementManager
@@ -29,38 +29,41 @@ import java.io.File
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
+private const val PATH_SERVER_CONFIG = "game/config/Server.yaml"
+
+private const val PATH_CLASSES_XML = "game/xml/classes"
+private const val NPCS_XML = "game/xml/npcs"
+private const val ITEMS_XML = "game/xml/items"
 private const val TAG = "GameContext"
 
-private const val DATA_PATH_SERVER_CONFIG = "game/config/Server.yaml"
-private const val DATA_PATH_CLASSES_XML = "game/xml/classes"
-private const val DATA_NPCS_XML = "game/xml/npcs"
-private const val DATA_ITEMS_XML = "game/xml/items"
-
-private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(10)
-private val DEFAULT_ATTACK_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
+private val DEFAULT_ANNOUNCE_TICK_PERIOD = TimeUnit.MINUTES.toMillis(1)
 private val DEFAULT_MOVEMENT_TICK_PERIOD = TimeUnit.MILLISECONDS.toMillis(100)
 
-private val defaultAnnouncements = listOf(
-    "Welcome on Vitalii Lebedynskyi server",
-    "This is the best Vetalll server",
-    "I did an announce manager!",
-    "Some random message"
-)
-
 class GameContext {
+    // Misc
+    lateinit var clock: Clock
+    lateinit var objectFactory: GameObjectFactory
+
     // Data
     lateinit var gameConfig: ConfigGameServer
     lateinit var gameDatabase: GameDatabase
 
-    // Managers
     lateinit var gameWorld: GameWorld
+
+    // Managers
+    lateinit var broadcaster: BroadcastManager
+    lateinit var htmlManager: HtmlManager
+
+    // Tick Managers
+    lateinit var tickTaskManager: TickTaskManager
     lateinit var spawnManager: SpawnManager
     lateinit var manorManager: ManorManager
-    lateinit var movementManager: MovementManager
-    lateinit var attackManager: AttackManager
     lateinit var announceManager: AnnounceManager
-    lateinit var interactionManager: InteractManager
-    lateinit var broadcaster: BroadcastManager
+    lateinit var movementManager: MovementManager
+
+    // Behavior Managers
+    lateinit var attackManager: AttackManager
+    lateinit var scheduleTaskManager: ScheduleTaskManager
 
     // Handlers
     lateinit var requestInventoryHandler: RequestInventoryHandler
@@ -70,32 +73,24 @@ class GameContext {
     lateinit var requestChatHandler: RequestChatHandler
     lateinit var requestMovementHandler: RequestMovementHandler
 
-    // Misc
-    lateinit var clock: Clock
-    lateinit var objectFactory: GameObjectFactory
-
-    // Tasks
-    lateinit var tickManager: TickTaskManager
-    lateinit var scheduleTaskManager: ScheduleTaskManager
-
     fun load(dataFolder: String) {
         writeSection(TAG)
         writeInfo(TAG, "Loading context. Data folder is $dataFolder")
 
-        val serverConfigFile = File(dataFolder, DATA_PATH_SERVER_CONFIG)
+        val serverConfigFile = File(dataFolder, PATH_SERVER_CONFIG)
         writeInfo(TAG, "Reading game server configs from ${serverConfigFile.absolutePath}")
         gameConfig = ConfigGameServer.read(serverConfigFile)
         clock = Clock.systemUTC()
 
-        val itemsXmlFolder = File(dataFolder, DATA_ITEMS_XML)
+        val itemsXmlFolder = File(dataFolder, ITEMS_XML)
         val itemTemplates = ItemXMLReader(itemsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${itemTemplates.size} items.")
 
-        val charsXmlFolder = File(dataFolder, DATA_PATH_CLASSES_XML)
+        val charsXmlFolder = File(dataFolder, PATH_CLASSES_XML)
         val charTemplates = CharXMLReader(charsXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${charTemplates.size} player classes templates.")
 
-        val npcXmlFolder = File(dataFolder, DATA_NPCS_XML)
+        val npcXmlFolder = File(dataFolder, NPCS_XML)
         val npcTemplates = NpcXMLReader(npcXmlFolder.absolutePath).load()
         writeInfo(TAG, "Loaded ${npcTemplates.size} npcs.")
 
@@ -117,23 +112,25 @@ class GameContext {
         requestActionHandler = RequestActionHandler(this)
         requestMovementHandler = RequestMovementHandler(this)
 
+        writeSection("Tasks")
+        val taskDispatcher = Dispatchers.IO
+        scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
+
         writeSection("Managers")
         gameWorld = GameWorld(this)
         manorManager = ManorManager(this)
         spawnManager = SpawnManager(this)
         movementManager = MovementManager(this)
-        attackManager = AttackManager(this)
-        announceManager = AnnounceManager(requestChatHandler, defaultAnnouncements)
-        interactionManager = InteractManager(this)
+        announceManager = AnnounceManager(requestChatHandler)
+        htmlManager = HtmlManager(this)
         broadcaster = BroadcastManager(this)
+        // Single-threaded so combat-state mutation (hp/intention) never races across creatures.
+        val combatDispatcher = Dispatchers.IO.limitedParallelism(1)
+        attackManager = AttackManager(this, clock = clock, dispatcher = combatDispatcher)
 
-        writeSection("Tasks")
-        val taskDispatcher = Dispatchers.IO
-        scheduleTaskManager = ScheduleTaskManager(clock, taskDispatcher)
-        tickManager = TickTaskManager(clock, taskDispatcher).apply {
+        tickTaskManager = TickTaskManager(clock, taskDispatcher).apply {
             register(announceManager, DEFAULT_ANNOUNCE_TICK_PERIOD)
             register(movementManager, DEFAULT_MOVEMENT_TICK_PERIOD)
-            register(attackManager, DEFAULT_ATTACK_TICK_PERIOD)
         }
     }
 }

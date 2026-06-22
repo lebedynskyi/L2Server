@@ -15,11 +15,11 @@ class InteractUseCase(
     private val context: GameContext
 ) {
     internal fun onInteractionSuccess(player: PlayerObject, target: CreatureObject) {
-        // TODO stop movement.
+        // TODO stop movement. ???
         if (target.isAutoAttackable) {
             context.attackManager.onCreatureAttack(player, target)
         } else {
-            context.interactionManager.onPlayerInteract(player, target)
+            context.htmlManager.onPlayerInteract(player, target)
         }
     }
 
@@ -35,7 +35,7 @@ class InteractUseCase(
                     Intention.INTERACT(TargetData(reason.target))
                 }
 
-                context.requestMovementHandler.onRequestMoveTo(player, reason.target.position, intention)
+                context.requestMovementHandler.onPlayerStartMovement(player, reason.target.position, intention)
             }
 
             else -> {
